@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import { fmtBaht } from "@/lib/format";
 import { PageHeader } from "@/components/PageHeader";
 import { ExportControls } from "@/components/ExportControls";
-import { PageMascots } from "@/components/PageMascots";
 
 type TxView = { date: string; category: string; amount: number };
 type Period = "all" | "year" | "month";
@@ -144,8 +143,6 @@ export function PnlClient({ income, expense, canEdit }: { income: TxView[]; expe
           {expenseCats.length === 0 && <div style={{ fontSize: 13, color: "#b8a9d0" }}>ไม่มีรายจ่ายในช่วงนี้เหมียว</div>}
         </div>
       </div>
-
-      <PageMascots accessory="heroRed" pose="stand" />
     </div>
   );
 }

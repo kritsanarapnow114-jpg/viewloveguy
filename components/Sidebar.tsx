@@ -3,15 +3,14 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { logout } from "@/app/actions/auth";
-import { CatSitting, type CatAccessory } from "./icons/Cat";
 
-const NAV_ITEMS: { key: string; href: string; label: string; badge: string; accessory: CatAccessory; pose: "sit" | "stand" | "wave" }[] = [
-  { key: "dashboard", href: "/dashboard", label: "ภาพรวม", badge: "📊", accessory: "jobBoss", pose: "stand" },
-  { key: "accounts", href: "/accounts", label: "บัญชี & เงินสด", badge: "💰", accessory: "jobBanker", pose: "sit" },
-  { key: "income", href: "/income", label: "รายการรับ", badge: "⬆️", accessory: "jobCashier", pose: "wave" },
-  { key: "expense", href: "/expense", label: "รายการจ่าย", badge: "⬇️", accessory: "jobChef", pose: "sit" },
-  { key: "loans", href: "/loans", label: "ปล่อยเงินกู้", badge: "🤝", accessory: "jobRider", pose: "stand" },
-  { key: "pnl", href: "/pnl", label: "กำไร - ขาดทุน", badge: "📈", accessory: "jobAccountant", pose: "wave" },
+const NAV_ITEMS: { key: string; href: string; label: string; badge: string }[] = [
+  { key: "dashboard", href: "/dashboard", label: "ภาพรวม", badge: "📊" },
+  { key: "accounts", href: "/accounts", label: "บัญชี & เงินสด", badge: "💰" },
+  { key: "income", href: "/income", label: "รายการรับ", badge: "⬆️" },
+  { key: "expense", href: "/expense", label: "รายการจ่าย", badge: "⬇️" },
+  { key: "loans", href: "/loans", label: "ปล่อยเงินกู้", badge: "🤝" },
+  { key: "pnl", href: "/pnl", label: "กำไร - ขาดทุน", badge: "📈" },
 ];
 
 export function Sidebar({ userName, userRole }: { userName: string; userRole: string }) {
@@ -35,9 +34,6 @@ export function Sidebar({ userName, userRole }: { userName: string; userRole: st
       }}
     >
       <div className="side-brand" style={{ display: "flex", alignItems: "center", gap: 10, padding: "4px 8px 20px" }}>
-        <span style={{ width: 32, height: 42, display: "block" }}>
-          <CatSitting accessory="jobBoss" pose="stand" />
-        </span>
         <span className="mali" style={{ fontWeight: 600, fontSize: 16 }}>
           กำไรและวิว
         </span>
@@ -66,43 +62,7 @@ export function Sidebar({ userName, userRole }: { userName: string; userRole: st
               color: active ? "#fff" : "#5a5068",
             }}
           >
-            <span
-              style={{
-                position: "relative",
-                width: 24,
-                height: 32,
-                flex: "0 0 24px",
-                display: "grid",
-                placeItems: "center",
-              }}
-            >
-              <CatSitting
-                earColor={active ? "#ffcf9e" : "#ee9c55"}
-                faceColor={active ? "#fff8ee" : "#fff3e2"}
-                maskColor={active ? "#fffdf9" : "#fffaf2"}
-                bodyColor={active ? "#fff8ee" : "#fff3e2"}
-                accessory={item.accessory}
-                pose={item.pose}
-              />
-              <span
-                style={{
-                  position: "absolute",
-                  right: -4,
-                  bottom: 2,
-                  width: 13,
-                  height: 13,
-                  borderRadius: "50%",
-                  background: "#fff",
-                  display: "grid",
-                  placeItems: "center",
-                  fontSize: 8,
-                  lineHeight: 1,
-                  boxShadow: "0 1px 3px rgba(80,50,120,.35)",
-                }}
-              >
-                {item.badge}
-              </span>
-            </span>
+            <span style={{ fontSize: 15, width: 20, textAlign: "center", flex: "0 0 20px" }}>{item.badge}</span>
             {item.label}
           </Link>
         );
@@ -110,9 +70,6 @@ export function Sidebar({ userName, userRole }: { userName: string; userRole: st
 
       <div className="side-foot" style={{ marginTop: "auto", paddingTop: 18, borderTop: "1px solid #f0e9f8" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 11, padding: 8 }}>
-          <span style={{ width: 30, height: 40, display: "block" }}>
-            <CatSitting accessory="jobAccountant" pose="wave" />
-          </span>
           <div style={{ minWidth: 0 }}>
             <div style={{ fontSize: 13.5, fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{userName}</div>
             <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>{userRole}</div>

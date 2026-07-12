@@ -1,7 +1,6 @@
 "use client";
 
 import { createContext, useCallback, useContext, useRef, useState } from "react";
-import { CatFace } from "./icons/Cat";
 
 type ToastContextValue = { showToast: (msg: string) => void };
 const ToastContext = createContext<ToastContextValue | null>(null);
@@ -40,9 +39,6 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             gap: 10,
           }}
         >
-          <span style={{ width: 26, height: 26, flex: "0 0 26px" }}>
-            <CatFace earColor="#c9b0ea" />
-          </span>
           {message}
         </div>
       )}

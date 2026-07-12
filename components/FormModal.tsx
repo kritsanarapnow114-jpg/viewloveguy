@@ -1,7 +1,6 @@
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
-import { CatEmpty } from "./icons/Cat";
 import { useCelebration } from "./CelebrationProvider";
 import { compressImageFile } from "@/lib/image";
 
@@ -86,9 +85,6 @@ export function FormModal({
           >
             ✕
           </button>
-          <div style={{ width: 58, height: 58, marginBottom: 8 }}>
-            <CatEmpty variant="sleepy" />
-          </div>
           <h3 className="mali" style={{ margin: 0, fontSize: 19, fontWeight: 600 }}>
             {title}
           </h3>

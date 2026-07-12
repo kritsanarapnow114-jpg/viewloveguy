@@ -1,7 +1,6 @@
 "use client";
 
 import { createContext, useCallback, useContext, useRef, useState } from "react";
-import { CatHero } from "./icons/Cat";
 
 type CelebrationContextValue = { celebrate: (msg: string) => void };
 const CelebrationContext = createContext<CelebrationContextValue | null>(null);
@@ -48,9 +47,6 @@ export function CelebrationProvider({ children }: { children: React.ReactNode })
               animation: "popIn .32s cubic-bezier(.34,1.56,.64,1)",
             }}
           >
-            <div className="cat-bob" style={{ width: 76, height: 76 }}>
-              <CatHero />
-            </div>
             <div className="mali" style={{ fontSize: 15.5, fontWeight: 600, color: "#40354f", textAlign: "center", maxWidth: 220 }}>
               {message}
             </div>

@@ -5,10 +5,8 @@ import { fmtBaht } from "@/lib/format";
 import { PageHeader, SearchBox, AddButton } from "./PageHeader";
 import { ExportControls } from "./ExportControls";
 import { FormModal, type ModalField } from "./FormModal";
-import { CatEmpty } from "./icons/Cat";
 import { useToast } from "./ToastProvider";
 import { createTransaction, deleteTransaction, type TxKind } from "@/app/actions/transactions";
-import { PageMascots } from "./PageMascots";
 
 export type LedgerRow = {
   id: string;
@@ -164,10 +162,7 @@ export function LedgerClient({
           ))}
         {filtered.length === 0 && (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: 40, color: "#b8a9d0", fontSize: 13.5 }}>
-            <div style={{ width: 60, height: 60 }}>
-              <CatEmpty variant="sleepy" />
-            </div>
-            ไม่พบรายการ{word}เลยเหมียว
+            ไม่พบรายการ{word}
           </div>
         )}
       </div>
@@ -182,8 +177,6 @@ export function LedgerClient({
           fields={fields}
         />
       )}
-
-      <PageMascots accessory={kind === "income" ? "heroGreen" : "heroPurple"} pose={kind === "income" ? "wave" : "sit"} />
     </div>
   );
 }

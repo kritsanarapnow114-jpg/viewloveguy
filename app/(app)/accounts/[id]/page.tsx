@@ -7,8 +7,6 @@ import { fmtBaht, thDate } from "@/lib/format";
 import { PageHeader } from "@/components/PageHeader";
 import { ExportControls } from "@/components/ExportControls";
 import { WalletsSection } from "@/components/WalletsSection";
-import { CatEmpty } from "@/components/icons/Cat";
-import { PageMascots } from "@/components/PageMascots";
 
 export default async function AccountDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -124,15 +122,10 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
         ))}
         {rows.length === 0 && (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: 40, color: "#b8a9d0", fontSize: 13.5 }}>
-            <div style={{ width: 60, height: 60 }}>
-              <CatEmpty variant="sleepy" />
-            </div>
-            ยังไม่มีรายการในบัญชีนี้เลยเหมียว
+            ยังไม่มีรายการในบัญชีนี้
           </div>
         )}
       </div>
-
-      <PageMascots accessory="heroBlack" pose="wave" />
     </div>
   );
 }

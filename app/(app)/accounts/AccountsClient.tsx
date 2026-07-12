@@ -4,15 +4,10 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { fmtBaht } from "@/lib/format";
 import { LOW_BALANCE_THRESHOLD } from "@/lib/constants";
-import { CatSitting, type CatAccessory } from "@/components/icons/Cat";
 import { PageHeader, AddButton } from "@/components/PageHeader";
 import { FormModal } from "@/components/FormModal";
 import { useToast } from "@/components/ToastProvider";
 import { createAccount, updateAccount, deleteAccount } from "@/app/actions/accounts";
-import { PageMascots } from "@/components/PageMascots";
-
-const ACCESSORIES: CatAccessory[] = ["heroRed", "heroBlue", "heroGreen", "heroPurple", "heroGold", "heroBlack"];
-const POSES: ("sit" | "stand" | "wave")[] = ["stand", "wave", "sit"];
 
 type AccountView = {
   id: string;
@@ -47,10 +42,8 @@ export function AccountsClient({ accounts, canEdit }: { accounts: AccountView[];
       </PageHeader>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(180px,1fr))", gap: 12, marginBottom: 18 }}>
-        {accounts.map((a, i) => {
+        {accounts.map((a) => {
           const low = a.balance < LOW_BALANCE_THRESHOLD;
-          const accessory = ACCESSORIES[i % ACCESSORIES.length];
-          const pose = POSES[i % POSES.length];
           return (
             <Link
               key={a.id}
@@ -135,9 +128,6 @@ export function AccountsClient({ accounts, canEdit }: { accounts: AccountView[];
               )}
               <div style={{ position: "relative" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ width: 34, height: 45, display: "block" }}>
-                    <CatSitting accessory={accessory} pose={pose} />
-                  </span>
                   <span style={{ fontSize: 10.5, color: "#9b8fb0", fontWeight: 500 }}>{a.type === "BANK" ? "บัญชีธนาคาร" : "เงินสด"}</span>
                 </div>
                 <div style={{ fontSize: 13.5, fontWeight: 600, marginTop: 11, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{a.name}</div>
@@ -224,8 +214,6 @@ export function AccountsClient({ accounts, canEdit }: { accounts: AccountView[];
           ]}
         />
       )}
-
-      <PageMascots accessory="heroBlue" pose="wave" />
     </div>
   );
 }

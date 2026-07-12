@@ -4,8 +4,6 @@ import { loanCalc } from "@/lib/loan";
 import { fmtBaht, thDate, monthKey, monthLabel, monthYearLabel } from "@/lib/format";
 import { LOW_BALANCE_THRESHOLD } from "@/lib/constants";
 import { PageHeader } from "@/components/PageHeader";
-import { CatEmpty, CatSitting } from "@/components/icons/Cat";
-import { DogChaseStrip } from "@/components/DogChaseStrip";
 
 export default async function DashboardPage() {
   const now = new Date();
@@ -140,10 +138,7 @@ export default async function DashboardPage() {
             ))}
             {alerts.length === 0 && (
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: "14px 2px", color: "#9b8fb0", fontSize: 13 }}>
-                <div style={{ width: 56, height: 56 }}>
-                  <CatEmpty variant="happy" />
-                </div>
-                ทุกอย่างเรียบร้อยดีเหมียว ✓
+                ทุกอย่างเรียบร้อยดี ✓
               </div>
             )}
           </div>
@@ -185,15 +180,6 @@ export default async function DashboardPage() {
             </div>
           );
         })}
-      </div>
-
-      <div style={{ marginTop: 18, display: "flex", alignItems: "flex-end", gap: 10 }}>
-        <span style={{ width: 46, height: 60, display: "block", flex: "0 0 auto" }}>
-          <CatSitting accessory="heroRed" pose="stand" />
-        </span>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <DogChaseStrip />
-        </div>
       </div>
     </div>
   );
