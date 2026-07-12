@@ -36,11 +36,13 @@ export async function deleteAccount(id: string): Promise<{ error?: string }> {
   const user = await getCurrentUser();
   if (!user || user.role !== "ADMIN") return { error: "ไม่มีสิทธิ์ทำรายการนี้" };
 
-  const [txCount, totalAccounts] = await Promise.all([
+  const [txCount, walletCount, totalAccounts] = await Promise.all([
     prisma.transaction.count({ where: { accountId: id } }),
+    prisma.wallet.count({ where: { accountId: id } }),
     prisma.account.count(),
   ]);
   if (txCount > 0) return { error: "ลบไม่ได้ — บัญชีนี้มีรายการอยู่" };
+  if (walletCount > 0) return { error: "ลบไม่ได้ — บัญชีนี้มีกระเป๋าย่อยอยู่ กรุณาลบกระเป๋าก่อน" };
   if (totalAccounts <= 1) return { error: "ต้องมีอย่างน้อย 1 บัญชี" };
 
   await prisma.account.delete({ where: { id } });

@@ -25,12 +25,14 @@ export function LedgerClient({
   rows,
   categories,
   accounts,
+  walletLabels,
   canEdit,
 }: {
   kind: TxKind;
   rows: LedgerRow[];
   categories: string[];
   accounts: { id: string; name: string }[];
+  walletLabels: string[];
   canEdit: boolean;
 }) {
   const [search, setSearch] = useState("");
@@ -63,6 +65,9 @@ export function LedgerClient({
     { kind: "input", name: "note", label: "รายละเอียด", placeholder: "เช่น ดอกเบี้ยรับ, ค่าเช่า" },
     { kind: "select", name: "category", label: "หมวดหมู่", options: categories, defaultValue: categories[0] },
     { kind: "select", name: "accountName", label: "บัญชี", options: accounts.map((a) => a.name), defaultValue: accounts[0]?.name },
+    ...(walletLabels.length
+      ? [{ kind: "select" as const, name: "walletLabel", label: "กระเป๋าย่อย (ถ้ามี)", options: ["— ไม่ระบุกระเป๋า —", ...walletLabels] }]
+      : []),
     { kind: "input", name: "amount", label: "จำนวนเงิน (บาท)", type: "number", placeholder: "0" },
   ];
 

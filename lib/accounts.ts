@@ -2,7 +2,7 @@ import { prisma } from "./prisma";
 
 export async function getAccountsWithBalance() {
   const accounts = await prisma.account.findMany({
-    include: { transactions: true },
+    include: { transactions: { include: { wallet: true } } },
     orderBy: { createdAt: "asc" },
   });
   return accounts.map((a) => {

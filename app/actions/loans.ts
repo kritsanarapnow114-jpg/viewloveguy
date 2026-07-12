@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
 import { loanCalc } from "@/lib/loan";
+import { walletLabel } from "@/lib/wallets";
 
 export type LoanFormState = { error?: string; success?: boolean };
 
@@ -17,6 +18,12 @@ function revalidateAll(accountIds: (string | null | undefined)[]) {
   for (const id of accountIds) {
     if (id) revalidatePath(`/accounts/${id}`);
   }
+}
+
+async function resolveWalletLabel(label: string) {
+  if (!label) return null;
+  const wallets = await prisma.wallet.findMany({ include: { account: true } });
+  return wallets.find((w) => walletLabel(w.account.name, w.name) === label) ?? null;
 }
 
 export async function createLoan(_prev: LoanFormState, formData: FormData): Promise<LoanFormState> {
@@ -34,9 +41,12 @@ export async function createLoan(_prev: LoanFormState, formData: FormData): Prom
   const borrowDateStr = String(formData.get("borrowDate") || "");
   const dueDate = String(formData.get("dueDate") || "");
   const transferImage = String(formData.get("transferImage") || "") || null;
+  const transferImage2 = String(formData.get("transferImage2") || "") || null;
   const outAccountName = String(formData.get("outAccountName") || "");
+  const outWalletLabel = String(formData.get("outWalletLabel") || "");
 
-  const outAccount = await prisma.account.findFirst({ where: { name: outAccountName } });
+  const outWallet = await resolveWalletLabel(outWalletLabel);
+  const outAccount = outWallet ? outWallet.account : await prisma.account.findFirst({ where: { name: outAccountName } });
   if (!outAccount) return { error: "กรุณาเลือกบัญชีที่โอนออก" };
 
   const borrowDate = borrowDateStr ? new Date(borrowDateStr) : new Date();
@@ -51,7 +61,9 @@ export async function createLoan(_prev: LoanFormState, formData: FormData): Prom
         borrowDate,
         dueDate: dueDate ? new Date(dueDate) : new Date(),
         transferImage,
+        transferImage2,
         outAccountId: outAccount.id,
+        outWalletId: outWallet?.id ?? null,
       },
     });
     const outTx = await tx.transaction.create({
@@ -62,6 +74,7 @@ export async function createLoan(_prev: LoanFormState, formData: FormData): Prom
         note: `ปล่อยกู้ - ${borrower}`,
         amount,
         accountId: outAccount.id,
+        walletId: outWallet?.id ?? null,
       },
     });
     await tx.loan.update({ where: { id: loan.id }, data: { outTransactionId: outTx.id } });
@@ -80,22 +93,26 @@ export async function payLoan(id: string, _prev: LoanFormState, formData: FormDa
 
   const repaymentImage = String(formData.get("repaymentImage") || "") || null;
   const inAccountName = String(formData.get("inAccountName") || "");
+  const inWalletLabel = String(formData.get("inWalletLabel") || "");
+  const paidDateStr = String(formData.get("paidDate") || "");
 
-  const inAccount = await prisma.account.findFirst({ where: { name: inAccountName } });
+  const inWallet = await resolveWalletLabel(inWalletLabel);
+  const inAccount = inWallet ? inWallet.account : await prisma.account.findFirst({ where: { name: inAccountName } });
   if (!inAccount) return { error: "กรุณาเลือกบัญชีที่รับเงินเข้า" };
 
   const { fee } = loanCalc(loan);
-  const now = new Date();
+  const paidDate = paidDateStr ? new Date(paidDateStr) : new Date();
 
   await prisma.$transaction(async (tx) => {
     const principalTx = await tx.transaction.create({
       data: {
         kind: "INCOME",
-        date: now,
+        date: paidDate,
         category: "รับชำระหนี้",
         note: `รับคืนเงินต้น - ${loan.borrower}`,
         amount: loan.amount,
         accountId: inAccount.id,
+        walletId: inWallet?.id ?? null,
       },
     });
     const txIds = [principalTx.id];
@@ -105,11 +122,12 @@ export async function payLoan(id: string, _prev: LoanFormState, formData: FormDa
       const interestTx = await tx.transaction.create({
         data: {
           kind: "INCOME",
-          date: now,
+          date: paidDate,
           category: "ดอกเบี้ยเงินกู้",
           note: fee > 0 ? `ดอกเบี้ยรับ (รวมค่าปรับล่าช้า) - ${loan.borrower}` : `ดอกเบี้ยรับ - ${loan.borrower}`,
           amount: interestPlusFee,
           accountId: inAccount.id,
+          walletId: inWallet?.id ?? null,
         },
       });
       txIds.push(interestTx.id);
@@ -117,7 +135,14 @@ export async function payLoan(id: string, _prev: LoanFormState, formData: FormDa
 
     await tx.loan.update({
       where: { id },
-      data: { paid: true, paidDate: now, repaymentImage, inAccountId: inAccount.id, inTransactionIds: txIds },
+      data: {
+        paid: true,
+        paidDate,
+        repaymentImage,
+        inAccountId: inAccount.id,
+        inWalletId: inWallet?.id ?? null,
+        inTransactionIds: txIds,
+      },
     });
   });
 

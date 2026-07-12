@@ -19,10 +19,14 @@ type LoanView = {
   dueDate: string;
   penalty: number;
   paid: boolean;
+  paidDate: string | null;
   transferImage: string | null;
+  transferImage2: string | null;
   repaymentImage: string | null;
   outAccountName: string | null;
+  outWalletName: string | null;
   inAccountName: string | null;
+  inWalletName: string | null;
 };
 
 const STATUS_STYLE: Record<LoanStatus, { label: string; bg: string; color: string; accent: string }> = {
@@ -32,7 +36,17 @@ const STATUS_STYLE: Record<LoanStatus, { label: string; bg: string; color: strin
   paid: { label: "ชำระแล้ว", bg: "#e3f2ec", color: "#3a8a6f", accent: "#4fa98a" },
 };
 
-export function LoansClient({ loans, accounts, canEdit }: { loans: LoanView[]; accounts: { id: string; name: string }[]; canEdit: boolean }) {
+export function LoansClient({
+  loans,
+  accounts,
+  walletLabels,
+  canEdit,
+}: {
+  loans: LoanView[];
+  accounts: { id: string; name: string }[];
+  walletLabels: string[];
+  canEdit: boolean;
+}) {
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [payingId, setPayingId] = useState<string | null>(null);
@@ -166,15 +180,29 @@ export function LoansClient({ loans, accounts, canEdit }: { loans: LoanView[]; a
 
               {(l.outAccountName || l.inAccountName) && (
                 <div style={{ fontSize: 11.5, color: "#9b8fb0", marginBottom: 12, lineHeight: 1.7 }}>
-                  {l.outAccountName && <div>🐾 โอนออกจาก: {l.outAccountName}</div>}
-                  {l.inAccountName && <div>🐾 รับเข้าบัญชี: {l.inAccountName}</div>}
+                  {l.outAccountName && (
+                    <div>
+                      🐾 โอนออกจาก: {l.outAccountName}
+                      {l.outWalletName && ` · ${l.outWalletName}`}
+                    </div>
+                  )}
+                  {l.inAccountName && (
+                    <div>
+                      🐾 รับเข้าบัญชี: {l.inAccountName}
+                      {l.inWalletName && ` · ${l.inWalletName}`}
+                      {l.paidDate && ` (${thDate(l.paidDate)})`}
+                    </div>
+                  )}
                 </div>
               )}
 
-              {(l.transferImage || l.repaymentImage) && (
+              {(l.transferImage || l.transferImage2 || l.repaymentImage) && (
                 <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
                   {l.transferImage && (
-                    <ProofThumb label="สลิปโอนเงิน" src={l.transferImage} onView={() => setViewImage(l.transferImage)} />
+                    <ProofThumb label="สลิปโอนเงิน 1" src={l.transferImage} onView={() => setViewImage(l.transferImage)} />
+                  )}
+                  {l.transferImage2 && (
+                    <ProofThumb label="สลิปโอนเงิน 2" src={l.transferImage2} onView={() => setViewImage(l.transferImage2)} />
                   )}
                   {l.repaymentImage && (
                     <ProofThumb label="สลิปรับคืน" src={l.repaymentImage} onView={() => setViewImage(l.repaymentImage)} />
@@ -219,7 +247,11 @@ export function LoansClient({ loans, accounts, canEdit }: { loans: LoanView[]; a
             { kind: "input", name: "dueDate", label: "กำหนดคืน", type: "date", defaultValue: inOneMonth.toISOString().slice(0, 10) },
             { kind: "input", name: "penalty", label: "ค่าปรับล่าช้า (บาท/วัน)", type: "number", placeholder: "0" },
             { kind: "select", name: "outAccountName", label: "โอนออกจากบัญชี", options: accounts.map((a) => a.name), defaultValue: accounts[0]?.name },
-            { kind: "image", name: "transferImage", label: "รูปหลักฐานการโอนเงิน (ถ้ามี)" },
+            ...(walletLabels.length
+              ? [{ kind: "select" as const, name: "outWalletLabel", label: "กระเป๋าย่อย (ถ้ามี)", options: ["— ไม่ระบุกระเป๋า —", ...walletLabels] }]
+              : []),
+            { kind: "image", name: "transferImage", label: "รูปหลักฐานการโอนเงิน 1 (ถ้ามี)" },
+            { kind: "image", name: "transferImage2", label: "รูปหลักฐานการโอนเงิน 2 (ถ้ามี)" },
           ]}
         />
       )}
@@ -232,7 +264,11 @@ export function LoansClient({ loans, accounts, canEdit }: { loans: LoanView[]; a
           onClose={() => setPayingId(null)}
           action={payLoan.bind(null, payingId)}
           fields={[
+            { kind: "input", name: "paidDate", label: "วันที่คืนเงิน", type: "date", defaultValue: today },
             { kind: "select", name: "inAccountName", label: "รับเงินเข้าบัญชี", options: accounts.map((a) => a.name), defaultValue: accounts[0]?.name },
+            ...(walletLabels.length
+              ? [{ kind: "select" as const, name: "inWalletLabel", label: "กระเป๋าย่อย (ถ้ามี)", options: ["— ไม่ระบุกระเป๋า —", ...walletLabels] }]
+              : []),
             { kind: "image", name: "repaymentImage", label: "รูปหลักฐานการรับคืน (ถ้ามี)" },
           ]}
         />

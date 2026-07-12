@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
+import { walletLabel } from "@/lib/wallets";
 
 export type TxFormState = { error?: string; success?: boolean };
 export type TxKind = "income" | "expense";
@@ -29,9 +30,21 @@ export async function createTransaction(kind: TxKind, _prev: TxFormState, formDa
   const category = String(formData.get("category") || "");
   const accountName = String(formData.get("accountName") || "");
   const dateStr = String(formData.get("date") || "");
+  const walletLabelValue = String(formData.get("walletLabel") || "");
+
   const account = await prisma.account.findFirst({ where: { name: accountName } });
   if (!account) return { error: "กรุณาเลือกบัญชี" };
-  const accountId = account.id;
+  let accountId = account.id;
+  let walletId: string | null = null;
+
+  if (walletLabelValue) {
+    const wallets = await prisma.wallet.findMany({ include: { account: true } });
+    const match = wallets.find((w) => walletLabel(w.account.name, w.name) === walletLabelValue);
+    if (match) {
+      accountId = match.accountId;
+      walletId = match.id;
+    }
+  }
 
   await prisma.transaction.create({
     data: {
@@ -41,6 +54,7 @@ export async function createTransaction(kind: TxKind, _prev: TxFormState, formDa
       note,
       amount,
       accountId,
+      walletId,
     },
   });
 

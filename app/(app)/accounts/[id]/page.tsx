@@ -1,15 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAccountWithBalance } from "@/lib/accounts";
+import { getWalletsWithBalance } from "@/lib/wallets";
 import { getCurrentUser } from "@/lib/session";
 import { fmtBaht, thDate } from "@/lib/format";
 import { PageHeader } from "@/components/PageHeader";
 import { ExportControls } from "@/components/ExportControls";
+import { WalletsSection } from "@/components/WalletsSection";
 import { CatEmpty } from "@/components/icons/Cat";
 
 export default async function AccountDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [account, user] = await Promise.all([getAccountWithBalance(id), getCurrentUser()]);
+  const [account, wallets, user] = await Promise.all([getAccountWithBalance(id), getWalletsWithBalance(id), getCurrentUser()]);
   if (!account) notFound();
 
   const rows = [...account.transactions]
@@ -19,6 +21,7 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
       dateText: thDate(r.date),
       note: r.note,
       category: r.category,
+      walletName: r.wallet?.name ?? null,
       isIncome: r.kind === "INCOME",
       amount: r.amount,
     }));
@@ -57,11 +60,13 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
         </div>
       </div>
 
+      <WalletsSection accountId={id} wallets={wallets.map((w) => ({ id: w.id, name: w.name, balance: w.balance }))} canEdit={canEdit} />
+
       <div style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, overflow: "hidden" }}>
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "110px 90px 1.4fr 1fr 140px",
+            gridTemplateColumns: "110px 90px 1.2fr 1fr 1fr 140px",
             gap: 12,
             padding: "14px 22px",
             background: "#faf6ff",
@@ -75,6 +80,7 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
           <div>ประเภท</div>
           <div>รายการ</div>
           <div>หมวดหมู่</div>
+          <div>กระเป๋า</div>
           <div style={{ textAlign: "right" }}>จำนวนเงิน</div>
         </div>
         {rows.map((r) => (
@@ -82,7 +88,7 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
             key={r.id}
             style={{
               display: "grid",
-              gridTemplateColumns: "110px 90px 1.4fr 1fr 140px",
+              gridTemplateColumns: "110px 90px 1.2fr 1fr 1fr 140px",
               gap: 12,
               padding: "14px 22px",
               borderBottom: "1px solid #f4eefb",
@@ -109,6 +115,7 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
             </div>
             <div style={{ fontWeight: 500 }}>{r.note}</div>
             <div style={{ color: "#7a6e90", fontSize: 12.5 }}>{r.category}</div>
+            <div style={{ color: "#7a6e90", fontSize: 12.5 }}>{r.walletName ?? "—"}</div>
             <div className="num" style={{ textAlign: "right", fontWeight: 600, color: r.isIncome ? "#4fa98a" : "#d0658a" }}>
               {(r.isIncome ? "+" : "−") + fmtBaht(r.amount).slice(1)}
             </div>

@@ -40,8 +40,21 @@ model Account {
   openingBalance Float         @default(0)
   createdAt      DateTime      @default(now())
   transactions   Transaction[]
+  wallets        Wallet[]
   loansOut       Loan[]        @relation("LoanOutAccount")
   loansIn        Loan[]        @relation("LoanInAccount")
+}
+
+model Wallet {
+  id             String        @id @default(cuid())
+  name           String
+  accountId      String
+  account        Account       @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  openingBalance Float         @default(0)
+  createdAt      DateTime      @default(now())
+  transactions   Transaction[]
+  loansOut       Loan[]        @relation("LoanOutWallet")
+  loansIn        Loan[]        @relation("LoanInWallet")
 }
 
 model Transaction {
@@ -53,6 +66,8 @@ model Transaction {
   amount    Float
   accountId String
   account   Account         @relation(fields: [accountId], references: [id])
+  walletId  String?
+  wallet    Wallet?         @relation(fields: [walletId], references: [id], onDelete: SetNull)
   createdAt DateTime        @default(now())
 }
 
@@ -67,12 +82,17 @@ model Loan {
   paid             Boolean   @default(false)
   paidDate         DateTime?
   transferImage    String?
+  transferImage2   String?
   repaymentImage   String?
   outAccountId     String?
   outAccount       Account?  @relation("LoanOutAccount", fields: [outAccountId], references: [id], onDelete: SetNull)
+  outWalletId      String?
+  outWallet        Wallet?   @relation("LoanOutWallet", fields: [outWalletId], references: [id], onDelete: SetNull)
   outTransactionId String?
   inAccountId      String?
   inAccount        Account?  @relation("LoanInAccount", fields: [inAccountId], references: [id], onDelete: SetNull)
+  inWalletId       String?
+  inWallet         Wallet?   @relation("LoanInWallet", fields: [inWalletId], references: [id], onDelete: SetNull)
   inTransactionIds String[]  @default([])
   createdAt        DateTime  @default(now())
 }
