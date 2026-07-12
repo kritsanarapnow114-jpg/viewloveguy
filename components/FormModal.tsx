@@ -122,6 +122,7 @@ export function FormModal({
                   type={f.type || "text"}
                   defaultValue={f.defaultValue}
                   placeholder={f.placeholder}
+                  step={f.type === "number" ? "any" : undefined}
                   style={{
                     width: "100%",
                     padding: "11px 12px",
