@@ -1,12 +1,14 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { CatEmpty } from "./icons/Cat";
 import { useToast } from "./ToastProvider";
+import { compressImageFile } from "@/lib/image";
 
 export type ModalField =
   | { kind: "input"; name: string; label: string; type?: string; placeholder?: string; defaultValue?: string }
-  | { kind: "select"; name: string; label: string; options: string[]; defaultValue?: string };
+  | { kind: "select"; name: string; label: string; options: string[]; defaultValue?: string }
+  | { kind: "image"; name: string; label: string; defaultValue?: string };
 
 type FormState = { error?: string; success?: boolean };
 
@@ -96,7 +98,9 @@ export function FormModal({
           {fields.map((f) => (
             <div key={f.name}>
               <label style={{ display: "block", fontSize: 13, fontWeight: 500, marginBottom: 6 }}>{f.label}</label>
-              {f.kind === "select" ? (
+              {f.kind === "image" ? (
+                <ImageField name={f.name} defaultValue={f.defaultValue} />
+              ) : f.kind === "select" ? (
                 <select
                   name={f.name}
                   defaultValue={f.defaultValue}
@@ -178,6 +182,61 @@ export function FormModal({
           </div>
         </form>
       </div>
+    </div>
+  );
+}
+
+function ImageField({ name, defaultValue }: { name: string; defaultValue?: string }) {
+  const [dataUrl, setDataUrl] = useState(defaultValue || "");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  const onPick = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setBusy(true);
+    setError("");
+    try {
+      const compressed = await compressImageFile(file);
+      setDataUrl(compressed);
+    } catch {
+      setError("บีบอัดรูปไม่สำเร็จ ลองใหม่อีกครั้ง");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div>
+      <input type="hidden" name={name} value={dataUrl} />
+      {dataUrl && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={dataUrl}
+          alt=""
+          style={{ width: "100%", maxHeight: 180, objectFit: "cover", borderRadius: 12, marginBottom: 8, display: "block" }}
+        />
+      )}
+      <label
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 8,
+          width: "100%",
+          padding: "10px 12px",
+          border: "1px dashed #c9b0ea",
+          borderRadius: 11,
+          fontSize: 13.5,
+          color: "#7c5cc4",
+          cursor: "pointer",
+          background: "#faf6ff",
+        }}
+      >
+        {busy ? "กำลังบีบอัดรูป…" : dataUrl ? "เปลี่ยนรูป" : "📷 แนบรูปถ่ายหน้าจอโอนเงิน"}
+        <input type="file" accept="image/*" onChange={onPick} style={{ display: "none" }} />
+      </label>
+      {error && <div style={{ color: "#d0658a", fontSize: 12, marginTop: 6 }}>{error}</div>}
     </div>
   );
 }

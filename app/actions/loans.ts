@@ -20,6 +20,7 @@ export async function createLoan(_prev: LoanFormState, formData: FormData): Prom
   const penalty = Number(formData.get("penalty") || 0);
   const borrowDate = String(formData.get("borrowDate") || "");
   const dueDate = String(formData.get("dueDate") || "");
+  const transferImage = String(formData.get("transferImage") || "") || null;
 
   await prisma.loan.create({
     data: {
@@ -29,6 +30,7 @@ export async function createLoan(_prev: LoanFormState, formData: FormData): Prom
       penalty: Number.isFinite(penalty) ? penalty : 0,
       borrowDate: borrowDate ? new Date(borrowDate) : new Date(),
       dueDate: dueDate ? new Date(dueDate) : new Date(),
+      transferImage,
     },
   });
 
@@ -37,12 +39,17 @@ export async function createLoan(_prev: LoanFormState, formData: FormData): Prom
   return { success: true };
 }
 
-export async function payLoan(id: string): Promise<{ error?: string }> {
+export async function payLoan(id: string, _prev: LoanFormState, formData: FormData): Promise<LoanFormState> {
   const user = await getCurrentUser();
   if (!user || user.role !== "ADMIN") return { error: "ไม่มีสิทธิ์ทำรายการนี้" };
 
-  await prisma.loan.update({ where: { id }, data: { paid: true, paidDate: new Date() } });
+  const repaymentImage = String(formData.get("repaymentImage") || "") || null;
+
+  await prisma.loan.update({
+    where: { id },
+    data: { paid: true, paidDate: new Date(), repaymentImage },
+  });
   revalidatePath("/loans");
   revalidatePath("/dashboard");
-  return {};
+  return { success: true };
 }

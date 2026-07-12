@@ -14,6 +14,8 @@ export default async function LoansPage() {
     dueDate: l.dueDate.toISOString(),
     penalty: l.penalty,
     paid: l.paid,
+    transferImage: l.transferImage,
+    repaymentImage: l.repaymentImage,
   }));
 
   return <LoansClient loans={view} canEdit={user?.role === "ADMIN"} />;

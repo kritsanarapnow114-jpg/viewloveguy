@@ -1,13 +1,12 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useMemo, useState } from "react";
 import { fmtBaht, thDate } from "@/lib/format";
 import { loanCalc, type LoanStatus } from "@/lib/loan";
 import { PageHeader, SearchBox, AddButton } from "@/components/PageHeader";
 import { ExportControls } from "@/components/ExportControls";
 import { FormModal } from "@/components/FormModal";
 import { CatFace } from "@/components/icons/Cat";
-import { useToast } from "@/components/ToastProvider";
 import { createLoan, payLoan } from "@/app/actions/loans";
 
 type LoanView = {
@@ -19,6 +18,8 @@ type LoanView = {
   dueDate: string;
   penalty: number;
   paid: boolean;
+  transferImage: string | null;
+  repaymentImage: string | null;
 };
 
 const STATUS_STYLE: Record<LoanStatus, { label: string; bg: string; color: string; accent: string }> = {
@@ -31,8 +32,8 @@ const STATUS_STYLE: Record<LoanStatus, { label: string; bg: string; color: strin
 export function LoansClient({ loans, canEdit }: { loans: LoanView[]; canEdit: boolean }) {
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
-  const [, startTransition] = useTransition();
-  const { showToast } = useToast();
+  const [payingId, setPayingId] = useState<string | null>(null);
+  const [viewImage, setViewImage] = useState<string | null>(null);
 
   const calcs = useMemo(() => loans.map((l) => ({ l, c: loanCalc({ ...l, dueDate: new Date(l.dueDate) }) })), [loans]);
   const outstanding = calcs.filter((x) => !x.l.paid).reduce((a, b) => a + b.l.amount, 0);
@@ -44,13 +45,6 @@ export function LoansClient({ loans, canEdit }: { loans: LoanView[]; canEdit: bo
   const filtered = calcs
     .filter((x) => !q || x.l.borrower.toLowerCase().includes(q))
     .sort((a, b) => Number(a.l.paid) - Number(b.l.paid) || new Date(a.l.dueDate).getTime() - new Date(b.l.dueDate).getTime());
-
-  const handlePay = (id: string) => {
-    startTransition(async () => {
-      const res = await payLoan(id);
-      showToast(res.error ?? "บันทึกการรับคืนเงินกู้แล้ว");
-    });
-  };
 
   const today = new Date().toISOString().slice(0, 10);
   const inOneMonth = new Date();
@@ -136,6 +130,17 @@ export function LoansClient({ loans, canEdit }: { loans: LoanView[]; canEdit: bo
                 </div>
               </div>
 
+              {(l.transferImage || l.repaymentImage) && (
+                <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+                  {l.transferImage && (
+                    <ProofThumb label="สลิปโอนเงิน" src={l.transferImage} onView={() => setViewImage(l.transferImage)} />
+                  )}
+                  {l.repaymentImage && (
+                    <ProofThumb label="สลิปรับคืน" src={l.repaymentImage} onView={() => setViewImage(l.repaymentImage)} />
+                  )}
+                </div>
+              )}
+
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 13, borderTop: "1px solid #f4eefb" }}>
                 <div>
                   <span style={{ fontSize: 11.5, color: "#9b8fb0" }}>รวมที่ต้องคืน </span>
@@ -145,7 +150,7 @@ export function LoansClient({ loans, canEdit }: { loans: LoanView[]; canEdit: bo
                 </div>
                 {canEdit && !l.paid && (
                   <button
-                    onClick={() => handlePay(l.id)}
+                    onClick={() => setPayingId(l.id)}
                     style={{ padding: "7px 14px", background: "#7c5cc4", color: "#fff", border: "none", borderRadius: 10, fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}
                   >
                     บันทึกรับคืน
@@ -172,9 +177,55 @@ export function LoansClient({ loans, canEdit }: { loans: LoanView[]; canEdit: bo
             { kind: "input", name: "interest", label: "ดอกเบี้ย (บาท)", type: "number", placeholder: "0" },
             { kind: "input", name: "dueDate", label: "กำหนดคืน", type: "date", defaultValue: inOneMonth.toISOString().slice(0, 10) },
             { kind: "input", name: "penalty", label: "ค่าปรับล่าช้า (บาท/วัน)", type: "number", placeholder: "0" },
+            { kind: "image", name: "transferImage", label: "รูปหลักฐานการโอนเงิน (ถ้ามี)" },
           ]}
         />
       )}
+
+      {payingId && (
+        <FormModal
+          title="บันทึกรับคืนเงินกู้"
+          submitLabel="บันทึกรับคืน"
+          successMessage="บันทึกการรับคืนเงินกู้แล้ว"
+          onClose={() => setPayingId(null)}
+          action={payLoan.bind(null, payingId)}
+          fields={[{ kind: "image", name: "repaymentImage", label: "รูปหลักฐานการรับคืน (ถ้ามี)" }]}
+        />
+      )}
+
+      {viewImage && (
+        <div
+          onClick={() => setViewImage(null)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(40,25,60,.7)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 24,
+            zIndex: 70,
+            cursor: "zoom-out",
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={viewImage} alt="" style={{ maxWidth: "100%", maxHeight: "100%", borderRadius: 16, boxShadow: "0 20px 60px rgba(0,0,0,.4)" }} />
+        </div>
+      )}
     </div>
+  );
+}
+
+function ProofThumb({ label, src, onView }: { label: string; src: string; onView: () => void }) {
+  return (
+    <button
+      onClick={onView}
+      title={label}
+      style={{ border: "1px solid #ece2f7", borderRadius: 10, padding: 3, background: "#faf6ff", cursor: "pointer", display: "flex", flexDirection: "column", gap: 3 }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt={label} style={{ width: 46, height: 46, objectFit: "cover", borderRadius: 7, display: "block" }} />
+      <span style={{ fontSize: 9.5, color: "#9b8fb0" }}>{label}</span>
+    </button>
   );
 }

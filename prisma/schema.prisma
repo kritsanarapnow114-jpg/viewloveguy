@@ -43,26 +43,28 @@ model Account {
 }
 
 model Transaction {
-  id        String           @id @default(cuid())
+  id        String          @id @default(cuid())
   kind      TransactionKind
   date      DateTime
   category  String
   note      String
   amount    Float
   accountId String
-  account   Account          @relation(fields: [accountId], references: [id])
-  createdAt DateTime         @default(now())
+  account   Account         @relation(fields: [accountId], references: [id])
+  createdAt DateTime        @default(now())
 }
 
 model Loan {
-  id         String    @id @default(cuid())
-  borrower   String
-  borrowDate DateTime
-  amount     Float
-  interest   Float
-  dueDate    DateTime
-  penalty    Float
-  paid       Boolean   @default(false)
-  paidDate   DateTime?
-  createdAt  DateTime  @default(now())
+  id             String    @id @default(cuid())
+  borrower       String
+  borrowDate     DateTime
+  amount         Float
+  interest       Float
+  dueDate        DateTime
+  penalty        Float
+  paid           Boolean   @default(false)
+  paidDate       DateTime?
+  transferImage  String?
+  repaymentImage String?
+  createdAt      DateTime  @default(now())
 }
