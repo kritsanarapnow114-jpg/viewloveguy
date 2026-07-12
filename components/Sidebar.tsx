@@ -6,12 +6,12 @@ import { logout } from "@/app/actions/auth";
 import { CatFace } from "./icons/Cat";
 
 const NAV_ITEMS = [
-  { key: "dashboard", href: "/dashboard", label: "ภาพรวม" },
-  { key: "accounts", href: "/accounts", label: "บัญชี & เงินสด" },
-  { key: "income", href: "/income", label: "รายการรับ" },
-  { key: "expense", href: "/expense", label: "รายการจ่าย" },
-  { key: "loans", href: "/loans", label: "ปล่อยเงินกู้" },
-  { key: "pnl", href: "/pnl", label: "กำไร - ขาดทุน" },
+  { key: "dashboard", href: "/dashboard", label: "ภาพรวม", badge: "📊" },
+  { key: "accounts", href: "/accounts", label: "บัญชี & เงินสด", badge: "💰" },
+  { key: "income", href: "/income", label: "รายการรับ", badge: "⬆️" },
+  { key: "expense", href: "/expense", label: "รายการจ่าย", badge: "⬇️" },
+  { key: "loans", href: "/loans", label: "ปล่อยเงินกู้", badge: "🤝" },
+  { key: "pnl", href: "/pnl", label: "กำไร - ขาดทุน", badge: "📈" },
 ];
 
 export function Sidebar({ userName, userRole }: { userName: string; userRole: string }) {
@@ -68,6 +68,7 @@ export function Sidebar({ userName, userRole }: { userName: string; userRole: st
           >
             <span
               style={{
+                position: "relative",
                 width: 28,
                 height: 28,
                 flex: "0 0 28px",
@@ -83,6 +84,24 @@ export function Sidebar({ userName, userRole }: { userName: string; userRole: st
                 faceColor={active ? "#f7efe0" : "#efe3ce"}
                 maskColor={active ? "#dcc8ad" : "#cdb69c"}
               />
+              <span
+                style={{
+                  position: "absolute",
+                  right: -3,
+                  bottom: -3,
+                  width: 13,
+                  height: 13,
+                  borderRadius: "50%",
+                  background: "#fff",
+                  display: "grid",
+                  placeItems: "center",
+                  fontSize: 8,
+                  lineHeight: 1,
+                  boxShadow: "0 1px 3px rgba(80,50,120,.35)",
+                }}
+              >
+                {item.badge}
+              </span>
             </span>
             {item.label}
           </Link>
@@ -91,8 +110,8 @@ export function Sidebar({ userName, userRole }: { userName: string; userRole: st
 
       <div className="side-foot" style={{ marginTop: "auto", paddingTop: 18, borderTop: "1px solid #f0e9f8" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 11, padding: 8 }}>
-          <span style={{ width: 38, height: 38, borderRadius: "50%", background: "#f0e9fb", display: "grid", placeItems: "center", padding: 5 }}>
-            <CatFace />
+          <span className="cat-wiggle" style={{ width: 38, height: 38, borderRadius: "50%", background: "#f0e9fb", display: "grid", placeItems: "center", padding: 5 }}>
+            <CatFace accessory="crown" />
           </span>
           <div style={{ minWidth: 0 }}>
             <div style={{ fontSize: 13.5, fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{userName}</div>

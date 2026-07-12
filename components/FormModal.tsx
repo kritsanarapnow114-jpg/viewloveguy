@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useState } from "react";
 import { CatEmpty } from "./icons/Cat";
-import { useToast } from "./ToastProvider";
+import { useCelebration } from "./CelebrationProvider";
 import { compressImageFile } from "@/lib/image";
 
 export type ModalField =
@@ -27,12 +27,12 @@ export function FormModal({
   successMessage?: string;
   submitLabel?: string;
 }) {
-  const { showToast } = useToast();
+  const { celebrate } = useCelebration();
   const [state, formAction, pending] = useActionState<FormState, FormData>(action, {});
 
   useEffect(() => {
     if (state.success) {
-      if (successMessage) showToast(successMessage);
+      if (successMessage) celebrate(successMessage);
       onClose();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

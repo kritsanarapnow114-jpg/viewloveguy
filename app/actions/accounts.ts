@@ -32,6 +32,37 @@ export async function createAccount(_prev: AccountFormState, formData: FormData)
   return { success: true };
 }
 
+export async function updateAccount(id: string, _prev: AccountFormState, formData: FormData): Promise<AccountFormState> {
+  const user = await getCurrentUser();
+  if (!user || user.role !== "ADMIN") return { error: "ไม่มีสิทธิ์ทำรายการนี้" };
+
+  const name = String(formData.get("name") || "").trim();
+  if (!name) return { error: "กรุณากรอกชื่อบัญชี" };
+
+  const acctType = String(formData.get("acctType") || "ธนาคาร");
+  const isBank = acctType === "ธนาคาร";
+  const number = String(formData.get("number") || "").trim();
+  const balance = Number(formData.get("balance") || 0);
+
+  await prisma.account.update({
+    where: { id },
+    data: {
+      name,
+      type: isBank ? "BANK" : "CASH",
+      number: number || (isBank ? "-" : "เงินสด"),
+      openingBalance: Number.isFinite(balance) ? balance : 0,
+    },
+  });
+
+  revalidatePath("/accounts");
+  revalidatePath(`/accounts/${id}`);
+  revalidatePath("/dashboard");
+  revalidatePath("/income");
+  revalidatePath("/expense");
+  revalidatePath("/pnl");
+  return { success: true };
+}
+
 export async function deleteAccount(id: string): Promise<{ error?: string }> {
   const user = await getCurrentUser();
   if (!user || user.role !== "ADMIN") return { error: "ไม่มีสิทธิ์ทำรายการนี้" };

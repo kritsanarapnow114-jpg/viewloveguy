@@ -91,6 +91,37 @@ select {
 .cat-bob {
   animation: bob 3.4s ease-in-out infinite;
 }
+@keyframes catWiggle {
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+  20% {
+    transform: rotate(-7deg) scale(1.03);
+  }
+  40% {
+    transform: rotate(5deg) scale(1);
+  }
+  60% {
+    transform: rotate(-4deg) scale(1.02);
+  }
+  80% {
+    transform: rotate(3deg) scale(1);
+  }
+}
+.cat-wiggle {
+  display: inline-block;
+  transform-origin: 50% 88%;
+  animation: catWiggle 2.6s ease-in-out infinite;
+}
+.cat-wiggle:nth-child(3n) {
+  animation-duration: 3.1s;
+  animation-delay: -0.6s;
+}
+.cat-wiggle:nth-child(3n + 1) {
+  animation-duration: 2.3s;
+  animation-delay: -1.4s;
+}
 
 @media (min-width: 900px) {
   .login-hero {
