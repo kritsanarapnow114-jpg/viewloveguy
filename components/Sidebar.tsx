@@ -3,15 +3,15 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { logout } from "@/app/actions/auth";
-import { CatSitting } from "./icons/Cat";
+import { CatSitting, type CatAccessory } from "./icons/Cat";
 
-const NAV_ITEMS = [
-  { key: "dashboard", href: "/dashboard", label: "ภาพรวม", badge: "📊" },
-  { key: "accounts", href: "/accounts", label: "บัญชี & เงินสด", badge: "💰" },
-  { key: "income", href: "/income", label: "รายการรับ", badge: "⬆️" },
-  { key: "expense", href: "/expense", label: "รายการจ่าย", badge: "⬇️" },
-  { key: "loans", href: "/loans", label: "ปล่อยเงินกู้", badge: "🤝" },
-  { key: "pnl", href: "/pnl", label: "กำไร - ขาดทุน", badge: "📈" },
+const NAV_ITEMS: { key: string; href: string; label: string; badge: string; accessory: CatAccessory; pose: "sit" | "stand" | "wave" }[] = [
+  { key: "dashboard", href: "/dashboard", label: "ภาพรวม", badge: "📊", accessory: "heroRed", pose: "stand" },
+  { key: "accounts", href: "/accounts", label: "บัญชี & เงินสด", badge: "💰", accessory: "heroBlue", pose: "sit" },
+  { key: "income", href: "/income", label: "รายการรับ", badge: "⬆️", accessory: "heroGreen", pose: "wave" },
+  { key: "expense", href: "/expense", label: "รายการจ่าย", badge: "⬇️", accessory: "heroPurple", pose: "sit" },
+  { key: "loans", href: "/loans", label: "ปล่อยเงินกู้", badge: "🤝", accessory: "heroGold", pose: "stand" },
+  { key: "pnl", href: "/pnl", label: "กำไร - ขาดทุน", badge: "📈", accessory: "heroBlack", pose: "wave" },
 ];
 
 export function Sidebar({ userName, userRole }: { userName: string; userRole: string }) {
@@ -35,8 +35,8 @@ export function Sidebar({ userName, userRole }: { userName: string; userRole: st
       }}
     >
       <div className="side-brand" style={{ display: "flex", alignItems: "center", gap: 10, padding: "4px 8px 20px" }}>
-        <span className="cat-wiggle" style={{ width: 32, height: 42, display: "block" }}>
-          <CatSitting accessory="bowtie" />
+        <span style={{ width: 32, height: 42, display: "block" }}>
+          <CatSitting accessory="heroGold" pose="stand" />
         </span>
         <span className="mali" style={{ fontWeight: 600, fontSize: 16 }}>
           กำไรและวิว
@@ -81,6 +81,8 @@ export function Sidebar({ userName, userRole }: { userName: string; userRole: st
                 faceColor={active ? "#f7efe0" : "#efe3ce"}
                 maskColor={active ? "#dcc8ad" : "#cdb69c"}
                 bodyColor={active ? "#f7efe0" : "#efe3ce"}
+                accessory={item.accessory}
+                pose={item.pose}
               />
               <span
                 style={{
@@ -108,8 +110,8 @@ export function Sidebar({ userName, userRole }: { userName: string; userRole: st
 
       <div className="side-foot" style={{ marginTop: "auto", paddingTop: 18, borderTop: "1px solid #f0e9f8" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 11, padding: 8 }}>
-          <span className="cat-wiggle" style={{ width: 30, height: 40, display: "block" }}>
-            <CatSitting accessory="crown" />
+          <span style={{ width: 30, height: 40, display: "block" }}>
+            <CatSitting accessory="heroBlack" pose="wave" />
           </span>
           <div style={{ minWidth: 0 }}>
             <div style={{ fontSize: 13.5, fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{userName}</div>

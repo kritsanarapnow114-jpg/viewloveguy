@@ -111,16 +111,6 @@ select {
 }
 .cat-wiggle {
   display: inline-block;
-  transform-origin: 50% 88%;
-  animation: catWiggle 2.6s ease-in-out infinite;
-}
-.cat-wiggle:nth-child(3n) {
-  animation-duration: 3.1s;
-  animation-delay: -0.6s;
-}
-.cat-wiggle:nth-child(3n + 1) {
-  animation-duration: 2.3s;
-  animation-delay: -1.4s;
 }
 
 @keyframes dogRun {

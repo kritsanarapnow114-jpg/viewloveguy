@@ -145,7 +145,7 @@ export function PnlClient({ income, expense, canEdit }: { income: TxView[]; expe
         </div>
       </div>
 
-      <PageMascots accessory="crown" />
+      <PageMascots accessory="heroRed" pose="stand" />
     </div>
   );
 }

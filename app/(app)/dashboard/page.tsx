@@ -188,8 +188,8 @@ export default async function DashboardPage() {
       </div>
 
       <div style={{ marginTop: 18, display: "flex", alignItems: "flex-end", gap: 10 }}>
-        <span className="cat-wiggle" style={{ width: 46, height: 60, display: "block", flex: "0 0 auto" }}>
-          <CatSitting accessory="crown" />
+        <span style={{ width: 46, height: 60, display: "block", flex: "0 0 auto" }}>
+          <CatSitting accessory="heroRed" pose="stand" />
         </span>
         <div style={{ flex: 1, minWidth: 0 }}>
           <DogChaseStrip />

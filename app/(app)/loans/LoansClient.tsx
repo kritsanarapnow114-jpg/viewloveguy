@@ -141,8 +141,8 @@ export function LoansClient({
               )}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-                  <span className="cat-wiggle" style={{ width: 38, height: 50, display: "block" }}>
-                    <CatSitting accessory="bowtie" />
+                  <span style={{ width: 38, height: 50, display: "block" }}>
+                    <CatSitting accessory="heroGold" pose="stand" />
                   </span>
                   <div>
                     <div style={{ fontSize: 15, fontWeight: 600 }}>{l.borrower}</div>
@@ -295,7 +295,7 @@ export function LoansClient({
         </div>
       )}
 
-      <PageMascots accessory="tophat" />
+      <PageMascots accessory="heroGold" pose="stand" />
     </div>
   );
 }

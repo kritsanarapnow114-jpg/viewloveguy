@@ -4,10 +4,13 @@ import { useState, useTransition } from "react";
 import { fmtBaht } from "@/lib/format";
 import { FormModal } from "./FormModal";
 import { useToast } from "./ToastProvider";
-import { CatSitting } from "./icons/Cat";
+import { CatSitting, type CatAccessory } from "./icons/Cat";
 import { createWallet, deleteWallet } from "@/app/actions/wallets";
 
 type WalletView = { id: string; name: string; balance: number };
+
+const WALLET_ACCESSORIES: CatAccessory[] = ["heroBlue", "heroGreen", "heroPurple", "heroGold", "heroBlack", "heroRed"];
+const WALLET_POSES: ("sit" | "stand" | "wave")[] = ["wave", "sit", "stand"];
 
 export function WalletsSection({ accountId, wallets, canEdit }: { accountId: string; wallets: WalletView[]; canEdit: boolean }) {
   const [modalOpen, setModalOpen] = useState(false);
@@ -43,7 +46,7 @@ export function WalletsSection({ accountId, wallets, canEdit }: { accountId: str
         <div style={{ fontSize: 13, color: "#b8a9d0" }}>ยังไม่มีกระเป๋าย่อยในบัญชีนี้</div>
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(180px,1fr))", gap: 12 }}>
-          {wallets.map((w) => (
+          {wallets.map((w, i) => (
             <div key={w.id} style={{ position: "relative", background: "#faf6ff", border: "1px solid #ece2f7", borderRadius: 13, padding: "14px 16px" }}>
               {canEdit && (
                 <button
@@ -67,8 +70,8 @@ export function WalletsSection({ accountId, wallets, canEdit }: { accountId: str
                   ✕
                 </button>
               )}
-              <span className="cat-wiggle" style={{ width: 28, height: 37, display: "block", marginBottom: 6 }}>
-                <CatSitting accessory="monocle" />
+              <span style={{ width: 28, height: 37, display: "block", marginBottom: 6 }}>
+                <CatSitting accessory={WALLET_ACCESSORIES[i % WALLET_ACCESSORIES.length]} pose={WALLET_POSES[i % WALLET_POSES.length]} />
               </span>
               <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>{w.name}</div>
               <div className="num" style={{ fontSize: 16, fontWeight: 600 }}>

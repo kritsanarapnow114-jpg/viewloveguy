@@ -132,7 +132,7 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
         )}
       </div>
 
-      <PageMascots accessory="bowtie" />
+      <PageMascots accessory="heroBlack" pose="wave" />
     </div>
   );
 }

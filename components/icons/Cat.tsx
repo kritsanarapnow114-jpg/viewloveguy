@@ -1,8 +1,44 @@
-export type CatAccessory = "none" | "crown" | "monocle" | "bowtie" | "sunglasses" | "tophat" | "necklace";
+export type CatAccessory =
+  | "none"
+  | "crown"
+  | "monocle"
+  | "bowtie"
+  | "sunglasses"
+  | "tophat"
+  | "necklace"
+  | "heroRed"
+  | "heroBlue"
+  | "heroGreen"
+  | "heroPurple"
+  | "heroGold"
+  | "heroBlack";
+
+const HERO_COLORS: Record<string, string> = {
+  heroRed: "#e0524a",
+  heroBlue: "#4a80e0",
+  heroGreen: "#4aa87a",
+  heroPurple: "#8a5fd0",
+  heroGold: "#d4a339",
+  heroBlack: "#3a3852",
+};
 
 function CatAccessoryOverlay({ accessory }: { accessory: CatAccessory }) {
+  const heroColor = HERO_COLORS[accessory];
   return (
     <>
+      {heroColor && (
+        <>
+          {/* domino mask — generic superhero look, not tied to any specific character */}
+          <path
+            d="M14.8 25.2 Q15.3 22.2 19.2 22 Q22.8 21.8 24 24.3 Q25.2 21.8 28.8 22 Q32.7 22.2 33.2 25.2 Q33.4 29.6 28.8 29.4 Q25 29.7 24 27.4 Q23 29.7 19.2 29.4 Q14.6 29.6 14.8 25.2 Z"
+            fill={heroColor}
+          />
+          <g fill={heroColor} stroke="#fff" strokeWidth="0.3">
+            <path d="M24 35 L25.2 38 L24 41 L22.8 38 Z" />
+            <path d="M21.2 38 L24 36.8 L26.8 38 L24 39.2 Z" />
+          </g>
+        </>
+      )}
       {accessory === "crown" && (
         <>
           <path d="M15.5 13 L15.5 7.5 L19.5 10.5 L24 4.5 L28.5 10.5 L32.5 7.5 L32.5 13 Z" fill="#eec358" stroke="#c98f2e" strokeWidth="0.5" />
@@ -93,6 +129,8 @@ export function CatFace({
   );
 }
 
+type CatPose = "sit" | "stand" | "wave";
+
 type CatSittingProps = {
   size?: number | string;
   earColor?: string;
@@ -100,9 +138,48 @@ type CatSittingProps = {
   maskColor?: string;
   bodyColor?: string;
   accessory?: CatAccessory;
+  pose?: CatPose;
 };
 
-/** Full-body 48x64 sitting Snowshoe cat — tail curled around white "snowshoe" paws. */
+function CatBody({ pose, bodyColor }: { pose: CatPose; bodyColor: string }) {
+  if (pose === "stand") {
+    return (
+      <>
+        <path d="M9 51 Q4 39 10 27 Q13 21 20 22" stroke={bodyColor} strokeWidth="6" fill="none" strokeLinecap="round" />
+        <ellipse cx="24" cy="42" rx="11.5" ry="17" fill={bodyColor} />
+        <ellipse cx="24" cy="46" rx="7" ry="11" fill="#fbf6ea" opacity="0.75" />
+        <ellipse cx="12" cy="49" rx="3" ry="6.5" fill={bodyColor} />
+        <ellipse cx="36" cy="49" rx="3" ry="6.5" fill={bodyColor} />
+        <ellipse cx="18.5" cy="61" rx="3.7" ry="3" fill="#fbf6ea" />
+        <ellipse cx="29.5" cy="61" rx="3.7" ry="3" fill="#fbf6ea" />
+      </>
+    );
+  }
+  if (pose === "wave") {
+    return (
+      <>
+        <path d="M35 50 Q47 47 45 31 Q44 22 35 23" stroke={bodyColor} strokeWidth="6.5" fill="none" strokeLinecap="round" />
+        <ellipse cx="24" cy="47" rx="13.5" ry="15" fill={bodyColor} />
+        <ellipse cx="24" cy="51" rx="8.5" ry="9.5" fill="#fbf6ea" opacity="0.75" />
+        <ellipse cx="17" cy="60.5" rx="4.3" ry="3.6" fill="#fbf6ea" />
+        <ellipse cx="31" cy="60.5" rx="4.3" ry="3.6" fill="#fbf6ea" />
+        <path d="M34 42 Q41 37 39 28" stroke={bodyColor} strokeWidth="5" fill="none" strokeLinecap="round" />
+        <ellipse cx="39" cy="26.5" rx="3.4" ry="3" fill="#fbf6ea" />
+      </>
+    );
+  }
+  return (
+    <>
+      <path d="M35 50 Q47 47 45 31 Q44 22 35 23" stroke={bodyColor} strokeWidth="6.5" fill="none" strokeLinecap="round" />
+      <ellipse cx="24" cy="47" rx="13.5" ry="15" fill={bodyColor} />
+      <ellipse cx="24" cy="51" rx="8.5" ry="9.5" fill="#fbf6ea" opacity="0.75" />
+      <ellipse cx="17" cy="60.5" rx="4.3" ry="3.6" fill="#fbf6ea" />
+      <ellipse cx="31" cy="60.5" rx="4.3" ry="3.6" fill="#fbf6ea" />
+    </>
+  );
+}
+
+/** Full-body 48x64 Snowshoe cat, with a few poses so it doesn't look identical on every page. */
 export function CatSitting({
   size = "100%",
   earColor = "#6b5545",
@@ -110,14 +187,11 @@ export function CatSitting({
   maskColor = "#cdb69c",
   bodyColor = "#efe3ce",
   accessory = "none",
+  pose = "sit",
 }: CatSittingProps) {
   return (
     <svg viewBox="0 0 48 64" width={size} height={size} style={{ display: "block" }}>
-      <path d="M35 50 Q47 47 45 31 Q44 22 35 23" stroke={bodyColor} strokeWidth="6.5" fill="none" strokeLinecap="round" />
-      <ellipse cx="24" cy="47" rx="13.5" ry="15" fill={bodyColor} />
-      <ellipse cx="24" cy="51" rx="8.5" ry="9.5" fill="#fbf6ea" opacity="0.75" />
-      <ellipse cx="17" cy="60.5" rx="4.3" ry="3.6" fill="#fbf6ea" />
-      <ellipse cx="31" cy="60.5" rx="4.3" ry="3.6" fill="#fbf6ea" />
+      <CatBody pose={pose} bodyColor={bodyColor} />
       <g>
         <path d="M11 15 L14 0 L23 10 Z" fill={earColor} />
         <path d="M37 15 L34 0 L25 10 Z" fill={earColor} />

@@ -183,7 +183,7 @@ export function LedgerClient({
         />
       )}
 
-      <PageMascots accessory={kind === "income" ? "monocle" : "sunglasses"} />
+      <PageMascots accessory={kind === "income" ? "heroGreen" : "heroPurple"} pose={kind === "income" ? "wave" : "sit"} />
     </div>
   );
 }
