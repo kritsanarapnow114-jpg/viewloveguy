@@ -48,7 +48,6 @@ export function AccountsClient({ accounts, canEdit }: { accounts: AccountView[];
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(180px,1fr))", gap: 12, marginBottom: 18 }}>
         {accounts.map((a, i) => {
-          const tint = a.type === "BANK" ? "#ece3fb" : "#e3f2ec";
           const low = a.balance < LOW_BALANCE_THRESHOLD;
           const accessory = ACCESSORIES[i % ACCESSORIES.length];
           const pose = POSES[i % POSES.length];
@@ -57,9 +56,9 @@ export function AccountsClient({ accounts, canEdit }: { accounts: AccountView[];
               key={a.id}
               href={`/accounts/${a.id}`}
               style={{
-                background: "#fff",
-                border: "1px solid #ece2f7",
-                borderRadius: 15,
+                background: "#fffdfa",
+                border: "1px solid #f3e9db",
+                borderRadius: 16,
                 padding: 15,
                 position: "relative",
                 overflow: "hidden",
@@ -68,7 +67,18 @@ export function AccountsClient({ accounts, canEdit }: { accounts: AccountView[];
                 color: "inherit",
               }}
             >
-              <div style={{ position: "absolute", right: -16, top: -16, width: 66, height: 66, borderRadius: "50%", background: tint, opacity: 0.6 }} />
+              <div
+                style={{
+                  position: "absolute",
+                  right: -22,
+                  bottom: -22,
+                  width: 108,
+                  height: 96,
+                  borderRadius: "48% 52% 40% 60% / 60% 45% 55% 40%",
+                  background: "linear-gradient(135deg,#ffe6c9,#ffd8b0)",
+                  opacity: 0.65,
+                }}
+              />
               {canEdit && (
                 <button
                   onClick={(e) => {

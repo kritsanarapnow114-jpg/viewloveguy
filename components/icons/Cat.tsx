@@ -11,7 +11,13 @@ export type CatAccessory =
   | "heroGreen"
   | "heroPurple"
   | "heroGold"
-  | "heroBlack";
+  | "heroBlack"
+  | "jobBoss"
+  | "jobBanker"
+  | "jobCashier"
+  | "jobChef"
+  | "jobRider"
+  | "jobAccountant";
 
 const HERO_COLORS: Record<string, string> = {
   heroRed: "#e0524a",
@@ -21,6 +27,18 @@ const HERO_COLORS: Record<string, string> = {
   heroGold: "#d4a339",
   heroBlack: "#3a3852",
 };
+
+/** Shared vest/collar silhouette that each profession outfit recolors and adds details to. */
+function VestBase({ color, stroke }: { color: string; stroke?: string }) {
+  return (
+    <path
+      d="M14.5 30 Q14.5 28 17 28.3 L20.5 33 L24 29.8 L27.5 33 L31 28.3 Q33.5 28 33.5 30 L33.5 42.5 L14.5 42.5 Z"
+      fill={color}
+      stroke={stroke}
+      strokeWidth={stroke ? 0.8 : 0}
+    />
+  );
+}
 
 function CatAccessoryOverlay({ accessory }: { accessory: CatAccessory }) {
   const heroColor = HERO_COLORS[accessory];
@@ -37,6 +55,55 @@ function CatAccessoryOverlay({ accessory }: { accessory: CatAccessory }) {
             <path d="M24 35 L25.2 38 L24 41 L22.8 38 Z" />
             <path d="M21.2 38 L24 36.8 L26.8 38 L24 39.2 Z" />
           </g>
+        </>
+      )}
+      {accessory === "jobBoss" && (
+        <>
+          <VestBase color="#33303f" />
+          <path d="M22 30 L24 33.2 L26 30 Z" fill="#fff" />
+          <path d="M22.6 31 L25.4 31 L24 40 Z" fill="#d4a339" />
+          <rect x="23.3" y="34" width="1.4" height="2.4" fill="#33303f" />
+        </>
+      )}
+      {accessory === "jobBanker" && (
+        <>
+          <VestBase color="#2d3a6b" />
+          <path d="M22 30 L24 33.2 L26 30 Z" fill="#fff" />
+          <path d="M22.6 31 L25.4 31 L24 39.5 Z" fill="#c94a4a" />
+        </>
+      )}
+      {accessory === "jobCashier" && (
+        <>
+          <VestBase color="#3fa79b" />
+          <rect x="20" y="35.5" width="8" height="5.5" rx="1.2" fill="#2f8f83" stroke="#2a7a70" strokeWidth="0.4" />
+        </>
+      )}
+      {accessory === "jobChef" && (
+        <>
+          <ellipse cx="24" cy="10.5" rx="7.5" ry="5.8" fill="#fff" stroke="#ddd2bd" strokeWidth="0.8" />
+          <rect x="17.5" y="13.5" width="13" height="3.4" rx="1.7" fill="#fff" stroke="#ddd2bd" strokeWidth="0.8" />
+          <VestBase color="#fdfbf6" stroke="#ddd2bd" />
+          <path d="M20 30.5 L24 32.5 L20 34.5 Z" fill="#c94a4a" />
+          <path d="M28 30.5 L24 32.5 L28 34.5 Z" fill="#c94a4a" />
+          <circle cx="24" cy="32.5" r="1.2" fill="#a83636" />
+        </>
+      )}
+      {accessory === "jobRider" && (
+        <>
+          <path d="M13 10 Q24 5.5 35 10 L35 13 Q24 9.5 13 13 Z" fill="#2b2a40" />
+          <ellipse cx="24" cy="9.3" rx="2.4" ry="1.2" fill="#ef8a30" />
+          <VestBase color="#ef8a30" />
+          <path d="M18 32 L23 42" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" />
+          <path d="M30 32 L25 42" stroke="#fff" strokeWidth="1.6" strokeLinecap="round" />
+        </>
+      )}
+      {accessory === "jobAccountant" && (
+        <>
+          <VestBase color="#7a3b4a" />
+          <path d="M28 34 L29.5 34 L29 39 Z" fill="#d4a339" />
+          <rect x="15.5" y="23.7" width="7" height="5" rx="1" fill="none" stroke="#3a3852" strokeWidth="1.2" />
+          <rect x="25.5" y="23.7" width="7" height="5" rx="1" fill="none" stroke="#3a3852" strokeWidth="1.2" />
+          <path d="M22.5 25.7 L25.5 25.7" stroke="#3a3852" strokeWidth="1.2" />
         </>
       )}
       {accessory === "crown" && (
@@ -95,12 +162,12 @@ type CatFaceProps = {
   accessory?: CatAccessory;
 };
 
-/** Small 48x48 Snowshoe cat face — used as brand icon, nav icons, avatar. */
+/** Small 48x48 cute orange-and-cream cat face — used as brand icon, nav icons, avatar. */
 export function CatFace({
   size = "100%",
-  earColor = "#6b5545",
-  faceColor = "#efe3ce",
-  maskColor = "#cdb69c",
+  earColor = "#ee9c55",
+  faceColor = "#fff3e2",
+  maskColor = "#fffaf2",
   mouthCurls = false,
   accessory = "none",
 }: CatFaceProps) {
@@ -112,11 +179,15 @@ export function CatFace({
       <path d="M34.5 17 L32.5 8.5 L28 14.5 Z" fill="#f4b2ce" />
       <ellipse cx="24" cy="27" rx="14" ry="12.5" fill={faceColor} />
       <ellipse cx="24" cy="30" rx="10.5" ry="8.5" fill={maskColor} />
-      <path d="M24 22 L26.5 27 L24.5 34.5 L21.5 27 Z" fill="#fbf6ea" />
-      <ellipse cx="19" cy="26" rx="2.3" ry="2.9" fill="#6fa8dc" />
-      <ellipse cx="29" cy="26" rx="2.3" ry="2.9" fill="#6fa8dc" />
+      <path d="M24 22 L26.5 27 L24.5 34.5 L21.5 27 Z" fill="#fffdf9" />
+      <circle cx="15.5" cy="29.5" r="2.4" fill="#ffb9c9" opacity="0.75" />
+      <circle cx="32.5" cy="29.5" r="2.4" fill="#ffb9c9" opacity="0.75" />
+      <ellipse cx="19" cy="26" rx="2.3" ry="2.9" fill="#7bc47f" />
+      <ellipse cx="29" cy="26" rx="2.3" ry="2.9" fill="#7bc47f" />
       <circle cx="19" cy="26.6" r="1" fill="#2b2a40" />
       <circle cx="29" cy="26.6" r="1" fill="#2b2a40" />
+      <circle cx="18.3" cy="25.3" r="0.55" fill="#fff" />
+      <circle cx="28.3" cy="25.3" r="0.55" fill="#fff" />
       <path d="M22 30.5 L26 30.5 L24 33 Z" fill="#f07fab" />
       {mouthCurls && (
         <>
@@ -179,13 +250,13 @@ function CatBody({ pose, bodyColor }: { pose: CatPose; bodyColor: string }) {
   );
 }
 
-/** Full-body 48x64 Snowshoe cat, with a few poses so it doesn't look identical on every page. */
+/** Full-body 48x64 cute orange-and-cream cat, with a few poses so it doesn't look identical on every page. */
 export function CatSitting({
   size = "100%",
-  earColor = "#6b5545",
-  faceColor = "#efe3ce",
-  maskColor = "#cdb69c",
-  bodyColor = "#efe3ce",
+  earColor = "#ee9c55",
+  faceColor = "#fff3e2",
+  maskColor = "#fffaf2",
+  bodyColor = "#fff3e2",
   accessory = "none",
   pose = "sit",
 }: CatSittingProps) {
@@ -199,11 +270,15 @@ export function CatSitting({
         <path d="M34.5 12 L32.5 3.5 L28 9.5 Z" fill="#f4b2ce" />
         <ellipse cx="24" cy="22" rx="14" ry="12.5" fill={faceColor} />
         <ellipse cx="24" cy="25" rx="10.5" ry="8.5" fill={maskColor} />
-        <path d="M24 17 L26.5 22 L24.5 29.5 L21.5 22 Z" fill="#fbf6ea" />
-        <ellipse cx="19" cy="21" rx="2.3" ry="2.9" fill="#6fa8dc" />
-        <ellipse cx="29" cy="21" rx="2.3" ry="2.9" fill="#6fa8dc" />
+        <path d="M24 17 L26.5 22 L24.5 29.5 L21.5 22 Z" fill="#fffdf9" />
+        <circle cx="15.5" cy="24.5" r="2.3" fill="#ffb9c9" opacity="0.75" />
+        <circle cx="32.5" cy="24.5" r="2.3" fill="#ffb9c9" opacity="0.75" />
+        <ellipse cx="19" cy="21" rx="2.3" ry="2.9" fill="#7bc47f" />
+        <ellipse cx="29" cy="21" rx="2.3" ry="2.9" fill="#7bc47f" />
         <circle cx="19" cy="21.6" r="1" fill="#2b2a40" />
         <circle cx="29" cy="21.6" r="1" fill="#2b2a40" />
+        <circle cx="18.3" cy="20.3" r="0.55" fill="#fff" />
+        <circle cx="28.3" cy="20.3" r="0.55" fill="#fff" />
         <path d="M22 25.5 L26 25.5 L24 28 Z" fill="#f07fab" />
       </g>
       <g transform="translate(0,-5)">
@@ -218,32 +293,32 @@ export function CatHero({ size = "100%" }: { size?: number | string }) {
   return (
     <svg viewBox="0 0 64 64" width={size} height={size} style={{ display: "block" }}>
       <ellipse cx="32" cy="59" rx="16" ry="3.5" fill="rgba(90,60,130,.18)" />
-      <path d="M14 27 L18 6 L31 20 Z" fill="#6b5545" />
-      <path d="M50 27 L46 6 L33 20 Z" fill="#6b5545" />
+      <path d="M14 27 L18 6 L31 20 Z" fill="#ee9c55" />
+      <path d="M50 27 L46 6 L33 20 Z" fill="#ee9c55" />
       <path d="M17.5 23 L20 10 L27 19 Z" fill="#f4b2ce" />
       <path d="M46.5 23 L44 10 L37 19 Z" fill="#f4b2ce" />
-      <ellipse cx="32" cy="37" rx="20" ry="17.5" fill="#efe3ce" />
-      <ellipse cx="32" cy="41" rx="14.5" ry="12" fill="#cdb69c" />
-      <path d="M32 29 L35.5 36 L32.5 46 L28.5 36 Z" fill="#fbf6ea" />
-      <circle cx="20" cy="43" r="3.2" fill="#e6a9c4" />
-      <circle cx="44" cy="43" r="3.2" fill="#e6a9c4" />
-      <ellipse cx="25" cy="35" rx="3" ry="4" fill="#6fa8dc" />
-      <ellipse cx="39" cy="35" rx="3" ry="4" fill="#6fa8dc" />
+      <ellipse cx="32" cy="37" rx="20" ry="17.5" fill="#fff3e2" />
+      <ellipse cx="32" cy="41" rx="14.5" ry="12" fill="#fffaf2" />
+      <path d="M32 29 L35.5 36 L32.5 46 L28.5 36 Z" fill="#fffdf9" />
+      <circle cx="20" cy="43" r="3.2" fill="#ffb9c9" opacity="0.75" />
+      <circle cx="44" cy="43" r="3.2" fill="#ffb9c9" opacity="0.75" />
+      <ellipse cx="25" cy="35" rx="3" ry="4" fill="#7bc47f" />
+      <ellipse cx="39" cy="35" rx="3" ry="4" fill="#7bc47f" />
       <circle cx="25" cy="36" r="1.4" fill="#2b2a40" />
       <circle cx="39" cy="36" r="1.4" fill="#2b2a40" />
       <circle cx="24" cy="34.2" r="0.7" fill="#fff" />
       <circle cx="38" cy="34.2" r="0.7" fill="#fff" />
       <path d="M29 41 L35 41 L32 44.5 Z" fill="#f07fab" />
-      <path d="M32 44.5 Q32 47.5 28.3 47.9" stroke="#a58c72" strokeWidth="1.3" fill="none" strokeLinecap="round" />
-      <path d="M32 44.5 Q32 47.5 35.7 47.9" stroke="#a58c72" strokeWidth="1.3" fill="none" strokeLinecap="round" />
-      <g stroke="#efe3ce" strokeWidth="1.2" strokeLinecap="round" opacity=".9">
+      <path d="M32 44.5 Q32 47.5 28.3 47.9" stroke="#c89464" strokeWidth="1.3" fill="none" strokeLinecap="round" />
+      <path d="M32 44.5 Q32 47.5 35.7 47.9" stroke="#c89464" strokeWidth="1.3" fill="none" strokeLinecap="round" />
+      <g stroke="#fff3e2" strokeWidth="1.2" strokeLinecap="round" opacity=".9">
         <path d="M11 37 L19 38" />
         <path d="M11 41 L19 40.5" />
         <path d="M53 37 L45 38" />
         <path d="M53 41 L45 40.5" />
       </g>
-      <ellipse cx="21" cy="53.5" rx="4.2" ry="3" fill="#fbf6ea" />
-      <ellipse cx="43" cy="53.5" rx="4.2" ry="3" fill="#fbf6ea" />
+      <ellipse cx="21" cy="53.5" rx="4.2" ry="3" fill="#fffdf9" />
+      <ellipse cx="43" cy="53.5" rx="4.2" ry="3" fill="#fffdf9" />
     </svg>
   );
 }
@@ -257,23 +332,23 @@ export function CatEmpty({ size = "100%", variant = "happy" }: { size?: number |
   const showOpenEyes = variant === "sleepy" || variant === "blush";
   return (
     <svg viewBox="0 0 64 64" width={size} height={size} style={{ display: "block" }}>
-      <path d="M14 27 L18 6 L31 20 Z" fill="#6b5545" />
-      <path d="M50 27 L46 6 L33 20 Z" fill="#6b5545" />
+      <path d="M14 27 L18 6 L31 20 Z" fill="#ee9c55" />
+      <path d="M50 27 L46 6 L33 20 Z" fill="#ee9c55" />
       <path d="M17.5 23 L20 10 L27 19 Z" fill="#f4b2ce" />
       <path d="M46.5 23 L44 10 L37 19 Z" fill="#f4b2ce" />
-      <ellipse cx="32" cy="37" rx="20" ry="17.5" fill="#efe3ce" />
-      <ellipse cx="32" cy="41" rx="14.5" ry="12" fill="#cdb69c" />
-      <path d="M32 29 L35.5 36 L32.5 46 L28.5 36 Z" fill="#fbf6ea" />
+      <ellipse cx="32" cy="37" rx="20" ry="17.5" fill="#fff3e2" />
+      <ellipse cx="32" cy="41" rx="14.5" ry="12" fill="#fffaf2" />
+      <path d="M32 29 L35.5 36 L32.5 46 L28.5 36 Z" fill="#fffdf9" />
       {showCheeks && (
         <>
-          <circle cx="20" cy="43" r="3.2" fill="#e6a9c4" />
-          <circle cx="44" cy="43" r="3.2" fill="#e6a9c4" />
+          <circle cx="20" cy="43" r="3.2" fill="#ffb9c9" opacity="0.75" />
+          <circle cx="44" cy="43" r="3.2" fill="#ffb9c9" opacity="0.75" />
         </>
       )}
       {showOpenEyes && (
         <>
-          <ellipse cx="25" cy="35" rx="3" ry="4" fill="#6fa8dc" />
-          <ellipse cx="39" cy="35" rx="3" ry="4" fill="#6fa8dc" />
+          <ellipse cx="25" cy="35" rx="3" ry="4" fill="#7bc47f" />
+          <ellipse cx="39" cy="35" rx="3" ry="4" fill="#7bc47f" />
           <circle cx="25" cy="36" r="1.4" fill="#2b2a40" />
           <circle cx="39" cy="36" r="1.4" fill="#2b2a40" />
         </>
