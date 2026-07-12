@@ -4,7 +4,8 @@ import { loanCalc } from "@/lib/loan";
 import { fmtBaht, thDate, monthKey, monthLabel, monthYearLabel } from "@/lib/format";
 import { LOW_BALANCE_THRESHOLD } from "@/lib/constants";
 import { PageHeader } from "@/components/PageHeader";
-import { CatEmpty } from "@/components/icons/Cat";
+import { CatEmpty, CatSitting } from "@/components/icons/Cat";
+import { DogChaseStrip } from "@/components/DogChaseStrip";
 
 export default async function DashboardPage() {
   const now = new Date();
@@ -184,6 +185,15 @@ export default async function DashboardPage() {
             </div>
           );
         })}
+      </div>
+
+      <div style={{ marginTop: 18, display: "flex", alignItems: "flex-end", gap: 10 }}>
+        <span className="cat-wiggle" style={{ width: 46, height: 60, display: "block", flex: "0 0 auto" }}>
+          <CatSitting accessory="crown" />
+        </span>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <DogChaseStrip />
+        </div>
       </div>
     </div>
   );

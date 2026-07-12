@@ -4,11 +4,12 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { fmtBaht } from "@/lib/format";
 import { LOW_BALANCE_THRESHOLD } from "@/lib/constants";
-import { CatFace, type CatAccessory } from "@/components/icons/Cat";
+import { CatSitting, type CatAccessory } from "@/components/icons/Cat";
 import { PageHeader, AddButton } from "@/components/PageHeader";
 import { FormModal } from "@/components/FormModal";
 import { useToast } from "@/components/ToastProvider";
 import { createAccount, updateAccount, deleteAccount } from "@/app/actions/accounts";
+import { PageMascots } from "@/components/PageMascots";
 
 const ACCESSORIES: CatAccessory[] = ["crown", "monocle", "bowtie", "sunglasses", "tophat", "necklace"];
 
@@ -122,8 +123,8 @@ export function AccountsClient({ accounts, canEdit }: { accounts: AccountView[];
               )}
               <div style={{ position: "relative" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span className="cat-wiggle" style={{ width: 40, height: 40, display: "block" }}>
-                    <CatFace accessory={accessory} />
+                  <span className="cat-wiggle" style={{ width: 34, height: 45, display: "block" }}>
+                    <CatSitting accessory={accessory} />
                   </span>
                   <span style={{ fontSize: 10.5, color: "#9b8fb0", fontWeight: 500 }}>{a.type === "BANK" ? "บัญชีธนาคาร" : "เงินสด"}</span>
                 </div>
@@ -211,6 +212,8 @@ export function AccountsClient({ accounts, canEdit }: { accounts: AccountView[];
           ]}
         />
       )}
+
+      <PageMascots accessory="necklace" />
     </div>
   );
 }

@@ -1,43 +1,8 @@
 export type CatAccessory = "none" | "crown" | "monocle" | "bowtie" | "sunglasses" | "tophat" | "necklace";
 
-type CatFaceProps = {
-  size?: number | string;
-  earColor?: string;
-  faceColor?: string;
-  maskColor?: string;
-  mouthCurls?: boolean;
-  accessory?: CatAccessory;
-};
-
-/** Small 48x48 Snowshoe cat face — used as brand icon, nav icons, avatar. */
-export function CatFace({
-  size = "100%",
-  earColor = "#6b5545",
-  faceColor = "#efe3ce",
-  maskColor = "#cdb69c",
-  mouthCurls = false,
-  accessory = "none",
-}: CatFaceProps) {
+function CatAccessoryOverlay({ accessory }: { accessory: CatAccessory }) {
   return (
-    <svg viewBox="0 0 48 48" width={size} height={size} style={{ display: "block" }}>
-      <path d="M11 20 L14 5 L23 15 Z" fill={earColor} />
-      <path d="M37 20 L34 5 L25 15 Z" fill={earColor} />
-      <path d="M13.5 17 L15.5 8.5 L20 14.5 Z" fill="#f4b2ce" />
-      <path d="M34.5 17 L32.5 8.5 L28 14.5 Z" fill="#f4b2ce" />
-      <ellipse cx="24" cy="27" rx="14" ry="12.5" fill={faceColor} />
-      <ellipse cx="24" cy="30" rx="10.5" ry="8.5" fill={maskColor} />
-      <path d="M24 22 L26.5 27 L24.5 34.5 L21.5 27 Z" fill="#fbf6ea" />
-      <ellipse cx="19" cy="26" rx="2.3" ry="2.9" fill="#6fa8dc" />
-      <ellipse cx="29" cy="26" rx="2.3" ry="2.9" fill="#6fa8dc" />
-      <circle cx="19" cy="26.6" r="1" fill="#2b2a40" />
-      <circle cx="29" cy="26.6" r="1" fill="#2b2a40" />
-      <path d="M22 30.5 L26 30.5 L24 33 Z" fill="#f07fab" />
-      {mouthCurls && (
-        <>
-          <path d="M24 33 Q24 35 21.9 35.2" stroke="#a58c72" strokeWidth="1" fill="none" strokeLinecap="round" />
-          <path d="M24 33 Q24 35 26.1 35.2" stroke="#a58c72" strokeWidth="1" fill="none" strokeLinecap="round" />
-        </>
-      )}
+    <>
       {accessory === "crown" && (
         <>
           <path d="M15.5 13 L15.5 7.5 L19.5 10.5 L24 4.5 L28.5 10.5 L32.5 7.5 L32.5 13 Z" fill="#eec358" stroke="#c98f2e" strokeWidth="0.5" />
@@ -81,6 +46,95 @@ export function CatFace({
           <circle cx="24" cy="39.8" r="1.6" fill="#e0577a" stroke="#c98f2e" strokeWidth="0.4" />
         </>
       )}
+    </>
+  );
+}
+
+type CatFaceProps = {
+  size?: number | string;
+  earColor?: string;
+  faceColor?: string;
+  maskColor?: string;
+  mouthCurls?: boolean;
+  accessory?: CatAccessory;
+};
+
+/** Small 48x48 Snowshoe cat face — used as brand icon, nav icons, avatar. */
+export function CatFace({
+  size = "100%",
+  earColor = "#6b5545",
+  faceColor = "#efe3ce",
+  maskColor = "#cdb69c",
+  mouthCurls = false,
+  accessory = "none",
+}: CatFaceProps) {
+  return (
+    <svg viewBox="0 0 48 48" width={size} height={size} style={{ display: "block" }}>
+      <path d="M11 20 L14 5 L23 15 Z" fill={earColor} />
+      <path d="M37 20 L34 5 L25 15 Z" fill={earColor} />
+      <path d="M13.5 17 L15.5 8.5 L20 14.5 Z" fill="#f4b2ce" />
+      <path d="M34.5 17 L32.5 8.5 L28 14.5 Z" fill="#f4b2ce" />
+      <ellipse cx="24" cy="27" rx="14" ry="12.5" fill={faceColor} />
+      <ellipse cx="24" cy="30" rx="10.5" ry="8.5" fill={maskColor} />
+      <path d="M24 22 L26.5 27 L24.5 34.5 L21.5 27 Z" fill="#fbf6ea" />
+      <ellipse cx="19" cy="26" rx="2.3" ry="2.9" fill="#6fa8dc" />
+      <ellipse cx="29" cy="26" rx="2.3" ry="2.9" fill="#6fa8dc" />
+      <circle cx="19" cy="26.6" r="1" fill="#2b2a40" />
+      <circle cx="29" cy="26.6" r="1" fill="#2b2a40" />
+      <path d="M22 30.5 L26 30.5 L24 33 Z" fill="#f07fab" />
+      {mouthCurls && (
+        <>
+          <path d="M24 33 Q24 35 21.9 35.2" stroke="#a58c72" strokeWidth="1" fill="none" strokeLinecap="round" />
+          <path d="M24 33 Q24 35 26.1 35.2" stroke="#a58c72" strokeWidth="1" fill="none" strokeLinecap="round" />
+        </>
+      )}
+      <CatAccessoryOverlay accessory={accessory} />
+    </svg>
+  );
+}
+
+type CatSittingProps = {
+  size?: number | string;
+  earColor?: string;
+  faceColor?: string;
+  maskColor?: string;
+  bodyColor?: string;
+  accessory?: CatAccessory;
+};
+
+/** Full-body 48x64 sitting Snowshoe cat — tail curled around white "snowshoe" paws. */
+export function CatSitting({
+  size = "100%",
+  earColor = "#6b5545",
+  faceColor = "#efe3ce",
+  maskColor = "#cdb69c",
+  bodyColor = "#efe3ce",
+  accessory = "none",
+}: CatSittingProps) {
+  return (
+    <svg viewBox="0 0 48 64" width={size} height={size} style={{ display: "block" }}>
+      <path d="M35 50 Q47 47 45 31 Q44 22 35 23" stroke={bodyColor} strokeWidth="6.5" fill="none" strokeLinecap="round" />
+      <ellipse cx="24" cy="47" rx="13.5" ry="15" fill={bodyColor} />
+      <ellipse cx="24" cy="51" rx="8.5" ry="9.5" fill="#fbf6ea" opacity="0.75" />
+      <ellipse cx="17" cy="60.5" rx="4.3" ry="3.6" fill="#fbf6ea" />
+      <ellipse cx="31" cy="60.5" rx="4.3" ry="3.6" fill="#fbf6ea" />
+      <g>
+        <path d="M11 15 L14 0 L23 10 Z" fill={earColor} />
+        <path d="M37 15 L34 0 L25 10 Z" fill={earColor} />
+        <path d="M13.5 12 L15.5 3.5 L20 9.5 Z" fill="#f4b2ce" />
+        <path d="M34.5 12 L32.5 3.5 L28 9.5 Z" fill="#f4b2ce" />
+        <ellipse cx="24" cy="22" rx="14" ry="12.5" fill={faceColor} />
+        <ellipse cx="24" cy="25" rx="10.5" ry="8.5" fill={maskColor} />
+        <path d="M24 17 L26.5 22 L24.5 29.5 L21.5 22 Z" fill="#fbf6ea" />
+        <ellipse cx="19" cy="21" rx="2.3" ry="2.9" fill="#6fa8dc" />
+        <ellipse cx="29" cy="21" rx="2.3" ry="2.9" fill="#6fa8dc" />
+        <circle cx="19" cy="21.6" r="1" fill="#2b2a40" />
+        <circle cx="29" cy="21.6" r="1" fill="#2b2a40" />
+        <path d="M22 25.5 L26 25.5 L24 28 Z" fill="#f07fab" />
+      </g>
+      <g transform="translate(0,-5)">
+        <CatAccessoryOverlay accessory={accessory} />
+      </g>
     </svg>
   );
 }

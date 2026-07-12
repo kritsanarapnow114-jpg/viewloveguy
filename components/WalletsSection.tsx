@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { fmtBaht } from "@/lib/format";
 import { FormModal } from "./FormModal";
 import { useToast } from "./ToastProvider";
-import { CatFace } from "./icons/Cat";
+import { CatSitting } from "./icons/Cat";
 import { createWallet, deleteWallet } from "@/app/actions/wallets";
 
 type WalletView = { id: string; name: string; balance: number };
@@ -67,8 +67,8 @@ export function WalletsSection({ accountId, wallets, canEdit }: { accountId: str
                   ✕
                 </button>
               )}
-              <span className="cat-wiggle" style={{ width: 34, height: 34, display: "block", marginBottom: 6 }}>
-                <CatFace accessory="monocle" />
+              <span className="cat-wiggle" style={{ width: 28, height: 37, display: "block", marginBottom: 6 }}>
+                <CatSitting accessory="monocle" />
               </span>
               <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>{w.name}</div>
               <div className="num" style={{ fontSize: 16, fontWeight: 600 }}>

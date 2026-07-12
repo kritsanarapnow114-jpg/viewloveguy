@@ -8,6 +8,7 @@ import { FormModal, type ModalField } from "./FormModal";
 import { CatEmpty } from "./icons/Cat";
 import { useToast } from "./ToastProvider";
 import { createTransaction, deleteTransaction, type TxKind } from "@/app/actions/transactions";
+import { PageMascots } from "./PageMascots";
 
 export type LedgerRow = {
   id: string;
@@ -181,6 +182,8 @@ export function LedgerClient({
           fields={fields}
         />
       )}
+
+      <PageMascots accessory={kind === "income" ? "monocle" : "sunglasses"} />
     </div>
   );
 }

@@ -123,6 +123,42 @@ select {
   animation-delay: -1.4s;
 }
 
+@keyframes dogRun {
+  0% {
+    transform: translateX(-18%) translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(18%) translateY(-7px) rotate(-4deg);
+  }
+  50% {
+    transform: translateX(54%) translateY(0) rotate(0deg);
+  }
+  75% {
+    transform: translateX(86%) translateY(-7px) rotate(4deg);
+  }
+  100% {
+    transform: translateX(118%) translateY(0) rotate(0deg);
+  }
+}
+.dog-run {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  animation: dogRun 5.5s linear infinite;
+}
+@keyframes dogChew {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-2px) rotate(-1.5deg);
+  }
+}
+.dog-chew {
+  animation: dogChew 1.3s ease-in-out infinite;
+}
+
 @media (min-width: 900px) {
   .login-hero {
     display: flex !important;

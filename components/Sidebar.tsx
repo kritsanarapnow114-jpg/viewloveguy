@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { logout } from "@/app/actions/auth";
-import { CatFace } from "./icons/Cat";
+import { CatSitting } from "./icons/Cat";
 
 const NAV_ITEMS = [
   { key: "dashboard", href: "/dashboard", label: "ภาพรวม", badge: "📊" },
@@ -35,8 +35,8 @@ export function Sidebar({ userName, userRole }: { userName: string; userRole: st
       }}
     >
       <div className="side-brand" style={{ display: "flex", alignItems: "center", gap: 10, padding: "4px 8px 20px" }}>
-        <span style={{ width: 36, height: 36, borderRadius: 11, background: "#7c5cc4", display: "grid", placeItems: "center", padding: 5 }}>
-          <CatFace />
+        <span className="cat-wiggle" style={{ width: 32, height: 42, display: "block" }}>
+          <CatSitting accessory="bowtie" />
         </span>
         <span className="mali" style={{ fontWeight: 600, fontSize: 16 }}>
           กำไรและวิว
@@ -53,10 +53,10 @@ export function Sidebar({ userName, userRole }: { userName: string; userRole: st
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 11,
+              gap: 10,
               width: "100%",
               textAlign: "left",
-              padding: "10px 12px",
+              padding: "8px 12px",
               border: "none",
               borderRadius: 12,
               cursor: "pointer",
@@ -69,26 +69,24 @@ export function Sidebar({ userName, userRole }: { userName: string; userRole: st
             <span
               style={{
                 position: "relative",
-                width: 28,
-                height: 28,
-                flex: "0 0 28px",
-                borderRadius: 9,
-                background: active ? "rgba(255,255,255,.22)" : "#f0e9fb",
+                width: 24,
+                height: 32,
+                flex: "0 0 24px",
                 display: "grid",
                 placeItems: "center",
-                padding: 3,
               }}
             >
-              <CatFace
+              <CatSitting
                 earColor={active ? "#8a6a4e" : "#6b5545"}
                 faceColor={active ? "#f7efe0" : "#efe3ce"}
                 maskColor={active ? "#dcc8ad" : "#cdb69c"}
+                bodyColor={active ? "#f7efe0" : "#efe3ce"}
               />
               <span
                 style={{
                   position: "absolute",
-                  right: -3,
-                  bottom: -3,
+                  right: -4,
+                  bottom: 2,
                   width: 13,
                   height: 13,
                   borderRadius: "50%",
@@ -110,8 +108,8 @@ export function Sidebar({ userName, userRole }: { userName: string; userRole: st
 
       <div className="side-foot" style={{ marginTop: "auto", paddingTop: 18, borderTop: "1px solid #f0e9f8" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 11, padding: 8 }}>
-          <span className="cat-wiggle" style={{ width: 38, height: 38, borderRadius: "50%", background: "#f0e9fb", display: "grid", placeItems: "center", padding: 5 }}>
-            <CatFace accessory="crown" />
+          <span className="cat-wiggle" style={{ width: 30, height: 40, display: "block" }}>
+            <CatSitting accessory="crown" />
           </span>
           <div style={{ minWidth: 0 }}>
             <div style={{ fontSize: 13.5, fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{userName}</div>

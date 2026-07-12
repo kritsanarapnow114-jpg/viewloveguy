@@ -6,9 +6,10 @@ import { loanCalc, type LoanStatus } from "@/lib/loan";
 import { PageHeader, SearchBox, AddButton } from "@/components/PageHeader";
 import { ExportControls } from "@/components/ExportControls";
 import { FormModal } from "@/components/FormModal";
-import { CatFace } from "@/components/icons/Cat";
+import { CatSitting } from "@/components/icons/Cat";
 import { useToast } from "@/components/ToastProvider";
 import { createLoan, payLoan, deleteLoan } from "@/app/actions/loans";
+import { PageMascots } from "@/components/PageMascots";
 
 type LoanView = {
   id: string;
@@ -140,8 +141,8 @@ export function LoansClient({
               )}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-                  <span className="cat-wiggle" style={{ width: 46, height: 46, display: "block" }}>
-                    <CatFace accessory="bowtie" />
+                  <span className="cat-wiggle" style={{ width: 38, height: 50, display: "block" }}>
+                    <CatSitting accessory="bowtie" />
                   </span>
                   <div>
                     <div style={{ fontSize: 15, fontWeight: 600 }}>{l.borrower}</div>
@@ -293,6 +294,8 @@ export function LoansClient({
           <img src={viewImage} alt="" style={{ maxWidth: "100%", maxHeight: "100%", borderRadius: 16, boxShadow: "0 20px 60px rgba(0,0,0,.4)" }} />
         </div>
       )}
+
+      <PageMascots accessory="tophat" />
     </div>
   );
 }

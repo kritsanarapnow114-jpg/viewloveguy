@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { ExportControls } from "@/components/ExportControls";
 import { WalletsSection } from "@/components/WalletsSection";
 import { CatEmpty } from "@/components/icons/Cat";
+import { PageMascots } from "@/components/PageMascots";
 
 export default async function AccountDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -130,6 +131,8 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
           </div>
         )}
       </div>
+
+      <PageMascots accessory="bowtie" />
     </div>
   );
 }
