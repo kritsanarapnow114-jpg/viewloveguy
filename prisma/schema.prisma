@@ -40,6 +40,8 @@ model Account {
   openingBalance Float         @default(0)
   createdAt      DateTime      @default(now())
   transactions   Transaction[]
+  loansOut       Loan[]        @relation("LoanOutAccount")
+  loansIn        Loan[]        @relation("LoanInAccount")
 }
 
 model Transaction {
@@ -55,16 +57,22 @@ model Transaction {
 }
 
 model Loan {
-  id             String    @id @default(cuid())
-  borrower       String
-  borrowDate     DateTime
-  amount         Float
-  interest       Float
-  dueDate        DateTime
-  penalty        Float
-  paid           Boolean   @default(false)
-  paidDate       DateTime?
-  transferImage  String?
-  repaymentImage String?
-  createdAt      DateTime  @default(now())
+  id               String    @id @default(cuid())
+  borrower         String
+  borrowDate       DateTime
+  amount           Float
+  interest         Float
+  dueDate          DateTime
+  penalty          Float
+  paid             Boolean   @default(false)
+  paidDate         DateTime?
+  transferImage    String?
+  repaymentImage   String?
+  outAccountId     String?
+  outAccount       Account?  @relation("LoanOutAccount", fields: [outAccountId], references: [id], onDelete: SetNull)
+  outTransactionId String?
+  inAccountId      String?
+  inAccount        Account?  @relation("LoanInAccount", fields: [inAccountId], references: [id], onDelete: SetNull)
+  inTransactionIds String[]  @default([])
+  createdAt        DateTime  @default(now())
 }

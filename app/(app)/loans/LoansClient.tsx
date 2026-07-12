@@ -21,6 +21,8 @@ type LoanView = {
   paid: boolean;
   transferImage: string | null;
   repaymentImage: string | null;
+  outAccountName: string | null;
+  inAccountName: string | null;
 };
 
 const STATUS_STYLE: Record<LoanStatus, { label: string; bg: string; color: string; accent: string }> = {
@@ -30,7 +32,7 @@ const STATUS_STYLE: Record<LoanStatus, { label: string; bg: string; color: strin
   paid: { label: "ชำระแล้ว", bg: "#e3f2ec", color: "#3a8a6f", accent: "#4fa98a" },
 };
 
-export function LoansClient({ loans, canEdit }: { loans: LoanView[]; canEdit: boolean }) {
+export function LoansClient({ loans, accounts, canEdit }: { loans: LoanView[]; accounts: { id: string; name: string }[]; canEdit: boolean }) {
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [payingId, setPayingId] = useState<string | null>(null);
@@ -162,6 +164,13 @@ export function LoansClient({ loans, canEdit }: { loans: LoanView[]; canEdit: bo
                 </div>
               </div>
 
+              {(l.outAccountName || l.inAccountName) && (
+                <div style={{ fontSize: 11.5, color: "#9b8fb0", marginBottom: 12, lineHeight: 1.7 }}>
+                  {l.outAccountName && <div>🐾 โอนออกจาก: {l.outAccountName}</div>}
+                  {l.inAccountName && <div>🐾 รับเข้าบัญชี: {l.inAccountName}</div>}
+                </div>
+              )}
+
               {(l.transferImage || l.repaymentImage) && (
                 <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
                   {l.transferImage && (
@@ -209,6 +218,7 @@ export function LoansClient({ loans, canEdit }: { loans: LoanView[]; canEdit: bo
             { kind: "input", name: "interest", label: "ดอกเบี้ย (บาท)", type: "number", placeholder: "0" },
             { kind: "input", name: "dueDate", label: "กำหนดคืน", type: "date", defaultValue: inOneMonth.toISOString().slice(0, 10) },
             { kind: "input", name: "penalty", label: "ค่าปรับล่าช้า (บาท/วัน)", type: "number", placeholder: "0" },
+            { kind: "select", name: "outAccountName", label: "โอนออกจากบัญชี", options: accounts.map((a) => a.name), defaultValue: accounts[0]?.name },
             { kind: "image", name: "transferImage", label: "รูปหลักฐานการโอนเงิน (ถ้ามี)" },
           ]}
         />
@@ -221,7 +231,10 @@ export function LoansClient({ loans, canEdit }: { loans: LoanView[]; canEdit: bo
           successMessage="บันทึกการรับคืนเงินกู้แล้ว"
           onClose={() => setPayingId(null)}
           action={payLoan.bind(null, payingId)}
-          fields={[{ kind: "image", name: "repaymentImage", label: "รูปหลักฐานการรับคืน (ถ้ามี)" }]}
+          fields={[
+            { kind: "select", name: "inAccountName", label: "รับเงินเข้าบัญชี", options: accounts.map((a) => a.name), defaultValue: accounts[0]?.name },
+            { kind: "image", name: "repaymentImage", label: "รูปหลักฐานการรับคืน (ถ้ามี)" },
+          ]}
         />
       )}
 
