@@ -5,12 +5,12 @@ import Link from "next/link";
 import { fmtBaht } from "@/lib/format";
 import { LOW_BALANCE_THRESHOLD } from "@/lib/constants";
 import { CatFace, type CatAccessory } from "@/components/icons/Cat";
-
-const ACCESSORIES: CatAccessory[] = ["crown", "monocle", "bowtie", "sunglasses"];
 import { PageHeader, AddButton } from "@/components/PageHeader";
 import { FormModal } from "@/components/FormModal";
 import { useToast } from "@/components/ToastProvider";
 import { createAccount, updateAccount, deleteAccount } from "@/app/actions/accounts";
+
+const ACCESSORIES: CatAccessory[] = ["crown", "monocle", "bowtie", "sunglasses", "tophat", "necklace"];
 
 type AccountView = {
   id: string;
@@ -121,8 +121,8 @@ export function AccountsClient({ accounts, canEdit }: { accounts: AccountView[];
                 </button>
               )}
               <div style={{ position: "relative" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-                  <span className="cat-wiggle" style={{ width: 28, height: 28, borderRadius: 8, background: tint, display: "grid", placeItems: "center", padding: 4 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span className="cat-wiggle" style={{ width: 40, height: 40, display: "block" }}>
                     <CatFace accessory={accessory} />
                   </span>
                   <span style={{ fontSize: 10.5, color: "#9b8fb0", fontWeight: 500 }}>{a.type === "BANK" ? "บัญชีธนาคาร" : "เงินสด"}</span>

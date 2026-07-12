@@ -67,7 +67,7 @@ export function WalletsSection({ accountId, wallets, canEdit }: { accountId: str
                   ✕
                 </button>
               )}
-              <span className="cat-wiggle" style={{ width: 26, height: 26, borderRadius: 8, background: "#ece3fb", display: "grid", placeItems: "center", padding: 4, marginBottom: 8 }}>
+              <span className="cat-wiggle" style={{ width: 34, height: 34, display: "block", marginBottom: 6 }}>
                 <CatFace accessory="monocle" />
               </span>
               <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>{w.name}</div>

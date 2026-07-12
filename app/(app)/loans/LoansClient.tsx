@@ -140,7 +140,7 @@ export function LoansClient({
               )}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-                  <span className="cat-wiggle" style={{ width: 40, height: 40, borderRadius: "50%", background: "#f0e9fb", display: "grid", placeItems: "center", padding: 6 }}>
+                  <span className="cat-wiggle" style={{ width: 46, height: 46, display: "block" }}>
                     <CatFace accessory="bowtie" />
                   </span>
                   <div>

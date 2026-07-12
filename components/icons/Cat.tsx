@@ -1,4 +1,4 @@
-export type CatAccessory = "none" | "crown" | "monocle" | "bowtie" | "sunglasses";
+export type CatAccessory = "none" | "crown" | "monocle" | "bowtie" | "sunglasses" | "tophat" | "necklace";
 
 type CatFaceProps = {
   size?: number | string;
@@ -66,6 +66,19 @@ export function CatFace({
           <path d="M23 25 L25 25" stroke="#2b2a40" strokeWidth="1.4" />
           <ellipse cx="17.5" cy="25.5" rx="2.4" ry="1.4" fill="#fff" opacity="0.22" />
           <ellipse cx="29.5" cy="25.5" rx="2.4" ry="1.4" fill="#fff" opacity="0.22" />
+        </>
+      )}
+      {accessory === "tophat" && (
+        <>
+          <path d="M16 13.5 L32 13.5 L32 14.8 L16 14.8 Z" fill="#2b2a40" />
+          <path d="M18.5 13.5 L29.5 13.5 L28.5 3 L19.5 3 Z" fill="#3a3852" />
+          <path d="M18.5 6 L29.5 6 L29.5 7.5 L18.5 7.5 Z" fill="#c98f2e" />
+        </>
+      )}
+      {accessory === "necklace" && (
+        <>
+          <path d="M16 35 Q24 41 32 35" stroke="#eec358" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+          <circle cx="24" cy="39.8" r="1.6" fill="#e0577a" stroke="#c98f2e" strokeWidth="0.4" />
         </>
       )}
     </svg>
