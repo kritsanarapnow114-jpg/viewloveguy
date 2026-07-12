@@ -1,5 +1,5 @@
 /** Client-side image compression: downscales + re-encodes as JPEG before upload. */
-export function compressImageFile(file: File, maxDim = 1280, quality = 0.72): Promise<string> {
+export function compressImageFile(file: File, maxDim = 800, quality = 0.5): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = () => reject(new Error("อ่านไฟล์รูปไม่สำเร็จ"));
