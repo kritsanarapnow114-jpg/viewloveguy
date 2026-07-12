@@ -53,3 +53,13 @@ export async function payLoan(id: string, _prev: LoanFormState, formData: FormDa
   revalidatePath("/dashboard");
   return { success: true };
 }
+
+export async function deleteLoan(id: string): Promise<{ error?: string }> {
+  const user = await getCurrentUser();
+  if (!user || user.role !== "ADMIN") return { error: "ไม่มีสิทธิ์ทำรายการนี้" };
+
+  await prisma.loan.delete({ where: { id } });
+  revalidatePath("/loans");
+  revalidatePath("/dashboard");
+  return {};
+}

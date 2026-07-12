@@ -1,13 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { fmtBaht, thDate } from "@/lib/format";
 import { loanCalc, type LoanStatus } from "@/lib/loan";
 import { PageHeader, SearchBox, AddButton } from "@/components/PageHeader";
 import { ExportControls } from "@/components/ExportControls";
 import { FormModal } from "@/components/FormModal";
 import { CatFace } from "@/components/icons/Cat";
-import { createLoan, payLoan } from "@/app/actions/loans";
+import { useToast } from "@/components/ToastProvider";
+import { createLoan, payLoan, deleteLoan } from "@/app/actions/loans";
 
 type LoanView = {
   id: string;
@@ -34,6 +35,15 @@ export function LoansClient({ loans, canEdit }: { loans: LoanView[]; canEdit: bo
   const [modalOpen, setModalOpen] = useState(false);
   const [payingId, setPayingId] = useState<string | null>(null);
   const [viewImage, setViewImage] = useState<string | null>(null);
+  const [, startTransition] = useTransition();
+  const { showToast } = useToast();
+
+  const handleDelete = (id: string) => {
+    startTransition(async () => {
+      const res = await deleteLoan(id);
+      showToast(res.error ?? "ลบสัญญาเงินกู้แล้ว");
+    });
+  };
 
   const calcs = useMemo(() => loans.map((l) => ({ l, c: loanCalc({ ...l, dueDate: new Date(l.dueDate) }) })), [loans]);
   const outstanding = calcs.filter((x) => !x.l.paid).reduce((a, b) => a + b.l.amount, 0);
@@ -89,7 +99,29 @@ export function LoansClient({ loans, canEdit }: { loans: LoanView[]; canEdit: bo
         {filtered.map(({ l, c }) => {
           const st = STATUS_STYLE[c.status];
           return (
-            <div key={l.id} style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, padding: "20px 22px", borderLeft: `5px solid ${st.accent}` }}>
+            <div key={l.id} style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, padding: "20px 22px", borderLeft: `5px solid ${st.accent}`, position: "relative" }}>
+              {canEdit && (
+                <button
+                  onClick={() => handleDelete(l.id)}
+                  title="ลบสัญญา"
+                  style={{
+                    position: "absolute",
+                    right: 12,
+                    top: 12,
+                    border: "none",
+                    background: "#f5f0fc",
+                    width: 24,
+                    height: 24,
+                    borderRadius: 7,
+                    cursor: "pointer",
+                    color: "#d0658a",
+                    fontSize: 12,
+                    opacity: 0.75,
+                  }}
+                >
+                  ✕
+                </button>
+              )}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
                   <span style={{ width: 40, height: 40, borderRadius: "50%", background: "#f0e9fb", display: "grid", placeItems: "center", padding: 6 }}>
@@ -100,7 +132,7 @@ export function LoansClient({ loans, canEdit }: { loans: LoanView[]; canEdit: bo
                     <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>ยืมเมื่อ {thDate(l.borrowDate)}</div>
                   </div>
                 </div>
-                <span style={{ fontSize: 11.5, fontWeight: 600, padding: "4px 11px", borderRadius: 20, background: st.bg, color: st.color }}>{st.label}</span>
+                <span style={{ fontSize: 11.5, fontWeight: 600, padding: "4px 11px", borderRadius: 20, background: st.bg, color: st.color, marginRight: 28 }}>{st.label}</span>
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, margin: "18px 0 14px" }}>
