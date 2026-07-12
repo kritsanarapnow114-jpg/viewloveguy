@@ -5,6 +5,7 @@ html,
 body {
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
 }
 body {
   font-family: var(--font-plex-sans-thai), system-ui, sans-serif;
@@ -119,6 +120,7 @@ select {
   }
   .nav-item {
     flex: 0 0 auto !important;
+    width: auto !important;
     white-space: nowrap;
   }
   .app-main {
