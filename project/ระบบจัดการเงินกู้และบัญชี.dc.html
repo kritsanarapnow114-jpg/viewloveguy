@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:'IBM Plex Sans Thai',system-ui,sans-serif;background:#f5f0fc;color:#40354f;-webkit-font-smoothing:antialiased}
+  a{color:#7c5cc4;text-decoration:none}
+  a:hover{color:#684aad}
+  button{font-family:inherit}
+  input,select{font-family:inherit}
+  .mali{font-family:'Mali','IBM Plex Sans Thai',cursive}
+  .num{font-family:'IBM Plex Mono',ui-monospace,monospace;font-feature-settings:'tnum'}
+  ::-webkit-scrollbar{width:9px;height:9px}
+  ::-webkit-scrollbar-thumb{background:#ddccf0;border-radius:8px}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes popIn{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+  @keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes growBar{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-9px) rotate(2deg)}}
+  .cat-bob{animation:bob 3.4s ease-in-out infinite}
+  @media(min-width:900px){ .login-hero{display:flex !important} }
+  @media(max-width:820px){
+    .app-shell{flex-direction:column !important}
+    .app-side{width:100% !important;flex-direction:row !important;overflow-x:auto;border-right:none !important;border-bottom:1px solid #ece2f7 !important;padding:10px 12px !important;gap:4px !important;align-items:center}
+    .app-side .side-brand{display:none !important}
+    .app-side .side-foot{display:none !important}
+    .nav-item{flex:0 0 auto !important;white-space:nowrap}
+    .app-main{padding:20px 16px !important}
+    .kpi-grid{grid-template-columns:repeat(2,1fr) !important}
+    .dash-cols{grid-template-columns:1fr !important}
+  }
+</style>
+</helmet>
+
+<sc-if value="{{ loggedOut }}" hint-placeholder-val="{{ true }}">
+  <div style="min-height:100vh;display:flex;align-items:stretch;animation:fadeIn .4s ease">
+    <div style="flex:1;display:none;background:linear-gradient(160deg,#8b6fd0,#b79ee6 70%,#e7b8d8);color:#fff;padding:60px 56px;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden" class="login-hero">
+      <div style="position:absolute;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.12);top:-60px;right:-40px"></div>
+      <div style="position:absolute;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.10);bottom:80px;left:-50px"></div>
+      <div class="mali" style="font-weight:600;letter-spacing:.02em;font-size:16px;display:flex;align-items:center;gap:11px;position:relative">
+        <span style="width:34px;height:34px;border-radius:11px;background:rgba(255,255,255,.9);display:grid;place-items:center;padding:4px">
+          <svg viewBox="0 0 48 48" width="100%" height="100%" style="display:block"><path d="M11 20 L14 5 L23 15 Z" fill="#6b5545"/><path d="M37 20 L34 5 L25 15 Z" fill="#6b5545"/><path d="M13.5 17 L15.5 8.5 L20 14.5 Z" fill="#f4b2ce"/><path d="M34.5 17 L32.5 8.5 L28 14.5 Z" fill="#f4b2ce"/><ellipse cx="24" cy="27" rx="14" ry="12.5" fill="#efe3ce"/><ellipse cx="24" cy="30" rx="10.5" ry="8.5" fill="#cdb69c"/><ellipse cx="19" cy="26" rx="2.4" ry="3" fill="#6fa8dc"/><ellipse cx="29" cy="26" rx="2.4" ry="3" fill="#6fa8dc"/><circle cx="19" cy="26.6" r="1" fill="#2b2a40"/><circle cx="29" cy="26.6" r="1" fill="#2b2a40"/><path d="M22 30.5 L26 30.5 L24 33 Z" fill="#f07fab"/><path d="M24 33 Q24 35 21.9 35.2" stroke="#a58c72" stroke-width="1" fill="none" stroke-linecap="round"/><path d="M24 33 Q24 35 26.1 35.2" stroke="#a58c72" stroke-width="1" fill="none" stroke-linecap="round"/></svg>
+        </span>
+        กำไรและวิว
+      </div>
+      <div style="position:relative;text-align:center">
+        <div class="cat-bob" style="width:160px;height:160px;margin:0 auto 26px;filter:drop-shadow(0 14px 24px rgba(80,50,120,.28))">
+          <svg viewBox="0 0 64 64" width="100%" height="100%" style="display:block"><ellipse cx="32" cy="59" rx="16" ry="3.5" fill="rgba(90,60,130,.18)"/><path d="M14 27 L18 6 L31 20 Z" fill="#6b5545"/><path d="M50 27 L46 6 L33 20 Z" fill="#6b5545"/><path d="M17.5 23 L20 10 L27 19 Z" fill="#f4b2ce"/><path d="M46.5 23 L44 10 L37 19 Z" fill="#f4b2ce"/><ellipse cx="32" cy="37" rx="20" ry="17.5" fill="#efe3ce"/><ellipse cx="32" cy="41" rx="14.5" ry="12" fill="#cdb69c"/><circle cx="20" cy="43" r="3.2" fill="#e6a9c4"/><circle cx="44" cy="43" r="3.2" fill="#e6a9c4"/><ellipse cx="25" cy="35" rx="3" ry="4" fill="#6fa8dc"/><ellipse cx="39" cy="35" rx="3" ry="4" fill="#6fa8dc"/><circle cx="25" cy="36" r="1.4" fill="#2b2a40"/><circle cx="39" cy="36" r="1.4" fill="#2b2a40"/><circle cx="24" cy="34.2" r="0.7" fill="#fff"/><circle cx="38" cy="34.2" r="0.7" fill="#fff"/><path d="M29 41 L35 41 L32 44.5 Z" fill="#f07fab"/><path d="M32 44.5 Q32 47.5 28.3 47.9" stroke="#a58c72" stroke-width="1.3" fill="none" stroke-linecap="round"/><path d="M32 44.5 Q32 47.5 35.7 47.9" stroke="#a58c72" stroke-width="1.3" fill="none" stroke-linecap="round"/><g stroke="#efe3ce" stroke-width="1.2" stroke-linecap="round" opacity=".9"><path d="M11 37 L19 38"/><path d="M11 41 L19 40.5"/><path d="M53 37 L45 38"/><path d="M53 41 L45 40.5"/></g></svg>
+        </div>
+        <div class="mali" style="font-size:38px;line-height:1.2;font-weight:600;letter-spacing:-.01em">ระบบจัดการ<br>เงินกู้และบัญชี</div>
+        <p style="margin:18px auto 0;font-size:15px;line-height:1.7;color:#fbf3fb;max-width:340px">รวมบัญชีธนาคาร เงินสด รายรับ-รายจ่าย และการปล่อยเงินกู้ ไว้ในที่เดียว มีน้องวิเชียรมาศคอยดูแลให้ 🐾</p>
+      </div>
+      <div style="font-size:12.5px;color:#f3e6f5;position:relative">© 2569 กำไรและวิว · จัดการการเงินอย่างละมุน</div>
+    </div>
+
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px">
+      <div style="width:100%;max-width:380px">
+        <div style="display:flex;align-items:center;gap:11px;margin-bottom:6px">
+          <span style="width:38px;height:38px;border-radius:12px;background:#7c5cc4;display:grid;place-items:center;padding:5px">
+            <svg viewBox="0 0 48 48" width="100%" height="100%" style="display:block"><path d="M11 20 L14 5 L23 15 Z" fill="#6b5545"/><path d="M37 20 L34 5 L25 15 Z" fill="#6b5545"/><path d="M13.5 17 L15.5 8.5 L20 14.5 Z" fill="#f4b2ce"/><path d="M34.5 17 L32.5 8.5 L28 14.5 Z" fill="#f4b2ce"/><ellipse cx="24" cy="27" rx="14" ry="12.5" fill="#efe3ce"/><ellipse cx="24" cy="30" rx="10.5" ry="8.5" fill="#cdb69c"/><ellipse cx="19" cy="26" rx="2.4" ry="3" fill="#6fa8dc"/><ellipse cx="29" cy="26" rx="2.4" ry="3" fill="#6fa8dc"/><circle cx="19" cy="26.6" r="1" fill="#2b2a40"/><circle cx="29" cy="26.6" r="1" fill="#2b2a40"/><path d="M22 30.5 L26 30.5 L24 33 Z" fill="#f07fab"/></svg>
+          </span>
+          <span class="mali" style="font-weight:600;font-size:18px;color:#40354f">กำไรและวิว</span>
+        </div>
+        <h1 class="mali" style="font-size:25px;font-weight:600;margin:22px 0 4px;letter-spacing:-.01em">เข้าสู่ระบบ</h1>
+        <p style="margin:0 0 26px;color:#9b8fb0;font-size:14px">กรอกชื่อผู้ใช้และรหัสผ่าน แล้วน้องแมวจะพาเข้าไปน้า</p>
+
+        <label style="display:block;font-size:13px;font-weight:500;margin-bottom:7px">ชื่อผู้ใช้</label>
+        <input value="{{ loginU }}" onInput="{{ onLoginU }}" placeholder="เช่น admin" style="width:100%;padding:12px 14px;border:1px solid #e0d3f0;border-radius:12px;font-size:14.5px;background:#fff;outline:none;margin-bottom:16px" />
+
+        <label style="display:block;font-size:13px;font-weight:500;margin-bottom:7px">รหัสผ่าน</label>
+        <input value="{{ loginP }}" onInput="{{ onLoginP }}" type="password" placeholder="••••" onKeyDown="{{ onLoginKey }}" style="width:100%;padding:12px 14px;border:1px solid #e0d3f0;border-radius:12px;font-size:14.5px;background:#fff;outline:none;margin-bottom:8px" />
+
+        <sc-if value="{{ loginErr }}" hint-placeholder-val="">
+          <div style="color:#d0658a;font-size:13px;margin:4px 0 8px">{{ loginErr }}</div>
+        </sc-if>
+
+        <button onClick="{{ doLogin }}" style="width:100%;margin-top:12px;padding:13px;background:#7c5cc4;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer" style-hover="background:#684aad">เข้าสู่ระบบ</button>
+
+        <div style="margin-top:26px;padding:16px;background:#f0e9fb;border-radius:14px;font-size:12.5px;color:#7a6e90;line-height:1.9">
+          <div class="mali" style="font-weight:600;color:#40354f;margin-bottom:4px">🐱 บัญชีทดลอง</div>
+          ผู้ดูแลระบบ — <b>admin</b> / <b>1234</b><br>
+          พนักงาน — <b>staff</b> / <b>1234</b>
+        </div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ loggedIn }}" hint-placeholder-val="">
+  <div class="app-shell" style="display:flex;min-height:100vh;animation:fadeIn .35s ease">
+
+    <aside class="app-side" style="width:246px;flex:0 0 246px;background:#fff;border-right:1px solid #ece2f7;padding:22px 16px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh">
+      <div class="side-brand" style="display:flex;align-items:center;gap:10px;padding:4px 8px 20px">
+        <span style="width:36px;height:36px;border-radius:11px;background:#7c5cc4;display:grid;place-items:center;padding:5px">
+          <svg viewBox="0 0 48 48" width="100%" height="100%" style="display:block"><path d="M11 20 L14 5 L23 15 Z" fill="#6b5545"/><path d="M37 20 L34 5 L25 15 Z" fill="#6b5545"/><path d="M13.5 17 L15.5 8.5 L20 14.5 Z" fill="#f4b2ce"/><path d="M34.5 17 L32.5 8.5 L28 14.5 Z" fill="#f4b2ce"/><ellipse cx="24" cy="27" rx="14" ry="12.5" fill="#efe3ce"/><ellipse cx="24" cy="30" rx="10.5" ry="8.5" fill="#cdb69c"/><ellipse cx="19" cy="26" rx="2.4" ry="3" fill="#6fa8dc"/><ellipse cx="29" cy="26" rx="2.4" ry="3" fill="#6fa8dc"/><circle cx="19" cy="26.6" r="1" fill="#2b2a40"/><circle cx="29" cy="26.6" r="1" fill="#2b2a40"/><path d="M22 30.5 L26 30.5 L24 33 Z" fill="#f07fab"/></svg>
+        </span>
+        <span class="mali" style="font-weight:600;font-size:16px">กำไรและวิว</span>
+      </div>
+
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="6">
+        <button class="nav-item" onClick="{{ item.onClick }}" style="display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:10px 12px;border:none;border-radius:12px;cursor:pointer;font-size:14.5px;font-weight:{{ item.weight }};background:{{ item.bg }};color:{{ item.color }}">
+          <span style="width:28px;height:28px;flex:0 0 28px;border-radius:9px;background:{{ item.iconBg }};display:grid;place-items:center;padding:3px">
+            <svg viewBox="0 0 48 48" width="100%" height="100%" style="display:block"><path d="M11 20 L14 5 L23 15 Z" fill="{{ item.catEar }}"/><path d="M37 20 L34 5 L25 15 Z" fill="{{ item.catEar }}"/><path d="M13.5 17 L15.5 8.5 L20 14.5 Z" fill="#f4b2ce"/><path d="M34.5 17 L32.5 8.5 L28 14.5 Z" fill="#f4b2ce"/><ellipse cx="24" cy="27" rx="14" ry="12.5" fill="{{ item.catFace }}"/><ellipse cx="24" cy="30" rx="10.5" ry="8.5" fill="{{ item.catMask }}"/><ellipse cx="19" cy="26" rx="2.3" ry="2.9" fill="#6fa8dc"/><ellipse cx="29" cy="26" rx="2.3" ry="2.9" fill="#6fa8dc"/><circle cx="19" cy="26.6" r="1" fill="#2b2a40"/><circle cx="29" cy="26.6" r="1" fill="#2b2a40"/><path d="M22 30.5 L26 30.5 L24 33 Z" fill="#f07fab"/></svg>
+          </span>
+          {{ item.label }}
+        </button>
+      </sc-for>
+
+      <div class="side-foot" style="margin-top:auto;padding-top:18px;border-top:1px solid #f0e9f8">
+        <div style="display:flex;align-items:center;gap:11px;padding:8px">
+          <span style="width:38px;height:38px;border-radius:50%;background:#f0e9fb;display:grid;place-items:center;padding:5px">
+            <svg viewBox="0 0 48 48" width="100%" height="100%" style="display:block"><path d="M11 20 L14 5 L23 15 Z" fill="#6b5545"/><path d="M37 20 L34 5 L25 15 Z" fill="#6b5545"/><path d="M13.5 17 L15.5 8.5 L20 14.5 Z" fill="#f4b2ce"/><path d="M34.5 17 L32.5 8.5 L28 14.5 Z" fill="#f4b2ce"/><ellipse cx="24" cy="27" rx="14" ry="12.5" fill="#efe3ce"/><ellipse cx="24" cy="30" rx="10.5" ry="8.5" fill="#cdb69c"/><ellipse cx="19" cy="26" rx="2.3" ry="2.9" fill="#6fa8dc"/><ellipse cx="29" cy="26" rx="2.3" ry="2.9" fill="#6fa8dc"/><circle cx="19" cy="26.6" r="1" fill="#2b2a40"/><circle cx="29" cy="26.6" r="1" fill="#2b2a40"/><path d="M22 30.5 L26 30.5 L24 33 Z" fill="#f07fab"/></svg>
+          </span>
+          <div style="min-width:0">
+            <div style="font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ userName }}</div>
+            <div style="font-size:11.5px;color:#9b8fb0">{{ userRole }}</div>
+          </div>
+        </div>
+        <button onClick="{{ logout }}" style="width:100%;margin-top:8px;padding:9px;background:#f5f0fc;border:1px solid #ece2f7;border-radius:11px;font-size:13px;color:#7a6e90;cursor:pointer" style-hover="background:#f0e9fb">ออกจากระบบ</button>
+      </div>
+    </aside>
+
+    <main class="app-main" style="flex:1;min-width:0;padding:30px 34px 60px">
+
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:26px">
+        <div>
+          <h1 class="mali" style="font-size:26px;font-weight:600;margin:0;letter-spacing:-.01em">{{ pageTitle }}</h1>
+          <p style="margin:5px 0 0;color:#9b8fb0;font-size:13.5px">{{ pageSub }}</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <sc-if value="{{ showSearch }}" hint-placeholder-val="{{ true }}">
+            <div style="position:relative">
+              <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#b8a9d0;font-size:13px">⌕</span>
+              <input value="{{ search }}" onInput="{{ onSearch }}" placeholder="ค้นหา…" style="padding:10px 12px 10px 30px;border:1px solid #e0d3f0;border-radius:11px;font-size:13.5px;background:#fff;outline:none;width:200px" />
+            </div>
+          </sc-if>
+          <sc-if value="{{ showAdd }}" hint-placeholder-val="">
+            <button onClick="{{ onAdd }}" style="padding:10px 16px;background:#7c5cc4;color:#fff;border:none;border-radius:11px;font-size:13.5px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#684aad">+ {{ addLabel }}</button>
+          </sc-if>
+          <sc-if value="{{ showExport }}" hint-placeholder-val="">
+            <button onClick="{{ exportPdf }}" style="padding:10px 14px;background:#fff;color:#7c5cc4;border:1px solid #e0d3f0;border-radius:11px;font-size:13.5px;font-weight:500;cursor:pointer;white-space:nowrap" style-hover="background:#faf6ff">↧ PDF</button>
+            <button onClick="{{ exportXls }}" style="padding:10px 14px;background:#fff;color:#7c5cc4;border:1px solid #e0d3f0;border-radius:11px;font-size:13.5px;font-weight:500;cursor:pointer;white-space:nowrap" style-hover="background:#faf6ff">↧ Excel</button>
+          </sc-if>
+        </div>
+      </div>
+
+      <!-- ============ DASHBOARD ============ -->
+      <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ true }}">
+        <div>
+          <div class="kpi-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px">
+            <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+              <div style="background:#fff;border:1px solid #ece2f7;border-radius:18px;padding:20px 22px">
+                <div style="font-size:12.5px;color:#9b8fb0;font-weight:500">{{ k.label }}</div>
+                <div class="num" style="font-size:26px;font-weight:600;margin-top:10px;letter-spacing:-.02em">{{ k.value }}</div>
+                <div style="font-size:12px;margin-top:7px;color:{{ k.subColor }}">{{ k.sub }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div class="dash-cols" style="display:grid;grid-template-columns:1.55fr 1fr;gap:16px;margin-bottom:18px">
+            <div style="background:#fff;border:1px solid #ece2f7;border-radius:18px;padding:22px 24px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                <div class="mali" style="font-weight:600;font-size:16px">รายรับ - รายจ่าย ย้อนหลัง</div>
+                <div style="display:flex;gap:14px;font-size:11.5px;color:#9b8fb0">
+                  <span style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:3px;background:#5fb89a"></span>รับ</span>
+                  <span style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:3px;background:#e39ab6"></span>จ่าย</span>
+                </div>
+              </div>
+              <div style="display:flex;align-items:flex-end;gap:14px;height:190px;padding-top:20px">
+                <sc-for list="{{ chart }}" as="m" hint-placeholder-count="6">
+                  <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end">
+                    <div style="display:flex;align-items:flex-end;gap:5px;height:100%;width:100%;justify-content:center">
+                      <div title="{{ m.incomeText }}" style="width:38%;max-width:22px;height:{{ m.incomeH }};background:#5fb89a;border-radius:6px 6px 0 0;transform-origin:bottom;animation:growBar .5s ease"></div>
+                      <div title="{{ m.expenseText }}" style="width:38%;max-width:22px;height:{{ m.expenseH }};background:#e39ab6;border-radius:6px 6px 0 0;transform-origin:bottom;animation:growBar .5s ease"></div>
+                    </div>
+                    <div style="font-size:11.5px;color:#9b8fb0">{{ m.label }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="background:#fff;border:1px solid #ece2f7;border-radius:18px;padding:22px 24px">
+              <div class="mali" style="font-weight:600;font-size:16px;margin-bottom:14px">การแจ้งเตือน</div>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <sc-for list="{{ alerts }}" as="a" hint-placeholder-count="3">
+                  <div style="display:flex;gap:11px;padding:12px;border-radius:13px;background:{{ a.bg }}">
+                    <span style="width:8px;height:8px;border-radius:50%;background:{{ a.dot }};margin-top:6px;flex:0 0 8px"></span>
+                    <div>
+                      <div style="font-size:13px;font-weight:600">{{ a.title }}</div>
+                      <div style="font-size:12px;color:#7a6e90;margin-top:2px;line-height:1.5">{{ a.detail }}</div>
+                    </div>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ noAlerts }}" hint-placeholder-val="">
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 2px;color:#9b8fb0;font-size:13px">
+                    <div style="width:56px;height:56px"><svg viewBox="0 0 64 64" width="100%" height="100%" style="display:block"><path d="M14 27 L18 6 L31 20 Z" fill="#6b5545"/><path d="M50 27 L46 6 L33 20 Z" fill="#6b5545"/><path d="M17.5 23 L20 10 L27 19 Z" fill="#f4b2ce"/><path d="M46.5 23 L44 10 L37 19 Z" fill="#f4b2ce"/><ellipse cx="32" cy="37" rx="20" ry="17.5" fill="#efe3ce"/><ellipse cx="32" cy="41" rx="14.5" ry="12" fill="#cdb69c"/><circle cx="20" cy="43" r="3.2" fill="#e6a9c4"/><circle cx="44" cy="43" r="3.2" fill="#e6a9c4"/><path d="M22 34 Q25 37 28 34" stroke="#2b2a40" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M36 34 Q39 37 42 34" stroke="#2b2a40" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M29 41 L35 41 L32 44.5 Z" fill="#f07fab"/></svg></div>
+                    ทุกอย่างเรียบร้อยดีเหมียว ✓
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #ece2f7;border-radius:18px;padding:22px 24px">
+            <div class="mali" style="font-weight:600;font-size:16px;margin-bottom:14px">รายการล่าสุด</div>
+            <sc-for list="{{ recentTx }}" as="t" hint-placeholder-count="5">
+              <div style="display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid #f4eefb">
+                <span style="width:32px;height:32px;border-radius:10px;display:grid;place-items:center;font-size:15px;font-weight:700;background:{{ t.iconBg }};color:{{ t.iconColor }}">{{ t.sign }}</span>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:13.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.desc }}</div>
+                  <div style="font-size:11.5px;color:#9b8fb0">{{ t.meta }}</div>
+                </div>
+                <div class="num" style="font-size:14px;font-weight:600;color:{{ t.color }}">{{ t.amountText }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ ACCOUNTS ============ -->
+      <sc-if value="{{ isAccounts }}" hint-placeholder-val="">
+        <div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-bottom:18px">
+            <sc-for list="{{ accountsView }}" as="a" hint-placeholder-count="3">
+              <div onClick="{{ a.onOpen }}" style="background:#fff;border:1px solid #ece2f7;border-radius:18px;padding:22px;position:relative;overflow:hidden;cursor:pointer" style-hover="border-color:#c9b0ea">
+                <div style="position:absolute;right:-20px;top:-20px;width:90px;height:90px;border-radius:50%;background:{{ a.tint }};opacity:.6"></div>
+                <sc-if value="{{ a.showDelete }}" hint-placeholder-val="">
+                  <button onClick="{{ a.onDelete }}" title="ลบบัญชี" style="position:absolute;right:12px;top:12px;z-index:2;border:none;background:#f5f0fc;width:26px;height:26px;border-radius:8px;cursor:pointer;color:#d0658a;font-size:13px;opacity:.75" style-hover="opacity:1;background:#fbe9f0">✕</button>
+                </sc-if>
+                <div style="position:relative">
+                  <div style="display:flex;align-items:center;gap:9px">
+                    <span style="width:34px;height:34px;border-radius:10px;background:{{ a.tint }};display:grid;place-items:center;padding:5px">
+                      <svg viewBox="0 0 48 48" width="100%" height="100%" style="display:block"><path d="M11 20 L14 5 L23 15 Z" fill="#6b5545"/><path d="M37 20 L34 5 L25 15 Z" fill="#6b5545"/><path d="M13.5 17 L15.5 8.5 L20 14.5 Z" fill="#f4b2ce"/><path d="M34.5 17 L32.5 8.5 L28 14.5 Z" fill="#f4b2ce"/><ellipse cx="24" cy="27" rx="14" ry="12.5" fill="#efe3ce"/><ellipse cx="24" cy="30" rx="10.5" ry="8.5" fill="#cdb69c"/><ellipse cx="19" cy="26" rx="2.3" ry="2.9" fill="#6fa8dc"/><ellipse cx="29" cy="26" rx="2.3" ry="2.9" fill="#6fa8dc"/><circle cx="19" cy="26.6" r="1" fill="#2b2a40"/><circle cx="29" cy="26.6" r="1" fill="#2b2a40"/><path d="M22 30.5 L26 30.5 L24 33 Z" fill="#f07fab"/></svg>
+                    </span>
+                    <span style="font-size:11.5px;color:#9b8fb0;font-weight:500">{{ a.typeLabel }}</span>
+                  </div>
+                  <div style="font-size:15px;font-weight:600;margin-top:16px">{{ a.name }}</div>
+                  <div class="num" style="font-size:12px;color:#b8a9d0;margin-top:2px">{{ a.sub }}</div>
+                  <div class="num" style="font-size:24px;font-weight:600;margin-top:14px;letter-spacing:-.02em;color:{{ a.balColor }}">{{ a.balanceText }}</div>
+                  <div style="font-size:11.5px;color:#b8a9d0;margin-top:10px">🐾 คลิกเพื่อดูรายรับ-รายจ่าย →</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="background:linear-gradient(135deg,#7c5cc4,#a98fd8);color:#fff;border-radius:18px;padding:24px 26px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+            <div>
+              <div style="font-size:13px;color:#eee3fb">ยอดเงินรวมทุกบัญชี</div>
+              <div class="num" style="font-size:30px;font-weight:600;margin-top:6px">{{ totalBalanceText }}</div>
+            </div>
+            <div style="font-size:13px;color:#eee3fb;text-align:right;line-height:1.8">
+              เงินฝากธนาคาร <span class="num" style="color:#fff">{{ bankTotalText }}</span><br>
+              เงินสด <span class="num" style="color:#fff">{{ cashTotalText }}</span>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ ACCOUNT DETAIL ============ -->
+      <sc-if value="{{ isAccountDetail }}" hint-placeholder-val="">
+        <div>
+          <button onClick="{{ backToAccounts }}" style="border:none;background:none;color:#7a6e90;cursor:pointer;font-size:13.5px;padding:0;margin-bottom:16px" style-hover="color:#7c5cc4">← กลับไปหน้าบัญชี</button>
+          <div style="display:flex;gap:16px;margin-bottom:18px;flex-wrap:wrap">
+            <div style="flex:1;min-width:170px;background:linear-gradient(135deg,#7c5cc4,#a98fd8);color:#fff;border-radius:16px;padding:16px 20px">
+              <div style="font-size:12.5px;color:#eee3fb">ยอดคงเหลือปัจจุบัน</div>
+              <div class="num" style="font-size:22px;font-weight:600;margin-top:6px">{{ adBalanceText }}</div>
+            </div>
+            <div style="flex:1;min-width:170px;background:#fff;border:1px solid #ece2f7;border-radius:16px;padding:16px 20px">
+              <div style="font-size:12.5px;color:#9b8fb0">รับเข้าบัญชีนี้</div>
+              <div class="num" style="font-size:22px;font-weight:600;margin-top:6px;color:#4fa98a">{{ adIncomeText }}</div>
+            </div>
+            <div style="flex:1;min-width:170px;background:#fff;border:1px solid #ece2f7;border-radius:16px;padding:16px 20px">
+              <div style="font-size:12.5px;color:#9b8fb0">จ่ายจากบัญชีนี้</div>
+              <div class="num" style="font-size:22px;font-weight:600;margin-top:6px;color:#d0658a">{{ adExpenseText }}</div>
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid #ece2f7;border-radius:18px;overflow:hidden">
+            <div style="display:grid;grid-template-columns:110px 90px 1.4fr 1fr 140px;gap:12px;padding:14px 22px;background:#faf6ff;border-bottom:1px solid #f0e9f8;font-size:12px;font-weight:600;color:#9b8fb0">
+              <div>วันที่</div><div>ประเภท</div><div>รายการ</div><div>หมวดหมู่</div><div style="text-align:right">จำนวนเงิน</div>
+            </div>
+            <sc-for list="{{ adRows }}" as="r" hint-placeholder-count="6">
+              <div style="display:grid;grid-template-columns:110px 90px 1.4fr 1fr 140px;gap:12px;padding:14px 22px;border-bottom:1px solid #f4eefb;align-items:center;font-size:13.5px" style-hover="background:#faf6ff">
+                <div class="num" style="color:#7a6e90">{{ r.dateText }}</div>
+                <div><span style="font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:20px;background:{{ r.tagBg }};color:{{ r.tagColor }}">{{ r.typeLabel }}</span></div>
+                <div style="font-weight:500">{{ r.note }}</div>
+                <div style="color:#7a6e90;font-size:12.5px">{{ r.category }}</div>
+                <div class="num" style="text-align:right;font-weight:600;color:{{ r.color }}">{{ r.amountText }}</div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ adEmpty }}" hint-placeholder-val="">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:40px;color:#b8a9d0;font-size:13.5px">
+                <div style="width:60px;height:60px"><svg viewBox="0 0 64 64" width="100%" height="100%" style="display:block"><path d="M14 27 L18 6 L31 20 Z" fill="#6b5545"/><path d="M50 27 L46 6 L33 20 Z" fill="#6b5545"/><path d="M17.5 23 L20 10 L27 19 Z" fill="#f4b2ce"/><path d="M46.5 23 L44 10 L37 19 Z" fill="#f4b2ce"/><ellipse cx="32" cy="37" rx="20" ry="17.5" fill="#efe3ce"/><ellipse cx="32" cy="41" rx="14.5" ry="12" fill="#cdb69c"/><ellipse cx="25" cy="35" rx="3" ry="4" fill="#6fa8dc"/><ellipse cx="39" cy="35" rx="3" ry="4" fill="#6fa8dc"/><circle cx="25" cy="36" r="1.4" fill="#2b2a40"/><circle cx="39" cy="36" r="1.4" fill="#2b2a40"/><path d="M29 41 L35 41 L32 44.5 Z" fill="#f07fab"/></svg></div>
+                ยังไม่มีรายการในบัญชีนี้เลยเหมียว
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ PROFIT / LOSS ============ -->
+      <sc-if value="{{ isPnl }}" hint-placeholder-val="">
+        <div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:18px">
+            <div style="background:#fff;border:1px solid #ece2f7;border-radius:16px;padding:18px 20px">
+              <div style="font-size:12.5px;color:#9b8fb0">รายรับรวม</div>
+              <div class="num" style="font-size:23px;font-weight:600;margin-top:6px;color:#4fa98a">{{ pnlIncomeText }}</div>
+            </div>
+            <div style="background:#fff;border:1px solid #ece2f7;border-radius:16px;padding:18px 20px">
+              <div style="font-size:12.5px;color:#9b8fb0">รายจ่ายรวม</div>
+              <div class="num" style="font-size:23px;font-weight:600;margin-top:6px;color:#d0658a">{{ pnlExpenseText }}</div>
+            </div>
+            <div style="background:{{ pnlNetBg }};color:#fff;border-radius:16px;padding:18px 20px">
+              <div style="font-size:12.5px;opacity:.8">{{ pnlNetLabel }}</div>
+              <div class="num" style="font-size:23px;font-weight:600;margin-top:6px">{{ pnlNetText }}</div>
+            </div>
+            <div style="background:#fff;border:1px solid #ece2f7;border-radius:16px;padding:18px 20px">
+              <div style="font-size:12.5px;color:#9b8fb0">อัตรากำไร</div>
+              <div class="num" style="font-size:23px;font-weight:600;margin-top:6px">{{ pnlMarginText }}</div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap">
+            <sc-for list="{{ pnlPeriods }}" as="p" hint-placeholder-count="3">
+              <button onClick="{{ p.onClick }}" style="padding:8px 16px;border:1px solid {{ p.border }};background:{{ p.bg }};color:{{ p.color }};border-radius:20px;font-size:13px;font-weight:{{ p.weight }};cursor:pointer">{{ p.label }}</button>
+            </sc-for>
+          </div>
+
+          <div class="dash-cols" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div style="background:#fff;border:1px solid #ece2f7;border-radius:18px;padding:22px 24px">
+              <div class="mali" style="font-weight:600;font-size:16px;margin-bottom:16px">รายรับแยกตามหมวดหมู่</div>
+              <sc-for list="{{ pnlIncomeCats }}" as="c" hint-placeholder-count="4">
+                <div style="margin-bottom:14px">
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
+                    <span>{{ c.name }}</span><span class="num" style="font-weight:600">{{ c.valueText }}</span>
+                  </div>
+                  <div style="height:8px;background:#f4eefb;border-radius:6px;overflow:hidden"><div style="height:100%;width:{{ c.pct }};background:#5fb89a;border-radius:6px"></div></div>
+                </div>
+              </sc-for>
+              <sc-if value="{{ pnlNoIncome }}" hint-placeholder-val="">
+                <div style="font-size:13px;color:#b8a9d0">ไม่มีรายรับในช่วงนี้เหมียว</div>
+              </sc-if>
+            </div>
+            <div style="background:#fff;border:1px solid #ece2f7;border-radius:18px;padding:22px 24px">
+              <div class="mali" style="font-weight:600;font-size:16px;margin-bottom:16px">รายจ่ายแยกตามหมวดหมู่</div>
+              <sc-for list="{{ pnlExpenseCats }}" as="c" hint-placeholder-count="4">
+                <div style="margin-bottom:14px">
+                  <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">
+                    <span>{{ c.name }}</span><span class="num" style="font-weight:600">{{ c.valueText }}</span>
+                  </div>
+                  <div style="height:8px;background:#f4eefb;border-radius:6px;overflow:hidden"><div style="height:100%;width:{{ c.pct }};background:#e39ab6;border-radius:6px"></div></div>
+                </div>
+              </sc-for>
+              <sc-if value="{{ pnlNoExpense }}" hint-placeholder-val="">
+                <div style="font-size:13px;color:#b8a9d0">ไม่มีรายจ่ายในช่วงนี้เหมียว</div>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ INCOME / EXPENSE TABLE ============ -->
+      <sc-if value="{{ isLedger }}" hint-placeholder-val="">
+        <div>
+          <div style="display:flex;gap:16px;margin-bottom:18px;flex-wrap:wrap">
+            <div style="flex:1;min-width:180px;background:#fff;border:1px solid #ece2f7;border-radius:16px;padding:16px 20px">
+              <div style="font-size:12.5px;color:#9b8fb0">รวม{{ ledgerWord }}ทั้งหมด</div>
+              <div class="num" style="font-size:22px;font-weight:600;margin-top:6px;color:{{ ledgerColor }}">{{ ledgerTotalText }}</div>
+            </div>
+            <div style="flex:1;min-width:180px;background:#fff;border:1px solid #ece2f7;border-radius:16px;padding:16px 20px">
+              <div style="font-size:12.5px;color:#9b8fb0">จำนวนรายการ</div>
+              <div class="num" style="font-size:22px;font-weight:600;margin-top:6px">{{ ledgerCount }}</div>
+            </div>
+            <div style="flex:1;min-width:180px;background:#fff;border:1px solid #ece2f7;border-radius:16px;padding:16px 20px">
+              <div style="font-size:12.5px;color:#9b8fb0">เฉลี่ยต่อรายการ</div>
+              <div class="num" style="font-size:22px;font-weight:600;margin-top:6px">{{ ledgerAvgText }}</div>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #ece2f7;border-radius:18px;overflow:hidden">
+            <div style="display:grid;grid-template-columns:110px 1.4fr 1fr 1fr 130px 44px;gap:12px;padding:14px 22px;background:#faf6ff;border-bottom:1px solid #f0e9f8;font-size:12px;font-weight:600;color:#9b8fb0">
+              <div>วันที่</div><div>รายการ</div><div>หมวดหมู่</div><div>บัญชี</div><div style="text-align:right">จำนวนเงิน</div><div></div>
+            </div>
+            <sc-for list="{{ ledgerView }}" as="r" hint-placeholder-count="6">
+              <div style="display:grid;grid-template-columns:110px 1.4fr 1fr 1fr 130px 44px;gap:12px;padding:14px 22px;border-bottom:1px solid #f4eefb;align-items:center;font-size:13.5px" style-hover="background:#faf6ff">
+                <div class="num" style="color:#7a6e90">{{ r.dateText }}</div>
+                <div style="font-weight:500">{{ r.note }}</div>
+                <div><span style="font-size:12px;padding:3px 10px;background:#f0e9fb;border-radius:20px;color:#7a6e90">{{ r.category }}</span></div>
+                <div style="color:#7a6e90">{{ r.accountName }}</div>
+                <div class="num" style="text-align:right;font-weight:600;color:{{ ledgerColor }}">{{ r.amountText }}</div>
+                <div style="text-align:right">
+                  <sc-if value="{{ canEdit }}" hint-placeholder-val="">
+                    <button onClick="{{ r.onDelete }}" title="ลบ" style="border:none;background:none;color:#d0658a;cursor:pointer;font-size:15px;padding:4px;opacity:.6" style-hover="opacity:1">✕</button>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ ledgerEmpty }}" hint-placeholder-val="">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:40px;color:#b8a9d0;font-size:13.5px">
+                <div style="width:60px;height:60px"><svg viewBox="0 0 64 64" width="100%" height="100%" style="display:block"><path d="M14 27 L18 6 L31 20 Z" fill="#6b5545"/><path d="M50 27 L46 6 L33 20 Z" fill="#6b5545"/><path d="M17.5 23 L20 10 L27 19 Z" fill="#f4b2ce"/><path d="M46.5 23 L44 10 L37 19 Z" fill="#f4b2ce"/><ellipse cx="32" cy="37" rx="20" ry="17.5" fill="#efe3ce"/><ellipse cx="32" cy="41" rx="14.5" ry="12" fill="#cdb69c"/><ellipse cx="25" cy="35" rx="3" ry="4" fill="#6fa8dc"/><ellipse cx="39" cy="35" rx="3" ry="4" fill="#6fa8dc"/><circle cx="25" cy="36" r="1.4" fill="#2b2a40"/><circle cx="39" cy="36" r="1.4" fill="#2b2a40"/><path d="M29 41 L35 41 L32 44.5 Z" fill="#f07fab"/></svg></div>
+                ไม่พบรายการ{{ ledgerWord }}เลยเหมียว
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ============ LOANS ============ -->
+      <sc-if value="{{ isLoans }}" hint-placeholder-val="">
+        <div>
+          <div style="display:flex;gap:16px;margin-bottom:18px;flex-wrap:wrap">
+            <div style="flex:1;min-width:180px;background:#fff;border:1px solid #ece2f7;border-radius:16px;padding:16px 20px">
+              <div style="font-size:12.5px;color:#9b8fb0">เงินต้นคงค้าง</div>
+              <div class="num" style="font-size:22px;font-weight:600;margin-top:6px">{{ loanPrincipalText }}</div>
+            </div>
+            <div style="flex:1;min-width:180px;background:#fff;border:1px solid #ece2f7;border-radius:16px;padding:16px 20px">
+              <div style="font-size:12.5px;color:#9b8fb0">ดอกเบี้ยรับคาดหวัง</div>
+              <div class="num" style="font-size:22px;font-weight:600;margin-top:6px;color:#4fa98a">{{ loanInterestText }}</div>
+            </div>
+            <div style="flex:1;min-width:180px;background:#fff;border:1px solid #ece2f7;border-radius:16px;padding:16px 20px">
+              <div style="font-size:12.5px;color:#9b8fb0">เกินกำหนด</div>
+              <div class="num" style="font-size:22px;font-weight:600;margin-top:6px;color:#d0658a">{{ loanOverdueCount }}</div>
+            </div>
+            <div style="flex:1;min-width:180px;background:#fff;border:1px solid #ece2f7;border-radius:16px;padding:16px 20px">
+              <div style="font-size:12.5px;color:#9b8fb0">ค่าปรับสะสม</div>
+              <div class="num" style="font-size:22px;font-weight:600;margin-top:6px;color:#d0658a">{{ loanFeeText }}</div>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px">
+            <sc-for list="{{ loansView }}" as="l" hint-placeholder-count="4">
+              <div style="background:#fff;border:1px solid #ece2f7;border-radius:18px;padding:20px 22px;border-left:5px solid {{ l.accent }}">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start">
+                  <div style="display:flex;align-items:center;gap:11px">
+                    <span style="width:40px;height:40px;border-radius:50%;background:#f0e9fb;display:grid;place-items:center;padding:6px">
+                      <svg viewBox="0 0 48 48" width="100%" height="100%" style="display:block"><path d="M11 20 L14 5 L23 15 Z" fill="#6b5545"/><path d="M37 20 L34 5 L25 15 Z" fill="#6b5545"/><path d="M13.5 17 L15.5 8.5 L20 14.5 Z" fill="#f4b2ce"/><path d="M34.5 17 L32.5 8.5 L28 14.5 Z" fill="#f4b2ce"/><ellipse cx="24" cy="27" rx="14" ry="12.5" fill="#efe3ce"/><ellipse cx="24" cy="30" rx="10.5" ry="8.5" fill="#cdb69c"/><ellipse cx="19" cy="26" rx="2.3" ry="2.9" fill="#6fa8dc"/><ellipse cx="29" cy="26" rx="2.3" ry="2.9" fill="#6fa8dc"/><circle cx="19" cy="26.6" r="1" fill="#2b2a40"/><circle cx="29" cy="26.6" r="1" fill="#2b2a40"/><path d="M22 30.5 L26 30.5 L24 33 Z" fill="#f07fab"/></svg>
+                    </span>
+                    <div>
+                      <div style="font-size:15px;font-weight:600">{{ l.borrower }}</div>
+                      <div style="font-size:11.5px;color:#9b8fb0">ยืมเมื่อ {{ l.borrowDateText }}</div>
+                    </div>
+                  </div>
+                  <span style="font-size:11.5px;font-weight:600;padding:4px 11px;border-radius:20px;background:{{ l.statusBg }};color:{{ l.statusColor }}">{{ l.statusLabel }}</span>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 14px">
+                  <div>
+                    <div style="font-size:11.5px;color:#9b8fb0">เงินต้น</div>
+                    <div class="num" style="font-size:17px;font-weight:600;margin-top:2px">{{ l.amountText }}</div>
+                  </div>
+                  <div>
+                    <div style="font-size:11.5px;color:#9b8fb0">ดอกเบี้ย</div>
+                    <div class="num" style="font-size:17px;font-weight:600;margin-top:2px;color:#4fa98a">{{ l.interestText }}</div>
+                  </div>
+                  <div>
+                    <div style="font-size:11.5px;color:#9b8fb0">กำหนดคืน</div>
+                    <div class="num" style="font-size:13.5px;font-weight:500;margin-top:4px">{{ l.dueDateText }}</div>
+                  </div>
+                  <div>
+                    <div style="font-size:11.5px;color:#9b8fb0">ค่าปรับล่าช้า</div>
+                    <div class="num" style="font-size:13.5px;font-weight:500;margin-top:4px;color:{{ l.feeColor }}">{{ l.feeText }}</div>
+                  </div>
+                </div>
+
+                <div style="display:flex;justify-content:space-between;align-items:center;padding-top:13px;border-top:1px solid #f4eefb">
+                  <div>
+                    <span style="font-size:11.5px;color:#9b8fb0">รวมที่ต้องคืน </span>
+                    <span class="num" style="font-size:16px;font-weight:700">{{ l.totalText }}</span>
+                  </div>
+                  <sc-if value="{{ l.showPay }}" hint-placeholder-val="">
+                    <button onClick="{{ l.onPay }}" style="padding:7px 14px;background:#7c5cc4;color:#fff;border:none;border-radius:10px;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:#684aad">บันทึกรับคืน</button>
+                  </sc-if>
+                  <sc-if value="{{ l.paidTag }}" hint-placeholder-val="">
+                    <span style="font-size:12.5px;color:#4fa98a;font-weight:600">✓ ชำระครบแล้ว</span>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+    </main>
+  </div>
+
+  <!-- ============ MODAL ============ -->
+  <sc-if value="{{ modalOpen }}" hint-placeholder-val="">
+    <div onClick="{{ closeModal }}" style="position:fixed;inset:0;background:rgba(60,40,90,.38);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50;animation:fadeIn .2s ease">
+      <div onClick="{{ stop }}" style="background:#fff;border-radius:22px;padding:24px 30px 28px;width:100%;max-width:440px;animation:popIn .28s ease;max-height:92vh;overflow:auto">
+        <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:18px;position:relative">
+          <button onClick="{{ closeModal }}" style="position:absolute;right:0;top:0;border:none;background:#f5f0fc;width:30px;height:30px;border-radius:9px;cursor:pointer;font-size:15px;color:#7a6e90">✕</button>
+          <div style="width:58px;height:58px;margin-bottom:8px">
+            <svg viewBox="0 0 64 64" width="100%" height="100%" style="display:block"><path d="M14 27 L18 6 L31 20 Z" fill="#6b5545"/><path d="M50 27 L46 6 L33 20 Z" fill="#6b5545"/><path d="M17.5 23 L20 10 L27 19 Z" fill="#f4b2ce"/><path d="M46.5 23 L44 10 L37 19 Z" fill="#f4b2ce"/><ellipse cx="32" cy="37" rx="20" ry="17.5" fill="#efe3ce"/><ellipse cx="32" cy="41" rx="14.5" ry="12" fill="#cdb69c"/><circle cx="20" cy="43" r="3.2" fill="#e6a9c4"/><circle cx="44" cy="43" r="3.2" fill="#e6a9c4"/><ellipse cx="25" cy="35" rx="3" ry="4" fill="#6fa8dc"/><ellipse cx="39" cy="35" rx="3" ry="4" fill="#6fa8dc"/><circle cx="25" cy="36" r="1.4" fill="#2b2a40"/><circle cx="39" cy="36" r="1.4" fill="#2b2a40"/><path d="M29 41 L35 41 L32 44.5 Z" fill="#f07fab"/></svg>
+          </div>
+          <h3 class="mali" style="margin:0;font-size:19px;font-weight:600">{{ modalTitle }}</h3>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <sc-for list="{{ modalFields }}" as="f" hint-placeholder-count="5">
+            <div>
+              <label style="display:block;font-size:13px;font-weight:500;margin-bottom:6px">{{ f.label }}</label>
+              <sc-if value="{{ f.isSelect }}" hint-placeholder-val="">
+                <select value="{{ f.value }}" onChange="{{ f.onChange }}" style="width:100%;padding:11px 12px;border:1px solid #e0d3f0;border-radius:11px;font-size:14px;background:#fff;outline:none">
+                  <sc-for list="{{ f.options }}" as="o" hint-placeholder-count="3">
+                    <option value="{{ o }}">{{ o }}</option>
+                  </sc-for>
+                </select>
+              </sc-if>
+              <sc-if value="{{ f.isInput }}" hint-placeholder-val="">
+                <input value="{{ f.value }}" onInput="{{ f.onChange }}" type="{{ f.type }}" placeholder="{{ f.placeholder }}" style="width:100%;padding:11px 12px;border:1px solid #e0d3f0;border-radius:11px;font-size:14px;background:#fff;outline:none" />
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ modalError }}" hint-placeholder-val="">
+          <div style="color:#d0658a;font-size:12.5px;margin-top:12px">{{ modalError }}</div>
+        </sc-if>
+
+        <div style="display:flex;gap:10px;margin-top:24px">
+          <button onClick="{{ closeModal }}" style="flex:1;padding:12px;background:#f5f0fc;border:1px solid #ece2f7;border-radius:11px;font-size:14px;font-weight:500;cursor:pointer;color:#7a6e90">ยกเลิก</button>
+          <button onClick="{{ submitModal }}" style="flex:1.4;padding:12px;background:#7c5cc4;color:#fff;border:none;border-radius:11px;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#684aad">บันทึก</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ TOAST ============ -->
+  <sc-if value="{{ toast }}" hint-placeholder-val="">
+    <div style="position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:#40354f;color:#fff;padding:12px 20px 12px 14px;border-radius:14px;font-size:13.5px;font-weight:500;box-shadow:0 8px 30px rgba(80,50,120,.28);z-index:60;animation:toastIn .3s ease;display:flex;align-items:center;gap:10px">
+      <span style="width:26px;height:26px;flex:0 0 26px"><svg viewBox="0 0 48 48" width="100%" height="100%" style="display:block"><path d="M11 20 L14 5 L23 15 Z" fill="#c9b0ea"/><path d="M37 20 L34 5 L25 15 Z" fill="#c9b0ea"/><path d="M13.5 17 L15.5 8.5 L20 14.5 Z" fill="#f4b2ce"/><path d="M34.5 17 L32.5 8.5 L28 14.5 Z" fill="#f4b2ce"/><ellipse cx="24" cy="27" rx="14" ry="12.5" fill="#efe3ce"/><ellipse cx="24" cy="30" rx="10.5" ry="8.5" fill="#cdb69c"/><ellipse cx="19" cy="26" rx="2.3" ry="2.9" fill="#6fa8dc"/><ellipse cx="29" cy="26" rx="2.3" ry="2.9" fill="#6fa8dc"/><circle cx="19" cy="26.6" r="1" fill="#2b2a40"/><circle cx="29" cy="26.6" r="1" fill="#2b2a40"/><path d="M22 30.5 L26 30.5 L24 33 Z" fill="#f07fab"/></svg></span>
+      {{ toast }}
+    </div>
+  </sc-if>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+    this.today = new Date(2026, 6, 12);
+    this.users = {
+      admin: { pass: '1234', name: 'สมชาย ผู้ดูแล', role: 'ผู้ดูแลระบบ', admin: true },
+      staff: { pass: '1234', name: 'มานี พนักงาน', role: 'พนักงานบัญชี', admin: false },
+    };
+    this.incomeCats = ['เงินเดือน/รายได้', 'ดอกเบี้ยเงินกู้', 'รับชำระหนี้', 'ขายสินค้า', 'รายได้อื่นๆ'];
+    this.expenseCats = ['ค่าเช่า/สาธารณูปโภค', 'เงินเดือนพนักงาน', 'ปล่อยเงินกู้', 'ซื้อสินค้า', 'ค่าใช้จ่ายอื่นๆ'];
+    this.state = {
+      user: null, loginU: '', loginP: '', loginErr: '',
+      screen: 'dashboard', search: '', modal: null, form: {}, modalError: '', toast: '',
+      detailAccount: null, pnlPeriod: 'all',
+      accounts: [
+        { id: 'a1', name: 'ธนาคารกสิกรไทย', type: 'bank', number: 'xxx-x-x1234-x', balance: 428500 },
+        { id: 'a2', name: 'ธนาคารไทยพาณิชย์', type: 'bank', number: 'xxx-x-x7788-x', balance: 156200 },
+        { id: 'a3', name: 'เงินสดในมือ', type: 'cash', number: 'ลิ้นชักหน้าร้าน', balance: 34800 },
+      ],
+      income: [
+        { id: 'i1', date: '2026-07-10', category: 'ดอกเบี้ยเงินกู้', account: 'a1', amount: 12000, note: 'ดอกเบี้ยรับ - คุณวิชัย' },
+        { id: 'i2', date: '2026-07-06', category: 'รับชำระหนี้', account: 'a1', amount: 50000, note: 'รับคืนเงินต้น - คุณสมหญิง' },
+        { id: 'i3', date: '2026-07-02', category: 'เงินเดือน/รายได้', account: 'a2', amount: 45000, note: 'รายได้กิจการ' },
+        { id: 'i4', date: '2026-06-24', category: 'ขายสินค้า', account: 'a3', amount: 8600, note: 'ขายหน้าร้าน' },
+        { id: 'i5', date: '2026-06-11', category: 'ดอกเบี้ยเงินกู้', account: 'a1', amount: 9500, note: 'ดอกเบี้ยรับ - คุณอนันต์' },
+        { id: 'i6', date: '2026-05-15', category: 'รายได้อื่นๆ', account: 'a2', amount: 15000, note: 'เงินปันผล' },
+        { id: 'i7', date: '2026-04-20', category: 'เงินเดือน/รายได้', account: 'a2', amount: 45000, note: 'รายได้กิจการ' },
+      ],
+      expense: [
+        { id: 'e1', date: '2026-07-09', category: 'ค่าเช่า/สาธารณูปโภค', account: 'a1', amount: 18500, note: 'ค่าเช่าสำนักงาน' },
+        { id: 'e2', date: '2026-07-05', category: 'ปล่อยเงินกู้', account: 'a1', amount: 80000, note: 'ปล่อยกู้ - คุณประเสริฐ' },
+        { id: 'e3', date: '2026-07-01', category: 'เงินเดือนพนักงาน', account: 'a2', amount: 32000, note: 'เงินเดือน ก.ค.' },
+        { id: 'e4', date: '2026-06-18', category: 'ซื้อสินค้า', account: 'a3', amount: 6200, note: 'วัสดุสิ้นเปลือง' },
+        { id: 'e5', date: '2026-06-08', category: 'ค่าใช้จ่ายอื่นๆ', account: 'a1', amount: 4300, note: 'ค่าน้ำมันรถ' },
+        { id: 'e6', date: '2026-05-28', category: 'ค่าเช่า/สาธารณูปโภค', account: 'a1', amount: 18500, note: 'ค่าเช่าสำนักงาน' },
+        { id: 'e7', date: '2026-04-12', category: 'เงินเดือนพนักงาน', account: 'a2', amount: 32000, note: 'เงินเดือน เม.ย.' },
+      ],
+      loans: [
+        { id: 'l1', borrower: 'คุณวิชัย รุ่งเรือง', borrowDate: '2026-06-01', amount: 100000, interest: 6000, dueDate: '2026-07-01', penalty: 200, paid: false },
+        { id: 'l2', borrower: 'คุณสมหญิง ใจดี', borrowDate: '2026-06-20', amount: 50000, interest: 3000, dueDate: '2026-07-15', penalty: 150, paid: false },
+        { id: 'l3', borrower: 'คุณอนันต์ พานิช', borrowDate: '2026-07-02', amount: 80000, interest: 5000, dueDate: '2026-08-02', penalty: 200, paid: false },
+        { id: 'l4', borrower: 'คุณประเสริฐ มั่งมี', borrowDate: '2026-07-05', amount: 80000, interest: 4800, dueDate: '2026-08-05', penalty: 250, paid: false },
+        { id: 'l5', borrower: 'คุณดวงใจ ทองแท้', borrowDate: '2026-05-10', amount: 40000, interest: 2400, dueDate: '2026-06-10', penalty: 100, paid: true },
+      ],
+    };
+  }
+
+  fmt(n) { return '฿' + Math.round(n).toLocaleString('en-US'); }
+  thDate(iso) {
+    const d = new Date(iso);
+    return d.getDate() + ' ' + this.MONTHS[d.getMonth()] + ' ' + (d.getFullYear() + 543 - 2500);
+  }
+  accName(id) { const a = this.state.accounts.find(x => x.id === id); return a ? a.name : '-'; }
+
+  loanCalc(l) {
+    const day = 86400000;
+    const due = new Date(l.dueDate);
+    let status = 'active', lateDays = 0, fee = 0;
+    if (l.paid) status = 'paid';
+    else {
+      const diff = Math.floor((due - this.today) / day);
+      if (diff < 0) { status = 'overdue'; lateDays = -diff; fee = l.penalty * lateDays; }
+      else if (diff <= 7) status = 'due';
+    }
+    return { status, lateDays, fee, total: l.amount + l.interest + fee };
+  }
+
+  toast(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: '' }), 2600); }
+
+  doLogin = () => {
+    const u = this.users[this.state.loginU.trim().toLowerCase()];
+    if (u && u.pass === this.state.loginP) this.setState({ user: { key: this.state.loginU.trim().toLowerCase(), ...u }, loginErr: '', loginP: '' });
+    else this.setState({ loginErr: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง' });
+  };
+  logout = () => this.setState({ user: null, loginU: '', loginP: '', screen: 'dashboard' });
+
+  setField(k, v) { this.setState(s => ({ form: { ...s.form, [k]: v }, modalError: '' })); }
+
+  openModal(type) {
+    const base = { date: '2026-07-12', borrowDate: '2026-07-12', dueDate: '2026-08-12' };
+    if (type === 'income') base.category = this.incomeCats[0];
+    if (type === 'expense') base.category = this.expenseCats[0];
+    if (type === 'income' || type === 'expense') base.account = this.state.accounts[0].id;
+    if (type === 'account') { base.acctType = 'ธนาคาร'; base.balance = ''; }
+    this.setState({ modal: type, form: base, modalError: '' });
+  }
+  closeModal = () => this.setState({ modal: null, modalError: '' });
+
+  submitModal = () => {
+    const f = this.state.form, t = this.state.modal;
+    if (t === 'income' || t === 'expense') {
+      if (!f.amount || Number(f.amount) <= 0) return this.setState({ modalError: 'กรุณากรอกจำนวนเงินให้ถูกต้อง' });
+      if (!f.note) return this.setState({ modalError: 'กรุณากรอกรายละเอียดรายการ' });
+      const rec = { id: t[0] + Date.now(), date: f.date, category: f.category, account: f.account, amount: Number(f.amount), note: f.note };
+      this.setState(s => {
+        const accounts = s.accounts.map(a => a.id === f.account ? { ...a, balance: a.balance + (t === 'income' ? 1 : -1) * Number(f.amount) } : a);
+        return { [t]: [rec, ...s[t]], accounts, modal: null };
+      });
+      this.toast(t === 'income' ? 'บันทึกรายการรับเรียบร้อย' : 'บันทึกรายการจ่ายเรียบร้อย');
+    } else if (t === 'loan') {
+      if (!f.borrower) return this.setState({ modalError: 'กรุณากรอกชื่อผู้ยืม' });
+      if (!f.amount || Number(f.amount) <= 0) return this.setState({ modalError: 'กรุณากรอกจำนวนเงินให้ถูกต้อง' });
+      const rec = { id: 'l' + Date.now(), borrower: f.borrower, borrowDate: f.borrowDate, amount: Number(f.amount), interest: Number(f.interest || 0), dueDate: f.dueDate, penalty: Number(f.penalty || 0), paid: false };
+      this.setState(s => ({ loans: [rec, ...s.loans], modal: null }));
+      this.toast('เพิ่มสัญญาเงินกู้เรียบร้อย');
+    } else if (t === 'account') {
+      if (!f.name) return this.setState({ modalError: 'กรุณากรอกชื่อบัญชี' });
+      const isBank = f.acctType === 'ธนาคาร';
+      const rec = { id: 'a' + Date.now(), name: f.name, type: isBank ? 'bank' : 'cash', number: f.number || (isBank ? '-' : 'เงินสด'), balance: Number(f.balance || 0) };
+      this.setState(s => ({ accounts: [...s.accounts, rec], modal: null }));
+      this.toast('เพิ่มบัญชีเรียบร้อย');
+    }
+  };
+
+  deleteAccount(id) {
+    const used = this.state.income.some(r => r.account === id) || this.state.expense.some(r => r.account === id);
+    if (used) return this.toast('ลบไม่ได้ — บัญชีนี้มีรายการอยู่');
+    if (this.state.accounts.length <= 1) return this.toast('ต้องมีอย่างน้อย 1 บัญชี');
+    this.setState(s => ({ accounts: s.accounts.filter(a => a.id !== id) }));
+    this.toast('ลบบัญชีแล้ว');
+  }
+
+  deleteRow(type, id) {
+    this.setState(s => ({ [type]: s[type].filter(r => r.id !== id) }));
+    this.toast('ลบรายการแล้ว');
+  }
+  payLoan(id) {
+    this.setState(s => ({ loans: s.loans.map(l => l.id === id ? { ...l, paid: true } : l) }));
+    this.toast('บันทึกการรับคืนเงินกู้แล้ว');
+  }
+
+  monthKey(iso) { const d = new Date(iso); return d.getFullYear() + '-' + d.getMonth(); }
+
+  renderVals() {
+    const s = this.state;
+    if (!s.user) {
+      return {
+        loggedOut: true, loggedIn: false,
+        loginU: s.loginU, loginP: s.loginP, loginErr: s.loginErr,
+        onLoginU: e => this.setState({ loginU: e.target.value }),
+        onLoginP: e => this.setState({ loginP: e.target.value }),
+        onLoginKey: e => { if (e.key === 'Enter') this.doLogin(); },
+        doLogin: this.doLogin,
+      };
+    }
+
+    const canEdit = s.user.admin;
+    const scr = s.screen;
+    const navDef = [
+      { key: 'dashboard', label: 'ภาพรวม' },
+      { key: 'accounts', label: 'บัญชี & เงินสด' },
+      { key: 'income', label: 'รายการรับ' },
+      { key: 'expense', label: 'รายการจ่าย' },
+      { key: 'loans', label: 'ปล่อยเงินกู้' },
+      { key: 'pnl', label: 'กำไร - ขาดทุน' },
+    ];
+    const navActive = (scr === 'accountDetail') ? 'accounts' : scr;
+    const navItems = navDef.map(n => {
+      const active = navActive === n.key;
+      return {
+        label: n.label,
+        onClick: () => this.setState({ screen: n.key, search: '', detailAccount: null }),
+        bg: active ? '#7c5cc4' : 'transparent',
+        color: active ? '#fff' : '#5a5068',
+        weight: active ? '600' : '500',
+        iconBg: active ? 'rgba(255,255,255,.22)' : '#f0e9fb',
+        catEar: active ? '#8a6a4e' : '#6b5545',
+        catFace: active ? '#f7efe0' : '#efe3ce',
+        catMask: active ? '#dcc8ad' : '#cdb69c',
+      };
+    });
+
+    // totals
+    const totalBalance = s.accounts.reduce((a, b) => a + b.balance, 0);
+    const bankTotal = s.accounts.filter(a => a.type === 'bank').reduce((a, b) => a + b.balance, 0);
+    const cashTotal = s.accounts.filter(a => a.type === 'cash').reduce((a, b) => a + b.balance, 0);
+    const curKey = this.today.getFullYear() + '-' + this.today.getMonth();
+    const monthIncome = s.income.filter(r => this.monthKey(r.date) === curKey).reduce((a, b) => a + b.amount, 0);
+    const monthExpense = s.expense.filter(r => this.monthKey(r.date) === curKey).reduce((a, b) => a + b.amount, 0);
+    const loanCalcs = s.loans.map(l => ({ l, c: this.loanCalc(l) }));
+    const outstanding = loanCalcs.filter(x => !x.l.paid).reduce((a, b) => a + b.l.amount, 0);
+    const totalFee = loanCalcs.reduce((a, b) => a + b.c.fee, 0);
+
+    const base = {
+      loggedOut: false, loggedIn: true, navItems, canEdit,
+      userName: s.user.name, userRole: s.user.role,
+      logout: this.logout, search: s.search, onSearch: e => this.setState({ search: e.target.value }),
+      isDashboard: scr === 'dashboard', isAccounts: scr === 'accounts',
+      isAccountDetail: scr === 'accountDetail', isPnl: scr === 'pnl',
+      isLedger: scr === 'income' || scr === 'expense', isLoans: scr === 'loans',
+      showSearch: scr === 'income' || scr === 'expense' || scr === 'loans',
+      showAdd: canEdit && ['income', 'expense', 'loans', 'accounts'].includes(scr),
+      showExport: canEdit && ['income', 'expense', 'loans', 'pnl', 'accountDetail'].includes(scr),
+      addLabel: scr === 'income' ? 'บันทึกรับ' : scr === 'expense' ? 'บันทึกจ่าย' : scr === 'accounts' ? 'เพิ่มบัญชี' : 'เพิ่มสัญญา',
+      onAdd: () => this.openModal(scr === 'loans' ? 'loan' : scr === 'accounts' ? 'account' : scr),
+      backToAccounts: () => this.setState({ screen: 'accounts', detailAccount: null }),
+      exportPdf: () => this.toast('กำลังส่งออกรายงาน PDF…'),
+      exportXls: () => this.toast('กำลังส่งออกไฟล์ Excel…'),
+      toast: s.toast, stop: e => e.stopPropagation(),
+    };
+
+    const titles = {
+      dashboard: ['ภาพรวมการเงิน', 'สรุปสถานะการเงินทั้งหมด ณ วันที่ ' + this.thDate('2026-07-12')],
+      accounts: ['บัญชี & เงินสด', 'จัดการบัญชีธนาคารและเงินสด — คลิกที่การ์ดเพื่อดูรายการ'],
+      pnl: ['กำไร - ขาดทุน', 'สรุปรายรับ รายจ่าย และกำไรสุทธิ'],
+      income: ['รายการรับ', 'บันทึกและติดตามรายรับทั้งหมด'],
+      expense: ['รายการจ่าย', 'บันทึกและติดตามรายจ่ายทั้งหมด'],
+      loans: ['ปล่อยเงินกู้', 'จัดการสัญญาเงินกู้ ดอกเบี้ย และกำหนดคืน'],
+    };
+    base.pageTitle = (scr === 'accountDetail' && s.detailAccount) ? (s.accounts.find(a => a.id === s.detailAccount)?.name || 'บัญชี') : titles[scr][0];
+    base.pageSub = (scr === 'accountDetail') ? 'รายการรับ-จ่ายทั้งหมดของบัญชีนี้' : titles[scr][1];
+
+    // DASHBOARD
+    if (scr === 'dashboard') {
+      base.kpis = [
+        { label: 'ยอดเงินรวมทุกบัญชี', value: this.fmt(totalBalance), sub: 'ธนาคาร + เงินสด', subColor: '#9b8fb0' },
+        { label: 'รายรับเดือนนี้', value: this.fmt(monthIncome), sub: '▲ กรกฎาคม 2569', subColor: '#4fa98a' },
+        { label: 'รายจ่ายเดือนนี้', value: this.fmt(monthExpense), sub: '▼ กรกฎาคม 2569', subColor: '#d0658a' },
+        { label: 'เงินกู้คงค้าง', value: this.fmt(outstanding), sub: loanCalcs.filter(x => !x.l.paid).length + ' สัญญาที่ยังไม่คืน', subColor: '#9b8fb0' },
+      ];
+      const bars = [];
+      let maxV = 1;
+      for (let i = 5; i >= 0; i--) {
+        const d = new Date(this.today.getFullYear(), this.today.getMonth() - i, 1);
+        const k = d.getFullYear() + '-' + d.getMonth();
+        const inc = s.income.filter(r => this.monthKey(r.date) === k).reduce((a, b) => a + b.amount, 0);
+        const exp = s.expense.filter(r => this.monthKey(r.date) === k).reduce((a, b) => a + b.amount, 0);
+        bars.push({ label: this.MONTHS[d.getMonth()], inc, exp });
+        maxV = Math.max(maxV, inc, exp);
+      }
+      base.chart = bars.map(b => ({
+        label: b.label,
+        incomeH: Math.max(2, (b.inc / maxV) * 100) + '%',
+        expenseH: Math.max(2, (b.exp / maxV) * 100) + '%',
+        incomeText: 'รับ ' + this.fmt(b.inc), expenseText: 'จ่าย ' + this.fmt(b.exp),
+      }));
+      const alerts = [];
+      loanCalcs.forEach(x => {
+        if (x.c.status === 'overdue') alerts.push({ title: 'เกินกำหนดคืน — ' + x.l.borrower, detail: 'ล่าช้า ' + x.c.lateDays + ' วัน · ค่าปรับสะสม ' + this.fmt(x.c.fee), bg: '#fbe9f0', dot: '#d0658a' });
+        else if (x.c.status === 'due') alerts.push({ title: 'ใกล้ครบกำหนด — ' + x.l.borrower, detail: 'กำหนดคืน ' + this.thDate(x.l.dueDate), bg: '#fdf3ea', dot: '#d99a4a' });
+      });
+      s.accounts.forEach(a => { if (a.balance < 40000) alerts.push({ title: 'ยอดเงินคงเหลือต่ำ — ' + a.name, detail: 'คงเหลือ ' + this.fmt(a.balance), bg: '#fdf3ea', dot: '#d99a4a' }); });
+      base.alerts = alerts;
+      base.noAlerts = alerts.length === 0;
+      const merged = [
+        ...s.income.map(r => ({ ...r, kind: 'in' })),
+        ...s.expense.map(r => ({ ...r, kind: 'out' })),
+      ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 6);
+      base.recentTx = merged.map(t => ({
+        sign: t.kind === 'in' ? '+' : '−',
+        iconBg: t.kind === 'in' ? '#e3f2ec' : '#fbe9f0',
+        iconColor: t.kind === 'in' ? '#4fa98a' : '#d0658a',
+        desc: t.note, meta: this.thDate(t.date) + ' · ' + this.accName(t.account),
+        amountText: (t.kind === 'in' ? '+' : '−') + this.fmt(t.amount).slice(1),
+        color: t.kind === 'in' ? '#4fa98a' : '#d0658a',
+      }));
+    }
+
+    // ACCOUNTS
+    if (scr === 'accounts') {
+      base.accountsView = s.accounts.map(a => ({
+        name: a.name, typeLabel: a.type === 'bank' ? 'บัญชีธนาคาร' : 'เงินสด',
+        sub: a.number,
+        tint: a.type === 'bank' ? '#ece3fb' : '#e3f2ec',
+        balanceText: this.fmt(a.balance), balColor: a.balance < 40000 ? '#d0658a' : '#40354f',
+        onOpen: () => this.setState({ screen: 'accountDetail', detailAccount: a.id }),
+        showDelete: canEdit,
+        onDelete: (e) => { e.stopPropagation(); this.deleteAccount(a.id); },
+      }));
+      base.totalBalanceText = this.fmt(totalBalance);
+      base.bankTotalText = this.fmt(bankTotal);
+      base.cashTotalText = this.fmt(cashTotal);
+    }
+
+    // ACCOUNT DETAIL
+    if (scr === 'accountDetail') {
+      const acc = s.accounts.find(a => a.id === s.detailAccount);
+      if (acc) {
+        const ins = s.income.filter(r => r.account === acc.id).map(r => ({ ...r, kind: 'in' }));
+        const outs = s.expense.filter(r => r.account === acc.id).map(r => ({ ...r, kind: 'out' }));
+        const incSum = ins.reduce((a, b) => a + b.amount, 0);
+        const expSum = outs.reduce((a, b) => a + b.amount, 0);
+        base.adBalanceText = this.fmt(acc.balance);
+        base.adIncomeText = '+' + this.fmt(incSum).slice(1);
+        base.adExpenseText = '−' + this.fmt(expSum).slice(1);
+        const rows = [...ins, ...outs].sort((a, b) => new Date(b.date) - new Date(a.date));
+        base.adEmpty = rows.length === 0;
+        base.adRows = rows.map(r => ({
+          dateText: this.thDate(r.date), note: r.note, category: r.category,
+          typeLabel: r.kind === 'in' ? 'รับ' : 'จ่าย',
+          tagBg: r.kind === 'in' ? '#e3f2ec' : '#fbe9f0',
+          tagColor: r.kind === 'in' ? '#4fa98a' : '#d0658a',
+          amountText: (r.kind === 'in' ? '+' : '−') + this.fmt(r.amount).slice(1),
+          color: r.kind === 'in' ? '#4fa98a' : '#d0658a',
+        }));
+      }
+    }
+
+    // PROFIT / LOSS
+    if (scr === 'pnl') {
+      const period = s.pnlPeriod;
+      const inRange = (iso) => {
+        if (period === 'all') return true;
+        const d = new Date(iso);
+        if (period === 'month') return d.getFullYear() === this.today.getFullYear() && d.getMonth() === this.today.getMonth();
+        if (period === 'year') return d.getFullYear() === this.today.getFullYear();
+        return true;
+      };
+      const inc = s.income.filter(r => inRange(r.date));
+      const exp = s.expense.filter(r => inRange(r.date));
+      const incSum = inc.reduce((a, b) => a + b.amount, 0);
+      const expSum = exp.reduce((a, b) => a + b.amount, 0);
+      const net = incSum - expSum;
+      base.pnlIncomeText = this.fmt(incSum);
+      base.pnlExpenseText = this.fmt(expSum);
+      base.pnlNetLabel = net >= 0 ? 'กำไรสุทธิ' : 'ขาดทุนสุทธิ';
+      base.pnlNetText = (net >= 0 ? '+' : '−') + this.fmt(Math.abs(net)).slice(1);
+      base.pnlNetBg = net >= 0 ? '#4fa98a' : '#d0658a';
+      base.pnlMarginText = incSum > 0 ? Math.round((net / incSum) * 100) + '%' : '—';
+      const byCat = (list) => {
+        const m = {};
+        list.forEach(r => { m[r.category] = (m[r.category] || 0) + r.amount; });
+        const max = Math.max(1, ...Object.values(m));
+        return Object.entries(m).sort((a, b) => b[1] - a[1]).map(([name, v]) => ({ name, valueText: this.fmt(v), pct: Math.max(3, (v / max) * 100) + '%' }));
+      };
+      base.pnlIncomeCats = byCat(inc);
+      base.pnlExpenseCats = byCat(exp);
+      base.pnlNoIncome = inc.length === 0;
+      base.pnlNoExpense = exp.length === 0;
+      const pdef = [{ k: 'all', l: 'ทั้งหมด' }, { k: 'year', l: 'ปีนี้' }, { k: 'month', l: 'เดือนนี้' }];
+      base.pnlPeriods = pdef.map(p => ({
+        label: p.l, onClick: () => this.setState({ pnlPeriod: p.k }),
+        bg: period === p.k ? '#7c5cc4' : '#fff', color: period === p.k ? '#fff' : '#7a6e90',
+        border: period === p.k ? '#7c5cc4' : '#e0d3f0', weight: period === p.k ? '600' : '500',
+      }));
+    }
+
+    // LEDGER (income/expense)
+    if (scr === 'income' || scr === 'expense') {
+      const list = s[scr];
+      const q = s.search.trim().toLowerCase();
+      const filtered = list.filter(r => !q || r.note.toLowerCase().includes(q) || r.category.toLowerCase().includes(q) || this.accName(r.account).toLowerCase().includes(q));
+      const total = filtered.reduce((a, b) => a + b.amount, 0);
+      base.ledgerWord = scr === 'income' ? 'รายรับ' : 'รายจ่าย';
+      base.ledgerColor = scr === 'income' ? '#4fa98a' : '#d0658a';
+      base.ledgerTotalText = this.fmt(total);
+      base.ledgerCount = filtered.length + ' รายการ';
+      base.ledgerAvgText = this.fmt(filtered.length ? total / filtered.length : 0);
+      base.ledgerEmpty = filtered.length === 0;
+      base.ledgerView = filtered.slice().sort((a, b) => new Date(b.date) - new Date(a.date)).map(r => ({
+        dateText: this.thDate(r.date), note: r.note, category: r.category, accountName: this.accName(r.account),
+        amountText: this.fmt(r.amount), onDelete: () => this.deleteRow(scr, r.id),
+      }));
+    }
+
+    // LOANS
+    if (scr === 'loans') {
+      const q = s.search.trim().toLowerCase();
+      const totalInterest = loanCalcs.filter(x => !x.l.paid).reduce((a, b) => a + b.l.interest, 0);
+      base.loanPrincipalText = this.fmt(outstanding);
+      base.loanInterestText = this.fmt(totalInterest);
+      base.loanOverdueCount = loanCalcs.filter(x => x.c.status === 'overdue').length + ' สัญญา';
+      base.loanFeeText = this.fmt(totalFee);
+      const styleMap = {
+        active: { label: 'ปกติ', bg: '#eee7f8', color: '#6a5a8a', accent: '#c9b0ea' },
+        due: { label: 'ใกล้กำหนด', bg: '#fdf3ea', color: '#a5771a', accent: '#d99a4a' },
+        overdue: { label: 'เกินกำหนด', bg: '#fbe9f0', color: '#b8446e', accent: '#d0658a' },
+        paid: { label: 'ชำระแล้ว', bg: '#e3f2ec', color: '#3a8a6f', accent: '#4fa98a' },
+      };
+      base.loansView = loanCalcs
+        .filter(x => !q || x.l.borrower.toLowerCase().includes(q))
+        .sort((a, b) => (a.l.paid - b.l.paid) || (new Date(a.l.dueDate) - new Date(b.l.dueDate)))
+        .map(x => {
+          const st = styleMap[x.c.status];
+          return {
+            borrower: x.l.borrower,
+            borrowDateText: this.thDate(x.l.borrowDate), dueDateText: this.thDate(x.l.dueDate),
+            amountText: this.fmt(x.l.amount), interestText: this.fmt(x.l.interest),
+            feeText: x.c.fee > 0 ? this.fmt(x.c.fee) + ' (' + x.c.lateDays + ' วัน)' : this.fmt(x.l.penalty) + '/วัน',
+            feeColor: x.c.fee > 0 ? '#d0658a' : '#9b8fb0',
+            totalText: this.fmt(x.c.total),
+            statusLabel: st.label, statusBg: st.bg, statusColor: st.color, accent: st.accent,
+            showPay: canEdit && !x.l.paid, paidTag: x.l.paid,
+            onPay: () => this.payLoan(x.l.id),
+          };
+        });
+    }
+
+    // MODAL
+    base.modalOpen = !!s.modal;
+    if (s.modal) {
+      const f = s.form;
+      const mk = (label, key, opts = {}) => opts.options
+        ? { label, isSelect: true, isInput: false, value: f[key] || '', options: opts.options, onChange: e => this.setField(key, e.target.value) }
+        : { label, isInput: true, isSelect: false, type: opts.type || 'text', placeholder: opts.ph || '', value: f[key] || '', onChange: e => this.setField(key, e.target.value) };
+      const accOpts = s.accounts.map(a => a.name);
+      const accByName = name => { const a = s.accounts.find(x => x.name === name); return a ? a.id : s.accounts[0].id; };
+      if (s.modal === 'income' || s.modal === 'expense') {
+        base.modalTitle = s.modal === 'income' ? 'บันทึกรายการรับ' : 'บันทึกรายการจ่าย';
+        base.modalFields = [
+          mk('วันที่', 'date', { type: 'date' }),
+          mk('รายละเอียด', 'note', { ph: 'เช่น ดอกเบี้ยรับ, ค่าเช่า' }),
+          mk('หมวดหมู่', 'category', { options: s.modal === 'income' ? this.incomeCats : this.expenseCats }),
+          { label: 'บัญชี', isSelect: true, isInput: false, value: this.accName(f.account), options: accOpts, onChange: e => this.setField('account', accByName(e.target.value)) },
+          mk('จำนวนเงิน (บาท)', 'amount', { type: 'number', ph: '0' }),
+        ];
+      } else if (s.modal === 'account') {
+        base.modalTitle = 'เพิ่มบัญชีใหม่';
+        base.modalFields = [
+          mk('ชื่อบัญชี', 'name', { ph: 'เช่น ธนาคารกรุงเทพ' }),
+          mk('ประเภท', 'acctType', { options: ['ธนาคาร', 'เงินสด'] }),
+          mk('เลขบัญชี / หมายเหตุ', 'number', { ph: 'เช่น xxx-x-xxxxx-x' }),
+          mk('ยอดเงินตั้งต้น (บาท)', 'balance', { type: 'number', ph: '0' }),
+        ];
+      } else {
+        base.modalTitle = 'เพิ่มสัญญาเงินกู้';
+        base.modalFields = [
+          mk('ชื่อผู้ยืม', 'borrower', { ph: 'เช่น คุณสมชาย' }),
+          mk('วันที่ยืม', 'borrowDate', { type: 'date' }),
+          mk('จำนวนเงินต้น (บาท)', 'amount', { type: 'number', ph: '0' }),
+          mk('ดอกเบี้ย (บาท)', 'interest', { type: 'number', ph: '0' }),
+          mk('กำหนดคืน', 'dueDate', { type: 'date' }),
+          mk('ค่าปรับล่าช้า (บาท/วัน)', 'penalty', { type: 'number', ph: '0' }),
+        ];
+      }
+      base.modalError = s.modalError;
+      base.closeModal = this.closeModal;
+      base.submitModal = this.submitModal;
+    }
+
+    return base;
+  }
+}
+</script>
+</body>
+</html>
