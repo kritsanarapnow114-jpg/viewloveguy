@@ -1,0 +1,181 @@
+"use client";
+
+import { useMemo, useState, useTransition } from "react";
+import { fmtBaht } from "@/lib/format";
+import { PageHeader, SearchBox, AddButton } from "./PageHeader";
+import { ExportControls } from "./ExportControls";
+import { FormModal, type ModalField } from "./FormModal";
+import { CatEmpty } from "./icons/Cat";
+import { useToast } from "./ToastProvider";
+import { createTransaction, deleteTransaction, type TxKind } from "@/app/actions/transactions";
+
+export type LedgerRow = {
+  id: string;
+  dateText: string;
+  date: string;
+  note: string;
+  category: string;
+  accountId: string;
+  accountName: string;
+  amount: number;
+};
+
+export function LedgerClient({
+  kind,
+  rows,
+  categories,
+  accounts,
+  canEdit,
+}: {
+  kind: TxKind;
+  rows: LedgerRow[];
+  categories: string[];
+  accounts: { id: string; name: string }[];
+  canEdit: boolean;
+}) {
+  const [search, setSearch] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [, startTransition] = useTransition();
+  const { showToast } = useToast();
+
+  const word = kind === "income" ? "รายรับ" : "รายจ่าย";
+  const color = kind === "income" ? "#4fa98a" : "#d0658a";
+  const title = kind === "income" ? "รายการรับ" : "รายการจ่าย";
+  const subtitle = kind === "income" ? "บันทึกและติดตามรายรับทั้งหมด" : "บันทึกและติดตามรายจ่ายทั้งหมด";
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return rows;
+    return rows.filter((r) => r.note.toLowerCase().includes(q) || r.category.toLowerCase().includes(q) || r.accountName.toLowerCase().includes(q));
+  }, [rows, search]);
+
+  const total = filtered.reduce((a, b) => a + b.amount, 0);
+
+  const handleDelete = (id: string, accountId: string) => {
+    startTransition(async () => {
+      const res = await deleteTransaction(id, accountId);
+      showToast(res.error ?? "ลบรายการแล้ว");
+    });
+  };
+
+  const fields: ModalField[] = [
+    { kind: "input", name: "date", label: "วันที่", type: "date", defaultValue: new Date().toISOString().slice(0, 10) },
+    { kind: "input", name: "note", label: "รายละเอียด", placeholder: "เช่น ดอกเบี้ยรับ, ค่าเช่า" },
+    { kind: "select", name: "category", label: "หมวดหมู่", options: categories, defaultValue: categories[0] },
+    { kind: "select", name: "accountName", label: "บัญชี", options: accounts.map((a) => a.name), defaultValue: accounts[0]?.name },
+    { kind: "input", name: "amount", label: "จำนวนเงิน (บาท)", type: "number", placeholder: "0" },
+  ];
+
+  return (
+    <div>
+      <PageHeader title={title} subtitle={subtitle}>
+        <SearchBox value={search} onChange={setSearch} />
+        {canEdit && <AddButton label={kind === "income" ? "บันทึกรับ" : "บันทึกจ่าย"} onClick={() => setModalOpen(true)} />}
+        {canEdit && <ExportControls />}
+      </PageHeader>
+
+      <div style={{ display: "flex", gap: 16, marginBottom: 18, flexWrap: "wrap" }}>
+        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>รวม{word}ทั้งหมด</div>
+          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6, color }}>
+            {fmtBaht(total)}
+          </div>
+        </div>
+        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>จำนวนรายการ</div>
+          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6 }}>
+            {filtered.length} รายการ
+          </div>
+        </div>
+        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>เฉลี่ยต่อรายการ</div>
+          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6 }}>
+            {fmtBaht(filtered.length ? total / filtered.length : 0)}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, overflow: "hidden" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "110px 1.4fr 1fr 1fr 130px 44px",
+            gap: 12,
+            padding: "14px 22px",
+            background: "#faf6ff",
+            borderBottom: "1px solid #f0e9f8",
+            fontSize: 12,
+            fontWeight: 600,
+            color: "#9b8fb0",
+          }}
+        >
+          <div>วันที่</div>
+          <div>รายการ</div>
+          <div>หมวดหมู่</div>
+          <div>บัญชี</div>
+          <div style={{ textAlign: "right" }}>จำนวนเงิน</div>
+          <div />
+        </div>
+        {filtered
+          .slice()
+          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          .map((r) => (
+            <div
+              key={r.id}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "110px 1.4fr 1fr 1fr 130px 44px",
+                gap: 12,
+                padding: "14px 22px",
+                borderBottom: "1px solid #f4eefb",
+                alignItems: "center",
+                fontSize: 13.5,
+              }}
+            >
+              <div className="num" style={{ color: "#7a6e90" }}>
+                {r.dateText}
+              </div>
+              <div style={{ fontWeight: 500 }}>{r.note}</div>
+              <div>
+                <span style={{ fontSize: 12, padding: "3px 10px", background: "#f0e9fb", borderRadius: 20, color: "#7a6e90" }}>{r.category}</span>
+              </div>
+              <div style={{ color: "#7a6e90" }}>{r.accountName}</div>
+              <div className="num" style={{ textAlign: "right", fontWeight: 600, color }}>
+                {fmtBaht(r.amount)}
+              </div>
+              <div style={{ textAlign: "right" }}>
+                {canEdit && (
+                  <button
+                    onClick={() => handleDelete(r.id, r.accountId)}
+                    title="ลบ"
+                    style={{ border: "none", background: "none", color: "#d0658a", cursor: "pointer", fontSize: 15, padding: 4, opacity: 0.6 }}
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        {filtered.length === 0 && (
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: 40, color: "#b8a9d0", fontSize: 13.5 }}>
+            <div style={{ width: 60, height: 60 }}>
+              <CatEmpty variant="sleepy" />
+            </div>
+            ไม่พบรายการ{word}เลยเหมียว
+          </div>
+        )}
+      </div>
+
+      {modalOpen && (
+        <FormModal
+          title={kind === "income" ? "บันทึกรายการรับ" : "บันทึกรายการจ่าย"}
+          submitLabel="บันทึก"
+          successMessage={kind === "income" ? "บันทึกรายการรับเรียบร้อย" : "บันทึกรายการจ่ายเรียบร้อย"}
+          onClose={() => setModalOpen(false)}
+          action={createTransaction.bind(null, kind)}
+          fields={fields}
+        />
+      )}
+    </div>
+  );
+}

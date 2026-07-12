@@ -1,0 +1,68 @@
+// Prisma schema for กำไรและวิว (loan & account management system)
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  STAFF
+}
+
+enum AccountType {
+  BANK
+  CASH
+}
+
+enum TransactionKind {
+  INCOME
+  EXPENSE
+}
+
+model User {
+  id       String @id @default(cuid())
+  username String @unique
+  password String
+  name     String
+  role     Role
+}
+
+model Account {
+  id             String        @id @default(cuid())
+  name           String
+  type           AccountType
+  number         String
+  openingBalance Float         @default(0)
+  createdAt      DateTime      @default(now())
+  transactions   Transaction[]
+}
+
+model Transaction {
+  id        String           @id @default(cuid())
+  kind      TransactionKind
+  date      DateTime
+  category  String
+  note      String
+  amount    Float
+  accountId String
+  account   Account          @relation(fields: [accountId], references: [id])
+  createdAt DateTime         @default(now())
+}
+
+model Loan {
+  id         String    @id @default(cuid())
+  borrower   String
+  borrowDate DateTime
+  amount     Float
+  interest   Float
+  dueDate    DateTime
+  penalty    Float
+  paid       Boolean   @default(false)
+  paidDate   DateTime?
+  createdAt  DateTime  @default(now())
+}

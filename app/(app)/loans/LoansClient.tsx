@@ -1,0 +1,180 @@
+"use client";
+
+import { useMemo, useState, useTransition } from "react";
+import { fmtBaht, thDate } from "@/lib/format";
+import { loanCalc, type LoanStatus } from "@/lib/loan";
+import { PageHeader, SearchBox, AddButton } from "@/components/PageHeader";
+import { ExportControls } from "@/components/ExportControls";
+import { FormModal } from "@/components/FormModal";
+import { CatFace } from "@/components/icons/Cat";
+import { useToast } from "@/components/ToastProvider";
+import { createLoan, payLoan } from "@/app/actions/loans";
+
+type LoanView = {
+  id: string;
+  borrower: string;
+  borrowDate: string;
+  amount: number;
+  interest: number;
+  dueDate: string;
+  penalty: number;
+  paid: boolean;
+};
+
+const STATUS_STYLE: Record<LoanStatus, { label: string; bg: string; color: string; accent: string }> = {
+  active: { label: "ปกติ", bg: "#eee7f8", color: "#6a5a8a", accent: "#c9b0ea" },
+  due: { label: "ใกล้กำหนด", bg: "#fdf3ea", color: "#a5771a", accent: "#d99a4a" },
+  overdue: { label: "เกินกำหนด", bg: "#fbe9f0", color: "#b8446e", accent: "#d0658a" },
+  paid: { label: "ชำระแล้ว", bg: "#e3f2ec", color: "#3a8a6f", accent: "#4fa98a" },
+};
+
+export function LoansClient({ loans, canEdit }: { loans: LoanView[]; canEdit: boolean }) {
+  const [search, setSearch] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [, startTransition] = useTransition();
+  const { showToast } = useToast();
+
+  const calcs = useMemo(() => loans.map((l) => ({ l, c: loanCalc({ ...l, dueDate: new Date(l.dueDate) }) })), [loans]);
+  const outstanding = calcs.filter((x) => !x.l.paid).reduce((a, b) => a + b.l.amount, 0);
+  const totalInterest = calcs.filter((x) => !x.l.paid).reduce((a, b) => a + b.l.interest, 0);
+  const overdueCount = calcs.filter((x) => x.c.status === "overdue").length;
+  const totalFee = calcs.reduce((a, b) => a + b.c.fee, 0);
+
+  const q = search.trim().toLowerCase();
+  const filtered = calcs
+    .filter((x) => !q || x.l.borrower.toLowerCase().includes(q))
+    .sort((a, b) => Number(a.l.paid) - Number(b.l.paid) || new Date(a.l.dueDate).getTime() - new Date(b.l.dueDate).getTime());
+
+  const handlePay = (id: string) => {
+    startTransition(async () => {
+      const res = await payLoan(id);
+      showToast(res.error ?? "บันทึกการรับคืนเงินกู้แล้ว");
+    });
+  };
+
+  const today = new Date().toISOString().slice(0, 10);
+  const inOneMonth = new Date();
+  inOneMonth.setMonth(inOneMonth.getMonth() + 1);
+
+  return (
+    <div>
+      <PageHeader title="ปล่อยเงินกู้" subtitle="จัดการสัญญาเงินกู้ ดอกเบี้ย และกำหนดคืน">
+        <SearchBox value={search} onChange={setSearch} />
+        {canEdit && <AddButton label="เพิ่มสัญญา" onClick={() => setModalOpen(true)} />}
+        {canEdit && <ExportControls />}
+      </PageHeader>
+
+      <div style={{ display: "flex", gap: 16, marginBottom: 18, flexWrap: "wrap" }}>
+        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>เงินต้นคงค้าง</div>
+          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6 }}>
+            {fmtBaht(outstanding)}
+          </div>
+        </div>
+        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>ดอกเบี้ยรับคาดหวัง</div>
+          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6, color: "#4fa98a" }}>
+            {fmtBaht(totalInterest)}
+          </div>
+        </div>
+        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>เกินกำหนด</div>
+          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6, color: "#d0658a" }}>
+            {overdueCount} สัญญา
+          </div>
+        </div>
+        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>ค่าปรับสะสม</div>
+          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6, color: "#d0658a" }}>
+            {fmtBaht(totalFee)}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(320px,1fr))", gap: 16 }}>
+        {filtered.map(({ l, c }) => {
+          const st = STATUS_STYLE[c.status];
+          return (
+            <div key={l.id} style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, padding: "20px 22px", borderLeft: `5px solid ${st.accent}` }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+                  <span style={{ width: 40, height: 40, borderRadius: "50%", background: "#f0e9fb", display: "grid", placeItems: "center", padding: 6 }}>
+                    <CatFace />
+                  </span>
+                  <div>
+                    <div style={{ fontSize: 15, fontWeight: 600 }}>{l.borrower}</div>
+                    <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>ยืมเมื่อ {thDate(l.borrowDate)}</div>
+                  </div>
+                </div>
+                <span style={{ fontSize: 11.5, fontWeight: 600, padding: "4px 11px", borderRadius: 20, background: st.bg, color: st.color }}>{st.label}</span>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, margin: "18px 0 14px" }}>
+                <div>
+                  <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>เงินต้น</div>
+                  <div className="num" style={{ fontSize: 17, fontWeight: 600, marginTop: 2 }}>
+                    {fmtBaht(l.amount)}
+                  </div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>ดอกเบี้ย</div>
+                  <div className="num" style={{ fontSize: 17, fontWeight: 600, marginTop: 2, color: "#4fa98a" }}>
+                    {fmtBaht(l.interest)}
+                  </div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>กำหนดคืน</div>
+                  <div className="num" style={{ fontSize: 13.5, fontWeight: 500, marginTop: 4 }}>
+                    {thDate(l.dueDate)}
+                  </div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>ค่าปรับล่าช้า</div>
+                  <div className="num" style={{ fontSize: 13.5, fontWeight: 500, marginTop: 4, color: c.fee > 0 ? "#d0658a" : "#9b8fb0" }}>
+                    {c.fee > 0 ? `${fmtBaht(c.fee)} (${c.lateDays} วัน)` : `${fmtBaht(l.penalty)}/วัน`}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 13, borderTop: "1px solid #f4eefb" }}>
+                <div>
+                  <span style={{ fontSize: 11.5, color: "#9b8fb0" }}>รวมที่ต้องคืน </span>
+                  <span className="num" style={{ fontSize: 16, fontWeight: 700 }}>
+                    {fmtBaht(c.total)}
+                  </span>
+                </div>
+                {canEdit && !l.paid && (
+                  <button
+                    onClick={() => handlePay(l.id)}
+                    style={{ padding: "7px 14px", background: "#7c5cc4", color: "#fff", border: "none", borderRadius: 10, fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}
+                  >
+                    บันทึกรับคืน
+                  </button>
+                )}
+                {l.paid && <span style={{ fontSize: 12.5, color: "#4fa98a", fontWeight: 600 }}>✓ ชำระครบแล้ว</span>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {modalOpen && (
+        <FormModal
+          title="เพิ่มสัญญาเงินกู้"
+          submitLabel="บันทึก"
+          successMessage="เพิ่มสัญญาเงินกู้เรียบร้อย"
+          onClose={() => setModalOpen(false)}
+          action={createLoan}
+          fields={[
+            { kind: "input", name: "borrower", label: "ชื่อผู้ยืม", placeholder: "เช่น คุณสมชาย" },
+            { kind: "input", name: "borrowDate", label: "วันที่ยืม", type: "date", defaultValue: today },
+            { kind: "input", name: "amount", label: "จำนวนเงินต้น (บาท)", type: "number", placeholder: "0" },
+            { kind: "input", name: "interest", label: "ดอกเบี้ย (บาท)", type: "number", placeholder: "0" },
+            { kind: "input", name: "dueDate", label: "กำหนดคืน", type: "date", defaultValue: inOneMonth.toISOString().slice(0, 10) },
+            { kind: "input", name: "penalty", label: "ค่าปรับล่าช้า (บาท/วัน)", type: "number", placeholder: "0" },
+          ]}
+        />
+      )}
+    </div>
+  );
+}
