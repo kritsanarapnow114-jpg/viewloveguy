@@ -5,12 +5,13 @@ import { fmtBaht } from "@/lib/format";
 import { FormModal } from "./FormModal";
 import { useToast } from "./ToastProvider";
 import { DogSitting } from "./icons/Dog";
-import { createWallet, deleteWallet } from "@/app/actions/wallets";
+import { createWallet, updateWallet, deleteWallet } from "@/app/actions/wallets";
 
-type WalletView = { id: string; name: string; balance: number };
+type WalletView = { id: string; name: string; balance: number; openingBalance: number };
 
 export function WalletsSection({ accountId, wallets, canEdit }: { accountId: string; wallets: WalletView[]; canEdit: boolean }) {
   const [modalOpen, setModalOpen] = useState(false);
+  const [editingWallet, setEditingWallet] = useState<WalletView | null>(null);
   const [, startTransition] = useTransition();
   const { showToast } = useToast();
 
@@ -45,6 +46,28 @@ export function WalletsSection({ accountId, wallets, canEdit }: { accountId: str
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(180px,1fr))", gap: 12 }}>
           {wallets.map((w) => (
             <div key={w.id} style={{ position: "relative", background: "#faf6ff", border: "1px solid #ece2f7", borderRadius: 13, padding: "14px 16px" }}>
+              {canEdit && (
+                <button
+                  onClick={() => setEditingWallet(w)}
+                  title="แก้ไขกระเป๋า"
+                  style={{
+                    position: "absolute",
+                    right: 32,
+                    top: 8,
+                    border: "none",
+                    background: "#f0e9fb",
+                    width: 20,
+                    height: 20,
+                    borderRadius: 6,
+                    cursor: "pointer",
+                    color: "#7c5cc4",
+                    fontSize: 9.5,
+                    opacity: 0.75,
+                  }}
+                >
+                  ✎
+                </button>
+              )}
               {canEdit && (
                 <button
                   onClick={() => handleDelete(w.id)}
@@ -89,6 +112,27 @@ export function WalletsSection({ accountId, wallets, canEdit }: { accountId: str
           fields={[
             { kind: "input", name: "name", label: "ชื่อกระเป๋า", placeholder: "เช่น เงินเก็บฉุกเฉิน" },
             { kind: "input", name: "openingBalance", label: "ยอดเงินตั้งต้น (บาท)", type: "number", placeholder: "0" },
+          ]}
+        />
+      )}
+
+      {editingWallet && (
+        <FormModal
+          title="แก้ไขกระเป๋าย่อย"
+          submitLabel="บันทึก"
+          successMessage="แก้ไขกระเป๋าเรียบร้อย"
+          onClose={() => setEditingWallet(null)}
+          action={updateWallet.bind(null, editingWallet.id, accountId)}
+          fields={[
+            { kind: "input", name: "name", label: "ชื่อกระเป๋า", placeholder: "เช่น เงินเก็บฉุกเฉิน", defaultValue: editingWallet.name },
+            {
+              kind: "input",
+              name: "openingBalance",
+              label: "ยอดเงินตั้งต้น (บาท)",
+              type: "number",
+              placeholder: "0",
+              defaultValue: String(editingWallet.openingBalance),
+            },
           ]}
         />
       )}

@@ -59,7 +59,11 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
         </div>
       </div>
 
-      <WalletsSection accountId={id} wallets={wallets.map((w) => ({ id: w.id, name: w.name, balance: w.balance }))} canEdit={canEdit} />
+      <WalletsSection
+        accountId={id}
+        wallets={wallets.map((w) => ({ id: w.id, name: w.name, balance: w.balance, openingBalance: w.openingBalance }))}
+        canEdit={canEdit}
+      />
 
       <div style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, overflow: "hidden" }}>
         <div
