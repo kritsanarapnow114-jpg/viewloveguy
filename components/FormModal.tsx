@@ -7,7 +7,16 @@ import { compressImageFile } from "@/lib/image";
 export type ModalField =
   | { kind: "input"; name: string; label: string; type?: string; placeholder?: string; defaultValue?: string }
   | { kind: "select"; name: string; label: string; options: string[]; defaultValue?: string }
-  | { kind: "image"; name: string; label: string; defaultValue?: string };
+  | { kind: "image"; name: string; label: string; defaultValue?: string }
+  | {
+      kind: "dependentSelect";
+      name: string;
+      label: string;
+      dependsOn: string;
+      optionsByParent: Record<string, string[]>;
+      placeholder: string;
+      defaultValue?: string;
+    };
 
 type FormState = { error?: string; success?: boolean };
 
@@ -28,6 +37,18 @@ export function FormModal({
 }) {
   const { celebrate } = useCelebration();
   const [state, formAction, pending] = useActionState<FormState, FormData>(action, {});
+
+  const [initialParentValues] = useState<Record<string, string>>(() => {
+    const initial: Record<string, string> = {};
+    for (const f of fields) {
+      if (f.kind === "dependentSelect") {
+        const parent = fields.find((p) => p.name === f.dependsOn);
+        initial[f.dependsOn] = (parent && "defaultValue" in parent && parent.defaultValue) || "";
+      }
+    }
+    return initial;
+  });
+  const [parentValues, setParentValues] = useState<Record<string, string>>(() => ({ ...initialParentValues }));
 
   useEffect(() => {
     if (state.success) {
@@ -100,6 +121,7 @@ export function FormModal({
                 <select
                   name={f.name}
                   defaultValue={f.defaultValue}
+                  onChange={(e) => setParentValues((v) => (f.name in v ? { ...v, [f.name]: e.target.value } : v))}
                   style={{
                     width: "100%",
                     padding: "11px 12px",
@@ -111,6 +133,28 @@ export function FormModal({
                   }}
                 >
                   {f.options.map((o) => (
+                    <option key={o} value={o}>
+                      {o}
+                    </option>
+                  ))}
+                </select>
+              ) : f.kind === "dependentSelect" ? (
+                <select
+                  key={parentValues[f.dependsOn] ?? ""}
+                  name={f.name}
+                  defaultValue={parentValues[f.dependsOn] === initialParentValues[f.dependsOn] ? f.defaultValue : ""}
+                  style={{
+                    width: "100%",
+                    padding: "11px 12px",
+                    border: "1px solid #e0d3f0",
+                    borderRadius: 11,
+                    fontSize: 14,
+                    background: "#fff",
+                    outline: "none",
+                  }}
+                >
+                  <option value="">{f.placeholder}</option>
+                  {(f.optionsByParent[parentValues[f.dependsOn] ?? ""] || []).map((o) => (
                     <option key={o} value={o}>
                       {o}
                     </option>

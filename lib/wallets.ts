@@ -9,6 +9,16 @@ export async function getWalletLabels() {
   return wallets.map((w) => walletLabel(w.account.name, w.name));
 }
 
+/** Wallet labels grouped by their account's name, for account-then-wallet dependent selects. */
+export async function getWalletsByAccount(): Promise<Record<string, string[]>> {
+  const wallets = await prisma.wallet.findMany({ include: { account: true }, orderBy: [{ order: "asc" }, { createdAt: "asc" }] });
+  const grouped: Record<string, string[]> = {};
+  for (const w of wallets) {
+    (grouped[w.account.name] ??= []).push(walletLabel(w.account.name, w.name));
+  }
+  return grouped;
+}
+
 export async function getWalletsWithBalance(accountId?: string) {
   const wallets = await prisma.wallet.findMany({
     where: accountId ? { accountId } : undefined,

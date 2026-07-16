@@ -43,14 +43,15 @@ const STATUS_STYLE: Record<LoanStatus, { label: string; bg: string; color: strin
 export function LoansClient({
   loans,
   accounts,
-  walletLabels,
+  walletsByAccount,
   canEdit,
 }: {
   loans: LoanView[];
   accounts: { id: string; name: string }[];
-  walletLabels: string[];
+  walletsByAccount: Record<string, string[]>;
   canEdit: boolean;
 }) {
+  const hasWallets = Object.keys(walletsByAccount).length > 0;
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLoan, setEditingLoan] = useState<LoanView | null>(null);
@@ -274,8 +275,17 @@ export function LoansClient({
             { kind: "input", name: "dueDate", label: "กำหนดคืน", type: "date", defaultValue: inOneMonth.toISOString().slice(0, 10) },
             { kind: "input", name: "penalty", label: "ค่าปรับล่าช้า (บาท/วัน)", type: "number", placeholder: "0" },
             { kind: "select", name: "outAccountName", label: "โอนออกจากบัญชี", options: accounts.map((a) => a.name), defaultValue: accounts[0]?.name },
-            ...(walletLabels.length
-              ? [{ kind: "select" as const, name: "outWalletLabel", label: "กระเป๋าย่อย (ถ้ามี)", options: ["— ไม่ระบุกระเป๋า —", ...walletLabels] }]
+            ...(hasWallets
+              ? [
+                  {
+                    kind: "dependentSelect" as const,
+                    name: "outWalletLabel",
+                    label: "กระเป๋าย่อย (ถ้ามี)",
+                    dependsOn: "outAccountName",
+                    optionsByParent: walletsByAccount,
+                    placeholder: "— ไม่ระบุกระเป๋า —",
+                  },
+                ]
               : []),
             { kind: "image", name: "transferImage", label: "รูปหลักฐานการโอนเงิน 1 (ถ้ามี)" },
             { kind: "image", name: "transferImage2", label: "รูปหลักฐานการโอนเงิน 2 (ถ้ามี)" },
@@ -304,17 +314,19 @@ export function LoansClient({
               options: accounts.map((a) => a.name),
               defaultValue: editingLoan.outAccountName ?? accounts[0]?.name,
             },
-            ...(walletLabels.length
+            ...(hasWallets
               ? [
                   {
-                    kind: "select" as const,
+                    kind: "dependentSelect" as const,
                     name: "outWalletLabel",
                     label: "กระเป๋าย่อย (ถ้ามี)",
-                    options: ["— ไม่ระบุกระเป๋า —", ...walletLabels],
+                    dependsOn: "outAccountName",
+                    optionsByParent: walletsByAccount,
+                    placeholder: "— ไม่ระบุกระเป๋า —",
                     defaultValue:
                       editingLoan.outWalletName && editingLoan.outAccountName
                         ? walletLabel(editingLoan.outAccountName, editingLoan.outWalletName)
-                        : "— ไม่ระบุกระเป๋า —",
+                        : undefined,
                   },
                 ]
               : []),
@@ -334,8 +346,17 @@ export function LoansClient({
           fields={[
             { kind: "input", name: "paidDate", label: "วันที่คืนเงิน", type: "date", defaultValue: today },
             { kind: "select", name: "inAccountName", label: "รับเงินเข้าบัญชี", options: accounts.map((a) => a.name), defaultValue: accounts[0]?.name },
-            ...(walletLabels.length
-              ? [{ kind: "select" as const, name: "inWalletLabel", label: "กระเป๋าย่อย (ถ้ามี)", options: ["— ไม่ระบุกระเป๋า —", ...walletLabels] }]
+            ...(hasWallets
+              ? [
+                  {
+                    kind: "dependentSelect" as const,
+                    name: "inWalletLabel",
+                    label: "กระเป๋าย่อย (ถ้ามี)",
+                    dependsOn: "inAccountName",
+                    optionsByParent: walletsByAccount,
+                    placeholder: "— ไม่ระบุกระเป๋า —",
+                  },
+                ]
               : []),
             { kind: "image", name: "repaymentImage", label: "รูปหลักฐานการรับคืน (ถ้ามี)" },
           ]}

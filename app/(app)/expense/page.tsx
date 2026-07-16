@@ -2,14 +2,14 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
 import { thDate } from "@/lib/format";
 import { EXPENSE_CATEGORIES } from "@/lib/constants";
-import { getWalletLabels } from "@/lib/wallets";
+import { getWalletsByAccount } from "@/lib/wallets";
 import { LedgerClient } from "@/components/LedgerClient";
 
 export default async function ExpensePage() {
-  const [txs, accounts, walletLabels, user] = await Promise.all([
+  const [txs, accounts, walletsByAccount, user] = await Promise.all([
     prisma.transaction.findMany({ where: { kind: "EXPENSE" }, include: { account: true }, orderBy: { date: "desc" } }),
     prisma.account.findMany({ orderBy: { createdAt: "asc" } }),
-    getWalletLabels(),
+    getWalletsByAccount(),
     getCurrentUser(),
   ]);
 
@@ -30,7 +30,7 @@ export default async function ExpensePage() {
       rows={rows}
       categories={EXPENSE_CATEGORIES}
       accounts={accounts.map((a) => ({ id: a.id, name: a.name }))}
-      walletLabels={walletLabels}
+      walletsByAccount={walletsByAccount}
       canEdit={user?.role === "ADMIN"}
     />
   );

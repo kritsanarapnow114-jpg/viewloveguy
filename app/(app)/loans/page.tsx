@@ -1,13 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
-import { getWalletLabels } from "@/lib/wallets";
+import { getWalletsByAccount } from "@/lib/wallets";
 import { LoansClient } from "./LoansClient";
 
 export default async function LoansPage() {
-  const [loans, accounts, walletLabels, user] = await Promise.all([
+  const [loans, accounts, walletsByAccount, user] = await Promise.all([
     prisma.loan.findMany({ include: { outAccount: true, outWallet: true, inAccount: true, inWallet: true } }),
     prisma.account.findMany({ orderBy: { createdAt: "asc" } }),
-    getWalletLabels(),
+    getWalletsByAccount(),
     getCurrentUser(),
   ]);
 
@@ -34,7 +34,7 @@ export default async function LoansPage() {
     <LoansClient
       loans={view}
       accounts={accounts.map((a) => ({ id: a.id, name: a.name }))}
-      walletLabels={walletLabels}
+      walletsByAccount={walletsByAccount}
       canEdit={user?.role === "ADMIN"}
     />
   );

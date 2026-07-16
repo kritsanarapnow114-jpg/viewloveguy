@@ -24,14 +24,14 @@ export function LedgerClient({
   rows,
   categories,
   accounts,
-  walletLabels,
+  walletsByAccount,
   canEdit,
 }: {
   kind: TxKind;
   rows: LedgerRow[];
   categories: string[];
   accounts: { id: string; name: string }[];
-  walletLabels: string[];
+  walletsByAccount: Record<string, string[]>;
   canEdit: boolean;
 }) {
   const [search, setSearch] = useState("");
@@ -59,13 +59,23 @@ export function LedgerClient({
     });
   };
 
+  const hasWallets = Object.keys(walletsByAccount).length > 0;
   const fields: ModalField[] = [
     { kind: "input", name: "date", label: "วันที่", type: "date", defaultValue: new Date().toISOString().slice(0, 10) },
     { kind: "input", name: "note", label: "รายละเอียด", placeholder: "เช่น ดอกเบี้ยรับ, ค่าเช่า" },
     { kind: "select", name: "category", label: "หมวดหมู่", options: categories, defaultValue: categories[0] },
     { kind: "select", name: "accountName", label: "บัญชี", options: accounts.map((a) => a.name), defaultValue: accounts[0]?.name },
-    ...(walletLabels.length
-      ? [{ kind: "select" as const, name: "walletLabel", label: "กระเป๋าย่อย (ถ้ามี)", options: ["— ไม่ระบุกระเป๋า —", ...walletLabels] }]
+    ...(hasWallets
+      ? [
+          {
+            kind: "dependentSelect" as const,
+            name: "walletLabel",
+            label: "กระเป๋าย่อย (ถ้ามี)",
+            dependsOn: "accountName",
+            optionsByParent: walletsByAccount,
+            placeholder: "— ไม่ระบุกระเป๋า —",
+          },
+        ]
       : []),
     { kind: "input", name: "amount", label: "จำนวนเงิน (บาท)", type: "number", placeholder: "0" },
   ];
