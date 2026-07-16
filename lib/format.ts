@@ -19,7 +19,7 @@ export function monthYearLabel(d: Date) {
 }
 
 export function fmtBaht(n: number) {
-  return "฿" + Math.round(n).toLocaleString("en-US");
+  return "฿" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 /** e.g. 12 ก.ค. 2569 (Buddhist era) */
