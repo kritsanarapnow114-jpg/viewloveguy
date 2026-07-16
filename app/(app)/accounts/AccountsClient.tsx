@@ -8,7 +8,7 @@ import { PageHeader, AddButton } from "@/components/PageHeader";
 import { FormModal } from "@/components/FormModal";
 import { useToast } from "@/components/ToastProvider";
 import { CatSitting } from "@/components/icons/Cat";
-import { createAccount, updateAccount, deleteAccount } from "@/app/actions/accounts";
+import { createAccount, updateAccount, deleteAccount, moveAccount } from "@/app/actions/accounts";
 
 type AccountView = {
   id: string;
@@ -36,6 +36,13 @@ export function AccountsClient({ accounts, canEdit }: { accounts: AccountView[];
     });
   };
 
+  const handleMove = (id: string, direction: "up" | "down") => {
+    startTransition(async () => {
+      const res = await moveAccount(id, direction);
+      if (res.error) showToast(res.error);
+    });
+  };
+
   return (
     <div>
       <PageHeader title="บัญชี & เงินสด" subtitle="จัดการบัญชีธนาคารและเงินสด — คลิกที่การ์ดเพื่อดูรายการ">
@@ -43,7 +50,7 @@ export function AccountsClient({ accounts, canEdit }: { accounts: AccountView[];
       </PageHeader>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(180px,1fr))", gap: 12, marginBottom: 18 }}>
-        {accounts.map((a) => {
+        {accounts.map((a, i) => {
           const low = a.balance < LOW_BALANCE_THRESHOLD;
           return (
             <Link
@@ -73,6 +80,56 @@ export function AccountsClient({ accounts, canEdit }: { accounts: AccountView[];
                   opacity: 0.65,
                 }}
               />
+              {canEdit && (
+                <div style={{ position: "absolute", left: 9, top: 9, zIndex: 2, display: "flex", flexDirection: "column", gap: 2 }}>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleMove(a.id, "up");
+                    }}
+                    disabled={i === 0}
+                    title="เลื่อนขึ้น"
+                    style={{
+                      border: "none",
+                      background: "#f5f0fc",
+                      width: 20,
+                      height: 16,
+                      borderRadius: "6px 6px 2px 2px",
+                      cursor: i === 0 ? "default" : "pointer",
+                      color: "#7c5cc4",
+                      fontSize: 9,
+                      opacity: i === 0 ? 0.3 : 0.75,
+                      lineHeight: 1,
+                    }}
+                  >
+                    ▲
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleMove(a.id, "down");
+                    }}
+                    disabled={i === accounts.length - 1}
+                    title="เลื่อนลง"
+                    style={{
+                      border: "none",
+                      background: "#f5f0fc",
+                      width: 20,
+                      height: 16,
+                      borderRadius: "2px 2px 6px 6px",
+                      cursor: i === accounts.length - 1 ? "default" : "pointer",
+                      color: "#7c5cc4",
+                      fontSize: 9,
+                      opacity: i === accounts.length - 1 ? 0.3 : 0.75,
+                      lineHeight: 1,
+                    }}
+                  >
+                    ▼
+                  </button>
+                </div>
+              )}
               {canEdit && (
                 <button
                   onClick={(e) => {
@@ -127,7 +184,7 @@ export function AccountsClient({ accounts, canEdit }: { accounts: AccountView[];
                   ✕
                 </button>
               )}
-              <div style={{ position: "relative" }}>
+              <div style={{ position: "relative", marginTop: 30 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <span style={{ width: 32, height: 42, display: "block" }}>
                     <CatSitting />

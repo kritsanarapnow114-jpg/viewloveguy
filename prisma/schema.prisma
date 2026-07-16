@@ -38,6 +38,7 @@ model Account {
   type           AccountType
   number         String
   openingBalance Float         @default(0)
+  order          Int           @default(0)
   createdAt      DateTime      @default(now())
   transactions   Transaction[]
   wallets        Wallet[]
@@ -51,6 +52,7 @@ model Wallet {
   accountId      String
   account        Account       @relation(fields: [accountId], references: [id], onDelete: Cascade)
   openingBalance Float         @default(0)
+  order          Int           @default(0)
   createdAt      DateTime      @default(now())
   transactions   Transaction[]
   loansOut       Loan[]        @relation("LoanOutWallet")
