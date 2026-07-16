@@ -84,6 +84,69 @@ export async function createLoan(_prev: LoanFormState, formData: FormData): Prom
   return { success: true };
 }
 
+export async function updateLoan(id: string, _prev: LoanFormState, formData: FormData): Promise<LoanFormState> {
+  const user = await getCurrentUser();
+  if (!user || user.role !== "ADMIN") return { error: "ไม่มีสิทธิ์ทำรายการนี้" };
+
+  const loan = await prisma.loan.findUnique({ where: { id } });
+  if (!loan) return { error: "ไม่พบสัญญาเงินกู้นี้" };
+
+  const borrower = String(formData.get("borrower") || "").trim();
+  if (!borrower) return { error: "กรุณากรอกชื่อผู้ยืม" };
+
+  const amount = Number(formData.get("amount"));
+  if (!amount || amount <= 0) return { error: "กรุณากรอกจำนวนเงินให้ถูกต้อง" };
+
+  const interest = Number(formData.get("interest") || 0);
+  const penalty = Number(formData.get("penalty") || 0);
+  const borrowDateStr = String(formData.get("borrowDate") || "");
+  const dueDate = String(formData.get("dueDate") || "");
+  const transferImage = String(formData.get("transferImage") || "") || null;
+  const transferImage2 = String(formData.get("transferImage2") || "") || null;
+  const outAccountName = String(formData.get("outAccountName") || "");
+  const outWalletLabel = String(formData.get("outWalletLabel") || "");
+
+  const outWallet = await resolveWalletLabel(outWalletLabel);
+  const outAccount = outWallet ? outWallet.account : await prisma.account.findFirst({ where: { name: outAccountName } });
+  if (!outAccount) return { error: "กรุณาเลือกบัญชีที่โอนออก" };
+
+  const borrowDate = borrowDateStr ? new Date(borrowDateStr) : new Date();
+
+  await prisma.$transaction(async (tx) => {
+    await tx.loan.update({
+      where: { id },
+      data: {
+        borrower,
+        amount,
+        interest: Number.isFinite(interest) ? interest : 0,
+        penalty: Number.isFinite(penalty) ? penalty : 0,
+        borrowDate,
+        dueDate: dueDate ? new Date(dueDate) : new Date(),
+        transferImage,
+        transferImage2,
+        outAccountId: outAccount.id,
+        outWalletId: outWallet?.id ?? null,
+      },
+    });
+
+    if (loan.outTransactionId) {
+      await tx.transaction.update({
+        where: { id: loan.outTransactionId },
+        data: {
+          date: borrowDate,
+          note: `ปล่อยกู้ - ${borrower}`,
+          amount,
+          accountId: outAccount.id,
+          walletId: outWallet?.id ?? null,
+        },
+      });
+    }
+  });
+
+  revalidateAll([loan.outAccountId, outAccount.id, loan.inAccountId]);
+  return { success: true };
+}
+
 export async function payLoan(id: string, _prev: LoanFormState, formData: FormData): Promise<LoanFormState> {
   const user = await getCurrentUser();
   if (!user || user.role !== "ADMIN") return { error: "ไม่มีสิทธิ์ทำรายการนี้" };

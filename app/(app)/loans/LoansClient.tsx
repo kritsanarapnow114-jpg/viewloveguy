@@ -8,7 +8,11 @@ import { ExportControls } from "@/components/ExportControls";
 import { FormModal } from "@/components/FormModal";
 import { useToast } from "@/components/ToastProvider";
 import { CatSitting } from "@/components/icons/Cat";
-import { createLoan, payLoan, deleteLoan } from "@/app/actions/loans";
+import { createLoan, updateLoan, payLoan, deleteLoan } from "@/app/actions/loans";
+
+function walletLabel(accountName: string, walletName: string) {
+  return `${accountName} · ${walletName}`;
+}
 
 type LoanView = {
   id: string;
@@ -49,6 +53,7 @@ export function LoansClient({
 }) {
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [editingLoan, setEditingLoan] = useState<LoanView | null>(null);
   const [payingId, setPayingId] = useState<string | null>(null);
   const [viewImage, setViewImage] = useState<string | null>(null);
   const [, startTransition] = useTransition();
@@ -118,6 +123,28 @@ export function LoansClient({
             <div key={l.id} style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, padding: "20px 22px", borderLeft: `5px solid ${st.accent}`, position: "relative" }}>
               {canEdit && (
                 <button
+                  onClick={() => setEditingLoan(l)}
+                  title="แก้ไขสัญญา"
+                  style={{
+                    position: "absolute",
+                    right: 44,
+                    top: 12,
+                    border: "none",
+                    background: "#f5f0fc",
+                    width: 24,
+                    height: 24,
+                    borderRadius: 7,
+                    cursor: "pointer",
+                    color: "#7c5cc4",
+                    fontSize: 11,
+                    opacity: 0.75,
+                  }}
+                >
+                  ✎
+                </button>
+              )}
+              {canEdit && (
+                <button
                   onClick={() => handleDelete(l.id)}
                   title="ลบสัญญา"
                   style={{
@@ -148,7 +175,7 @@ export function LoansClient({
                     <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>ยืมเมื่อ {thDate(l.borrowDate)}</div>
                   </div>
                 </div>
-                <span style={{ fontSize: 11.5, fontWeight: 600, padding: "4px 11px", borderRadius: 20, background: st.bg, color: st.color, marginRight: 28 }}>{st.label}</span>
+                <span style={{ fontSize: 11.5, fontWeight: 600, padding: "4px 11px", borderRadius: 20, background: st.bg, color: st.color, marginRight: 60 }}>{st.label}</span>
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, margin: "18px 0 14px" }}>
@@ -252,6 +279,47 @@ export function LoansClient({
               : []),
             { kind: "image", name: "transferImage", label: "รูปหลักฐานการโอนเงิน 1 (ถ้ามี)" },
             { kind: "image", name: "transferImage2", label: "รูปหลักฐานการโอนเงิน 2 (ถ้ามี)" },
+          ]}
+        />
+      )}
+
+      {editingLoan && (
+        <FormModal
+          title="แก้ไขสัญญาเงินกู้"
+          submitLabel="บันทึก"
+          successMessage="แก้ไขสัญญาเงินกู้เรียบร้อย"
+          onClose={() => setEditingLoan(null)}
+          action={updateLoan.bind(null, editingLoan.id)}
+          fields={[
+            { kind: "input", name: "borrower", label: "ชื่อผู้ยืม", placeholder: "เช่น คุณสมชาย", defaultValue: editingLoan.borrower },
+            { kind: "input", name: "borrowDate", label: "วันที่ยืม", type: "date", defaultValue: editingLoan.borrowDate.slice(0, 10) },
+            { kind: "input", name: "amount", label: "จำนวนเงินต้น (บาท)", type: "number", placeholder: "0", defaultValue: String(editingLoan.amount) },
+            { kind: "input", name: "interest", label: "ดอกเบี้ย (บาท)", type: "number", placeholder: "0", defaultValue: String(editingLoan.interest) },
+            { kind: "input", name: "dueDate", label: "กำหนดคืน", type: "date", defaultValue: editingLoan.dueDate.slice(0, 10) },
+            { kind: "input", name: "penalty", label: "ค่าปรับล่าช้า (บาท/วัน)", type: "number", placeholder: "0", defaultValue: String(editingLoan.penalty) },
+            {
+              kind: "select",
+              name: "outAccountName",
+              label: "โอนออกจากบัญชี",
+              options: accounts.map((a) => a.name),
+              defaultValue: editingLoan.outAccountName ?? accounts[0]?.name,
+            },
+            ...(walletLabels.length
+              ? [
+                  {
+                    kind: "select" as const,
+                    name: "outWalletLabel",
+                    label: "กระเป๋าย่อย (ถ้ามี)",
+                    options: ["— ไม่ระบุกระเป๋า —", ...walletLabels],
+                    defaultValue:
+                      editingLoan.outWalletName && editingLoan.outAccountName
+                        ? walletLabel(editingLoan.outAccountName, editingLoan.outWalletName)
+                        : "— ไม่ระบุกระเป๋า —",
+                  },
+                ]
+              : []),
+            { kind: "image", name: "transferImage", label: "รูปหลักฐานการโอนเงิน 1 (ถ้ามี)", defaultValue: editingLoan.transferImage ?? undefined },
+            { kind: "image", name: "transferImage2", label: "รูปหลักฐานการโอนเงิน 2 (ถ้ามี)", defaultValue: editingLoan.transferImage2 ?? undefined },
           ]}
         />
       )}
