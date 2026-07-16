@@ -50,18 +50,11 @@ export async function updateWallet(id: string, accountId: string, _prev: WalletF
   return { success: true };
 }
 
-export async function moveWallet(id: string, accountId: string, direction: "up" | "down"): Promise<{ error?: string }> {
+export async function reorderWallets(accountId: string, ids: string[]): Promise<{ error?: string }> {
   const user = await getCurrentUser();
   if (!user || user.role !== "ADMIN") return { error: "ไม่มีสิทธิ์ทำรายการนี้" };
 
-  const wallets = await prisma.wallet.findMany({ where: { accountId }, orderBy: [{ order: "asc" }, { createdAt: "asc" }] });
-  const idx = wallets.findIndex((w) => w.id === id);
-  if (idx === -1) return { error: "ไม่พบกระเป๋า" };
-  const swapIdx = direction === "up" ? idx - 1 : idx + 1;
-  if (swapIdx < 0 || swapIdx >= wallets.length) return {};
-
-  [wallets[idx], wallets[swapIdx]] = [wallets[swapIdx], wallets[idx]];
-  await prisma.$transaction(wallets.map((w, i) => prisma.wallet.update({ where: { id: w.id }, data: { order: i } })));
+  await prisma.$transaction(ids.map((id, i) => prisma.wallet.update({ where: { id }, data: { order: i } })));
 
   revalidatePath(`/accounts/${accountId}`);
   revalidatePath("/accounts");

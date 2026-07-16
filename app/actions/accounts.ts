@@ -63,18 +63,11 @@ export async function updateAccount(id: string, _prev: AccountFormState, formDat
   return { success: true };
 }
 
-export async function moveAccount(id: string, direction: "up" | "down"): Promise<{ error?: string }> {
+export async function reorderAccounts(ids: string[]): Promise<{ error?: string }> {
   const user = await getCurrentUser();
   if (!user || user.role !== "ADMIN") return { error: "ไม่มีสิทธิ์ทำรายการนี้" };
 
-  const accounts = await prisma.account.findMany({ orderBy: [{ order: "asc" }, { createdAt: "asc" }] });
-  const idx = accounts.findIndex((a) => a.id === id);
-  if (idx === -1) return { error: "ไม่พบบัญชี" };
-  const swapIdx = direction === "up" ? idx - 1 : idx + 1;
-  if (swapIdx < 0 || swapIdx >= accounts.length) return {};
-
-  [accounts[idx], accounts[swapIdx]] = [accounts[swapIdx], accounts[idx]];
-  await prisma.$transaction(accounts.map((a, i) => prisma.account.update({ where: { id: a.id }, data: { order: i } })));
+  await prisma.$transaction(ids.map((id, i) => prisma.account.update({ where: { id }, data: { order: i } })));
 
   revalidatePath("/accounts");
   revalidatePath("/dashboard");
