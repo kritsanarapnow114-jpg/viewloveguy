@@ -7,6 +7,7 @@ import { LOW_BALANCE_THRESHOLD } from "@/lib/constants";
 import { PageHeader, AddButton } from "@/components/PageHeader";
 import { FormModal } from "@/components/FormModal";
 import { useToast } from "@/components/ToastProvider";
+import { CatSitting } from "@/components/icons/Cat";
 import { createAccount, updateAccount, deleteAccount } from "@/app/actions/accounts";
 
 type AccountView = {
@@ -128,6 +129,9 @@ export function AccountsClient({ accounts, canEdit }: { accounts: AccountView[];
               )}
               <div style={{ position: "relative" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ width: 32, height: 42, display: "block" }}>
+                    <CatSitting />
+                  </span>
                   <span style={{ fontSize: 10.5, color: "#9b8fb0", fontWeight: 500 }}>{a.type === "BANK" ? "บัญชีธนาคาร" : "เงินสด"}</span>
                 </div>
                 <div style={{ fontSize: 13.5, fontWeight: 600, marginTop: 11, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{a.name}</div>

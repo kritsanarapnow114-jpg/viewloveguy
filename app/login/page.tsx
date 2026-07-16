@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/session";
+import { CatFace, CatHero } from "@/components/icons/Cat";
 import { LoginForm } from "./LoginForm";
 
 export default async function LoginPage() {
@@ -28,6 +29,9 @@ export default async function LoginPage() {
         <div className="mali" style={{ fontWeight: 600, letterSpacing: ".02em", fontSize: 16, position: "relative" }}>กำไรและวิว</div>
 
         <div style={{ position: "relative", textAlign: "center" }}>
+          <div style={{ width: 110, height: 110, margin: "0 auto 20px" }}>
+            <CatHero />
+          </div>
           <div className="mali" style={{ fontSize: 38, lineHeight: 1.2, fontWeight: 600, letterSpacing: "-.01em" }}>
             ระบบจัดการ
             <br />
@@ -44,6 +48,9 @@ export default async function LoginPage() {
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 24px" }}>
         <div style={{ width: "100%", maxWidth: 380 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 11, marginBottom: 6 }}>
+            <span style={{ width: 34, height: 34, display: "block", flex: "0 0 34px" }}>
+              <CatFace />
+            </span>
             <span className="mali" style={{ fontWeight: 600, fontSize: 18, color: "#40354f" }}>
               กำไรและวิว
             </span>

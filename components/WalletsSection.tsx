@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { fmtBaht } from "@/lib/format";
 import { FormModal } from "./FormModal";
 import { useToast } from "./ToastProvider";
+import { DogSitting } from "./icons/Dog";
 import { createWallet, deleteWallet } from "@/app/actions/wallets";
 
 type WalletView = { id: string; name: string; balance: number };
@@ -66,6 +67,9 @@ export function WalletsSection({ accountId, wallets, canEdit }: { accountId: str
                   ✕
                 </button>
               )}
+              <span style={{ width: 26, height: 34, display: "block", marginBottom: 6 }}>
+                <DogSitting />
+              </span>
               <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>{w.name}</div>
               <div className="num" style={{ fontSize: 16, fontWeight: 600 }}>
                 {fmtBaht(w.balance)}

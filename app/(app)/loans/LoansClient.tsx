@@ -7,6 +7,7 @@ import { PageHeader, SearchBox, AddButton } from "@/components/PageHeader";
 import { ExportControls } from "@/components/ExportControls";
 import { FormModal } from "@/components/FormModal";
 import { useToast } from "@/components/ToastProvider";
+import { CatSitting } from "@/components/icons/Cat";
 import { createLoan, payLoan, deleteLoan } from "@/app/actions/loans";
 
 type LoanView = {
@@ -139,6 +140,9 @@ export function LoansClient({
               )}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+                  <span style={{ width: 36, height: 47, display: "block", flex: "0 0 36px" }}>
+                    <CatSitting />
+                  </span>
                   <div>
                     <div style={{ fontSize: 15, fontWeight: 600 }}>{l.borrower}</div>
                     <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>ยืมเมื่อ {thDate(l.borrowDate)}</div>
