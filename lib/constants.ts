@@ -20,4 +20,4 @@ export const EXPENSE_CATEGORIES = [
   "ค่าใช้จ่ายอื่นๆ",
 ];
 
-export const LOW_BALANCE_THRESHOLD = 40000;
+export const LOW_BALANCE_THRESHOLD = 3000;
