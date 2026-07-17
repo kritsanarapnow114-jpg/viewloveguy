@@ -168,7 +168,17 @@ function SortableAccountCard({
   );
 }
 
-export function AccountsClient({ accounts, canEdit }: { accounts: AccountView[]; canEdit: boolean }) {
+export function AccountsClient({
+  accounts,
+  outstandingLoans,
+  outstandingLoanCount,
+  canEdit,
+}: {
+  accounts: AccountView[];
+  outstandingLoans: number;
+  outstandingLoanCount: number;
+  canEdit: boolean;
+}) {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState<AccountView | null>(null);
   const [orderIds, setOrderIds] = useState<string[]>(() => accounts.map((a) => a.id));
@@ -243,6 +253,12 @@ export function AccountsClient({ accounts, canEdit }: { accounts: AccountView[];
           เงินฝากธนาคาร <span className="num" style={{ color: "#fff" }}>{fmtBaht(bankTotal)}</span>
           <br />
           เงินสด <span className="num" style={{ color: "#fff" }}>{fmtBaht(cashTotal)}</span>
+          <br />
+          เงินกู้คงค้าง{" "}
+          <span className="num" style={{ color: "#fff" }}>
+            {fmtBaht(outstandingLoans)}
+          </span>
+          {outstandingLoanCount > 0 && ` (${outstandingLoanCount} สัญญา)`}
         </div>
       </div>
 

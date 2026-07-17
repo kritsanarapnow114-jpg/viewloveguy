@@ -1,9 +1,14 @@
+import { prisma } from "@/lib/prisma";
 import { getAccountsWithBalance } from "@/lib/accounts";
 import { getCurrentUser } from "@/lib/session";
 import { AccountsClient } from "./AccountsClient";
 
 export default async function AccountsPage() {
-  const [accounts, user] = await Promise.all([getAccountsWithBalance(), getCurrentUser()]);
+  const [accounts, unpaidLoans, user] = await Promise.all([
+    getAccountsWithBalance(),
+    prisma.loan.findMany({ where: { paid: false } }),
+    getCurrentUser(),
+  ]);
 
   const view = accounts.map((a) => ({
     id: a.id,
@@ -14,5 +19,10 @@ export default async function AccountsPage() {
     openingBalance: a.openingBalance,
   }));
 
-  return <AccountsClient accounts={view} canEdit={user?.role === "ADMIN"} />;
+  const outstandingLoans = unpaidLoans.reduce((a, b) => a + b.amount, 0);
+  const outstandingLoanCount = unpaidLoans.length;
+
+  return (
+    <AccountsClient accounts={view} outstandingLoans={outstandingLoans} outstandingLoanCount={outstandingLoanCount} canEdit={user?.role === "ADMIN"} />
+  );
 }
