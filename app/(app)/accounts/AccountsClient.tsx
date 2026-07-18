@@ -12,6 +12,7 @@ import { FormModal } from "@/components/FormModal";
 import { useToast } from "@/components/ToastProvider";
 import { CatSitting } from "@/components/icons/Cat";
 import { createAccount, updateAccount, deleteAccount, reorderAccounts } from "@/app/actions/accounts";
+import { transferFunds } from "@/app/actions/transfers";
 
 type AccountView = {
   id: string;
@@ -170,18 +171,22 @@ function SortableAccountCard({
 
 export function AccountsClient({
   accounts,
+  walletsByAccount,
   outstandingLoans,
   outstandingLoanCount,
   canEdit,
 }: {
   accounts: AccountView[];
+  walletsByAccount: Record<string, string[]>;
   outstandingLoans: number;
   outstandingLoanCount: number;
   canEdit: boolean;
 }) {
   const [modalOpen, setModalOpen] = useState(false);
+  const [transferOpen, setTransferOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState<AccountView | null>(null);
   const [orderIds, setOrderIds] = useState<string[]>(() => accounts.map((a) => a.id));
+  const hasWallets = Object.keys(walletsByAccount).length > 0;
   const [, startTransition] = useTransition();
   const { showToast } = useToast();
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }));
@@ -217,6 +222,24 @@ export function AccountsClient({
   return (
     <div>
       <PageHeader title="บัญชี & เงินสด" subtitle="จัดการบัญชีธนาคารและเงินสด — คลิกที่การ์ดเพื่อดูรายการ">
+        {canEdit && (
+          <button
+            onClick={() => setTransferOpen(true)}
+            style={{
+              padding: "10px 16px",
+              background: "#fff",
+              color: "#7c5cc4",
+              border: "1px solid #e0d3f0",
+              borderRadius: 11,
+              fontSize: 13.5,
+              fontWeight: 500,
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+            }}
+          >
+            ⇄ โอนเงิน
+          </button>
+        )}
         {canEdit && <AddButton label="เพิ่มบัญชี" onClick={() => setModalOpen(true)} />}
       </PageHeader>
 
@@ -303,6 +326,47 @@ export function AccountsClient({
               placeholder: "0",
               defaultValue: String(editingAccount.openingBalance),
             },
+          ]}
+        />
+      )}
+
+      {transferOpen && (
+        <FormModal
+          title="โอนย้ายเงิน"
+          submitLabel="โอนเงิน"
+          successMessage="โอนเงินเรียบร้อย"
+          onClose={() => setTransferOpen(false)}
+          action={transferFunds}
+          fields={[
+            { kind: "input", name: "date", label: "วันที่โอน", type: "date", defaultValue: new Date().toISOString().slice(0, 10) },
+            { kind: "select", name: "fromAccountName", label: "จากบัญชี", options: accounts.map((a) => a.name), defaultValue: accounts[0]?.name },
+            ...(hasWallets
+              ? [
+                  {
+                    kind: "dependentSelect" as const,
+                    name: "fromWalletLabel",
+                    label: "จากกระเป๋าย่อย (ถ้ามี)",
+                    dependsOn: "fromAccountName",
+                    optionsByParent: walletsByAccount,
+                    placeholder: "— ไม่ระบุกระเป๋า —",
+                  },
+                ]
+              : []),
+            { kind: "select", name: "toAccountName", label: "ไปบัญชี", options: accounts.map((a) => a.name), defaultValue: accounts[1]?.name ?? accounts[0]?.name },
+            ...(hasWallets
+              ? [
+                  {
+                    kind: "dependentSelect" as const,
+                    name: "toWalletLabel",
+                    label: "ไปกระเป๋าย่อย (ถ้ามี)",
+                    dependsOn: "toAccountName",
+                    optionsByParent: walletsByAccount,
+                    placeholder: "— ไม่ระบุกระเป๋า —",
+                  },
+                ]
+              : []),
+            { kind: "input", name: "amount", label: "จำนวนเงิน (บาท)", type: "number", placeholder: "0" },
+            { kind: "input", name: "note", label: "หมายเหตุ (ถ้ามี)", placeholder: "เช่น โอนเก็บออม" },
           ]}
         />
       )}
