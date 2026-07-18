@@ -84,6 +84,7 @@ export function LoansClient({
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLoan, setEditingLoan] = useState<LoanView | null>(null);
   const [payingLoan, setPayingLoan] = useState<LoanView | null>(null);
+  const [quoteOpenId, setQuoteOpenId] = useState<string | null>(null);
   const [viewImage, setViewImage] = useState<string | null>(null);
   const [, startTransition] = useTransition();
   const { showToast } = useToast();
@@ -194,6 +195,29 @@ export function LoansClient({
                   ✕
                 </button>
               )}
+              {!l.paid && (
+                <button
+                  onClick={() => setQuoteOpenId(quoteOpenId === l.id ? null : l.id)}
+                  title="เช็คยอดคืน"
+                  style={{
+                    position: "absolute",
+                    right: canEdit ? 76 : 12,
+                    top: 12,
+                    border: "none",
+                    background: quoteOpenId === l.id ? "#e7dcf7" : "#f5f0fc",
+                    width: 24,
+                    height: 24,
+                    borderRadius: 7,
+                    cursor: "pointer",
+                    color: "#7c5cc4",
+                    fontSize: 13,
+                    opacity: 0.75,
+                    lineHeight: 1,
+                  }}
+                >
+                  ⋯
+                </button>
+              )}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
                   <span style={{ width: 36, height: 47, display: "block", flex: "0 0 36px" }}>
@@ -266,7 +290,7 @@ export function LoansClient({
                 </div>
               )}
 
-              {!l.paid && <RepayQuote loan={l} />}
+              {!l.paid && quoteOpenId === l.id && <RepayQuote loan={l} />}
 
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 13, borderTop: "1px solid #f4eefb" }}>
                 <div>
