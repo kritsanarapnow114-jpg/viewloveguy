@@ -98,3 +98,15 @@ model Loan {
   inTransactionIds String[]  @default([])
   createdAt        DateTime  @default(now())
 }
+
+model Installment {
+  id                    String   @id @default(cuid())
+  item                  String
+  totalAmount           Float
+  months                Int
+  monthlyAmount         Float
+  startDate             DateTime
+  paidMonths            Int      @default(0)
+  paymentTransactionIds String[] @default([])
+  createdAt             DateTime @default(now())
+}

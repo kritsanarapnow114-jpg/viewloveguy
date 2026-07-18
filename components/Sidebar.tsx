@@ -13,6 +13,7 @@ const NAV_ITEMS: { key: string; href: string; label: string; icon: "cat" | "dog"
   { key: "income", href: "/income", label: "รายการรับ", icon: "cat" },
   { key: "expense", href: "/expense", label: "รายการจ่าย", icon: "dog" },
   { key: "loans", href: "/loans", label: "ปล่อยเงินกู้", icon: "cat" },
+  { key: "installments", href: "/installments", label: "ผ่อนชำระสินค้า", icon: "dog" },
   { key: "pnl", href: "/pnl", label: "กำไร - ขาดทุน", icon: "dog" },
 ];
 
