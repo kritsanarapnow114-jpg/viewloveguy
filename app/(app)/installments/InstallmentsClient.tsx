@@ -7,6 +7,7 @@ import { defaultDateRange, inDateRange } from "@/lib/dateRange";
 import { PageHeader, SearchBox, AddButton } from "@/components/PageHeader";
 import { ExportControls } from "@/components/ExportControls";
 import { DateRangeFilter } from "@/components/DateRangeFilter";
+import { StatusFilter } from "@/components/StatusFilter";
 import { FormModal } from "@/components/FormModal";
 import { useToast } from "@/components/ToastProvider";
 import { CatSitting } from "@/components/icons/Cat";
@@ -41,6 +42,7 @@ export function InstallmentsClient({
 }) {
   const [search, setSearch] = useState("");
   const [range, setRange] = useState(defaultDateRange);
+  const [statusFilter, setStatusFilter] = useState<InstallmentStatus | "all">("all");
   const [modalOpen, setModalOpen] = useState(false);
   const [editingInstallment, setEditingInstallment] = useState<InstallmentView | null>(null);
   const [payingInstallment, setPayingInstallment] = useState<InstallmentView | null>(null);
@@ -66,7 +68,12 @@ export function InstallmentsClient({
 
   const q = search.trim().toLowerCase();
   const filtered = calcs
-    .filter((x) => inDateRange(x.i.startDate, range) && (!q || x.i.item.toLowerCase().includes(q)))
+    .filter(
+      (x) =>
+        inDateRange(x.i.startDate, range) &&
+        (statusFilter === "all" || x.c.status === statusFilter) &&
+        (!q || x.i.item.toLowerCase().includes(q))
+    )
     .sort((a, b) => Number(a.c.status === "completed") - Number(b.c.status === "completed") || a.c.nextDueDate.getTime() - b.c.nextDueDate.getTime());
 
   const today = new Date().toISOString().slice(0, 10);
@@ -120,6 +127,12 @@ export function InstallmentsClient({
           </div>
         </div>
       </div>
+
+      <StatusFilter
+        value={statusFilter}
+        onChange={setStatusFilter}
+        options={(Object.keys(STATUS_STYLE) as InstallmentStatus[]).map((k) => ({ key: k, label: STATUS_STYLE[k].label }))}
+      />
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))", gap: 16 }}>
         {filtered.map(({ i, c }) => {

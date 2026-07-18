@@ -7,6 +7,7 @@ import { defaultDateRange, inDateRange } from "@/lib/dateRange";
 import { PageHeader, SearchBox, AddButton } from "@/components/PageHeader";
 import { ExportControls } from "@/components/ExportControls";
 import { DateRangeFilter } from "@/components/DateRangeFilter";
+import { StatusFilter } from "@/components/StatusFilter";
 import { FormModal } from "@/components/FormModal";
 import { useToast } from "@/components/ToastProvider";
 import { CatSitting, PawPrint } from "@/components/icons/Cat";
@@ -91,6 +92,7 @@ export function LoansClient({
   const hasWallets = Object.keys(walletsByAccount).length > 0;
   const [search, setSearch] = useState("");
   const [range, setRange] = useState(defaultDateRange);
+  const [statusFilter, setStatusFilter] = useState<LoanStatus | "all">("all");
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLoan, setEditingLoan] = useState<LoanView | null>(null);
   const [payingLoan, setPayingLoan] = useState<LoanView | null>(null);
@@ -114,7 +116,12 @@ export function LoansClient({
 
   const q = search.trim().toLowerCase();
   const filtered = calcs
-    .filter((x) => inDateRange(x.l.borrowDate, range) && (!q || x.l.borrower.toLowerCase().includes(q)))
+    .filter(
+      (x) =>
+        inDateRange(x.l.borrowDate, range) &&
+        (statusFilter === "all" || x.c.status === statusFilter) &&
+        (!q || x.l.borrower.toLowerCase().includes(q))
+    )
     .sort((a, b) => Number(a.l.paid) - Number(b.l.paid) || new Date(a.l.dueDate).getTime() - new Date(b.l.dueDate).getTime());
 
   const today = new Date().toISOString().slice(0, 10);
@@ -171,6 +178,12 @@ export function LoansClient({
           </div>
         </div>
       </div>
+
+      <StatusFilter
+        value={statusFilter}
+        onChange={setStatusFilter}
+        options={(Object.keys(STATUS_STYLE) as LoanStatus[]).map((k) => ({ key: k, label: STATUS_STYLE[k].label }))}
+      />
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(320px,1fr))", gap: 16 }}>
         {filtered.map(({ l, c }) => {
