@@ -40,6 +40,34 @@ const STATUS_STYLE: Record<LoanStatus, { label: string; bg: string; color: strin
   paid: { label: "ชำระแล้ว", bg: "#e3f2ec", color: "#3a8a6f", accent: "#4fa98a" },
 };
 
+function RepayQuote({ loan }: { loan: LoanView }) {
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const [quoteDate, setQuoteDate] = useState(todayIso);
+  const quote = loanCalc({ ...loan, dueDate: new Date(loan.dueDate) }, new Date(quoteDate));
+  const total = loan.amount + loan.interest + quote.fee;
+
+  return (
+    <div style={{ background: "#faf6ff", border: "1px solid #ece2f7", borderRadius: 12, padding: "12px 14px", marginBottom: 14 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 8, flexWrap: "wrap" }}>
+        <span style={{ fontSize: 12, color: "#7a6e90", fontWeight: 500 }}>🔍 เช็คยอดคืน ณ วันที่</span>
+        <input
+          type="date"
+          value={quoteDate}
+          onChange={(e) => setQuoteDate(e.target.value)}
+          style={{ border: "1px solid #e0d3f0", borderRadius: 9, padding: "5px 8px", fontSize: 12.5, background: "#fff", outline: "none" }}
+        />
+      </div>
+      <div className="num" style={{ fontSize: 19, fontWeight: 700, color: "#40354f" }}>
+        {fmtBaht(total)}
+      </div>
+      <div style={{ fontSize: 11.5, color: "#9b8fb0", marginTop: 3 }}>
+        เงินต้น {fmtBaht(loan.amount)} + ดอกเบี้ย {fmtBaht(loan.interest)}
+        {quote.fee > 0 && ` + ค่าปรับล่าช้า ${fmtBaht(quote.fee)} (${quote.lateDays} วัน)`}
+      </div>
+    </div>
+  );
+}
+
 export function LoansClient({
   loans,
   accounts,
@@ -237,6 +265,8 @@ export function LoansClient({
                   )}
                 </div>
               )}
+
+              {!l.paid && <RepayQuote loan={l} />}
 
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 13, borderTop: "1px solid #f4eefb" }}>
                 <div>
