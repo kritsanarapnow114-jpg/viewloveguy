@@ -3,10 +3,8 @@
 import { useMemo, useState, useTransition } from "react";
 import { fmtBaht, thDate } from "@/lib/format";
 import { installmentCalc, type InstallmentStatus } from "@/lib/installment";
-import { defaultDateRange, inDateRange } from "@/lib/dateRange";
 import { PageHeader, SearchBox, AddButton } from "@/components/PageHeader";
 import { ExportControls } from "@/components/ExportControls";
-import { DateRangeFilter } from "@/components/DateRangeFilter";
 import { StatusFilter } from "@/components/StatusFilter";
 import { FormModal } from "@/components/FormModal";
 import { useToast } from "@/components/ToastProvider";
@@ -41,7 +39,6 @@ export function InstallmentsClient({
   canEdit: boolean;
 }) {
   const [search, setSearch] = useState("");
-  const [range, setRange] = useState(defaultDateRange);
   const [statusFilter, setStatusFilter] = useState<InstallmentStatus | "all">("all");
   const [modalOpen, setModalOpen] = useState(false);
   const [editingInstallment, setEditingInstallment] = useState<InstallmentView | null>(null);
@@ -68,12 +65,7 @@ export function InstallmentsClient({
 
   const q = search.trim().toLowerCase();
   const filtered = calcs
-    .filter(
-      (x) =>
-        inDateRange(x.i.startDate, range) &&
-        (statusFilter === "all" || x.c.status === statusFilter) &&
-        (!q || x.i.item.toLowerCase().includes(q))
-    )
+    .filter((x) => (statusFilter === "all" || x.c.status === statusFilter) && (!q || x.i.item.toLowerCase().includes(q)))
     .sort((a, b) => Number(a.c.status === "completed") - Number(b.c.status === "completed") || a.c.nextDueDate.getTime() - b.c.nextDueDate.getTime());
 
   const today = new Date().toISOString().slice(0, 10);
@@ -81,7 +73,6 @@ export function InstallmentsClient({
   return (
     <div>
       <PageHeader title="ผ่อนชำระสินค้า" subtitle="ติดตามรายการผ่อนสินค้ารายเดือน เช่น ผ่อนช้อปปี้ 12 เดือน">
-        <DateRangeFilter value={range} onChange={setRange} />
         <SearchBox value={search} onChange={setSearch} />
         {canEdit && <AddButton label="เพิ่มรายการผ่อน" onClick={() => setModalOpen(true)} />}
         {canEdit && (
