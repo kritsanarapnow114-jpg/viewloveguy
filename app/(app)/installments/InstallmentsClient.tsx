@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { fmtBaht, thDate } from "@/lib/format";
-import { installmentCalc, type InstallmentStatus } from "@/lib/installment";
+import { installmentCalc, installmentPaymentAmount, type InstallmentStatus } from "@/lib/installment";
 import { PageHeader, SearchBox, AddButton } from "@/components/PageHeader";
 import { ExportControls } from "@/components/ExportControls";
 import { FormModal } from "@/components/FormModal";
@@ -40,7 +40,7 @@ export function InstallmentsClient({
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [editingInstallment, setEditingInstallment] = useState<InstallmentView | null>(null);
-  const [payingId, setPayingId] = useState<string | null>(null);
+  const [payingInstallment, setPayingInstallment] = useState<InstallmentView | null>(null);
   const [, startTransition] = useTransition();
   const { showToast } = useToast();
   const hasWallets = Object.keys(walletsByAccount).length > 0;
@@ -57,7 +57,7 @@ export function InstallmentsClient({
     [installments]
   );
   const remainingTotal = calcs.reduce((a, b) => a + b.c.remainingAmount, 0);
-  const monthlyTotal = calcs.filter((x) => x.c.status !== "completed").reduce((a, b) => a + b.i.monthlyAmount, 0);
+  const monthlyTotal = calcs.filter((x) => x.c.status !== "completed").reduce((a, b) => a + b.c.nextPaymentAmount, 0);
   const dueCount = calcs.filter((x) => x.c.status === "due").length;
   const activeCount = calcs.filter((x) => x.c.status !== "completed").length;
 
@@ -192,10 +192,22 @@ export function InstallmentsClient({
                   </div>
                 </div>
                 {c.status !== "completed" && (
-                  <div style={{ gridColumn: "1 / -1" }}>
+                  <div>
                     <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>งวดถัดไปกำหนด</div>
                     <div className="num" style={{ fontSize: 13.5, fontWeight: 500, marginTop: 4 }}>
                       {thDate(c.nextDueDate)}
+                    </div>
+                  </div>
+                )}
+                {c.status !== "completed" && (
+                  <div>
+                    <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>ยอดงวดถัดไป</div>
+                    <div
+                      className="num"
+                      style={{ fontSize: 13.5, fontWeight: 500, marginTop: 4, color: c.nextPaymentAmount !== i.monthlyAmount ? "#d0658a" : undefined }}
+                    >
+                      {fmtBaht(c.nextPaymentAmount)}
+                      {c.nextPaymentAmount !== i.monthlyAmount && " (งวดสุดท้าย)"}
                     </div>
                   </div>
                 )}
@@ -210,7 +222,7 @@ export function InstallmentsClient({
                 </div>
                 {canEdit && c.status !== "completed" && (
                   <button
-                    onClick={() => setPayingId(i.id)}
+                    onClick={() => setPayingInstallment(i)}
                     style={{ padding: "7px 14px", background: "#7c5cc4", color: "#fff", border: "none", borderRadius: 10, fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}
                   >
                     จ่ายงวดนี้
@@ -258,14 +270,34 @@ export function InstallmentsClient({
         />
       )}
 
-      {payingId && (
+      {payingInstallment && (
         <FormModal
           title="บันทึกจ่ายงวดนี้"
           submitLabel="บันทึกจ่าย"
           successMessage="บันทึกการจ่ายงวดแล้ว"
-          onClose={() => setPayingId(null)}
-          action={payInstallment.bind(null, payingId)}
+          onClose={() => setPayingInstallment(null)}
+          action={payInstallment.bind(null, payingInstallment.id)}
           fields={[
+            {
+              kind: "preview",
+              name: "amountPreview",
+              render: () => {
+                const nextMonthNo = payingInstallment.paidMonths + 1;
+                const payAmount = installmentPaymentAmount(payingInstallment, nextMonthNo);
+                const isLast = nextMonthNo >= payingInstallment.months;
+                return (
+                  <div style={{ background: "#f5f0fc", borderRadius: 12, padding: "12px 14px", fontSize: 13 }}>
+                    <div style={{ color: "#7a6e90", marginBottom: 4 }}>
+                      ยอดที่ต้องจ่ายงวดที่ {nextMonthNo}/{payingInstallment.months}
+                    </div>
+                    <div className="num" style={{ fontSize: 20, fontWeight: 700, color: "#40354f" }}>
+                      {fmtBaht(payAmount)}
+                    </div>
+                    {isLast && <div style={{ color: "#d0658a", marginTop: 4 }}>งวดสุดท้าย — ยอดปัดเศษให้ครบยอดรวมพอดี</div>}
+                  </div>
+                );
+              },
+            },
             { kind: "input", name: "paidDate", label: "วันที่จ่าย", type: "date", defaultValue: today },
             { kind: "select", name: "accountName", label: "จ่ายจากบัญชี", options: accounts.map((a) => a.name), defaultValue: accounts[0]?.name },
             ...(hasWallets

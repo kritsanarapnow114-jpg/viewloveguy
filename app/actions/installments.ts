@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
 import { walletLabel } from "@/lib/wallets";
+import { installmentPaymentAmount } from "@/lib/installment";
 
 export type InstallmentFormState = { error?: string; success?: boolean };
 
@@ -103,6 +104,7 @@ export async function payInstallment(id: string, _prev: InstallmentFormState, fo
 
   const paidDate = paidDateStr ? new Date(paidDateStr) : new Date();
   const nextMonthNo = installment.paidMonths + 1;
+  const payAmount = installmentPaymentAmount(installment, nextMonthNo);
 
   await prisma.$transaction(async (tx) => {
     const payTx = await tx.transaction.create({
@@ -111,7 +113,7 @@ export async function payInstallment(id: string, _prev: InstallmentFormState, fo
         date: paidDate,
         category: "ผ่อนชำระสินค้า",
         note: `ผ่อน ${installment.item} งวดที่ ${nextMonthNo}/${installment.months}`,
-        amount: installment.monthlyAmount,
+        amount: payAmount,
         accountId: account.id,
         walletId: wallet?.id ?? null,
       },
