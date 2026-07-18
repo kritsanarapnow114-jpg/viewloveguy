@@ -163,8 +163,8 @@ export async function payLoan(id: string, _prev: LoanFormState, formData: FormDa
   const inAccount = inWallet ? inWallet.account : await prisma.account.findFirst({ where: { name: inAccountName } });
   if (!inAccount) return { error: "กรุณาเลือกบัญชีที่รับเงินเข้า" };
 
-  const { fee } = loanCalc(loan);
   const paidDate = paidDateStr ? new Date(paidDateStr) : new Date();
+  const { fee } = loanCalc(loan, paidDate);
 
   await prisma.$transaction(async (tx) => {
     const principalTx = await tx.transaction.create({

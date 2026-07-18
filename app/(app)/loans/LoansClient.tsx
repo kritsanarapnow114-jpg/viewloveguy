@@ -55,7 +55,7 @@ export function LoansClient({
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLoan, setEditingLoan] = useState<LoanView | null>(null);
-  const [payingId, setPayingId] = useState<string | null>(null);
+  const [payingLoan, setPayingLoan] = useState<LoanView | null>(null);
   const [viewImage, setViewImage] = useState<string | null>(null);
   const [, startTransition] = useTransition();
   const { showToast } = useToast();
@@ -247,7 +247,7 @@ export function LoansClient({
                 </div>
                 {canEdit && !l.paid && (
                   <button
-                    onClick={() => setPayingId(l.id)}
+                    onClick={() => setPayingLoan(l)}
                     style={{ padding: "7px 14px", background: "#7c5cc4", color: "#fff", border: "none", borderRadius: 10, fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}
                   >
                     บันทึกรับคืน
@@ -336,15 +336,36 @@ export function LoansClient({
         />
       )}
 
-      {payingId && (
+      {payingLoan && (
         <FormModal
           title="บันทึกรับคืนเงินกู้"
           submitLabel="บันทึกรับคืน"
           successMessage="บันทึกการรับคืนเงินกู้แล้ว"
-          onClose={() => setPayingId(null)}
-          action={payLoan.bind(null, payingId)}
+          onClose={() => setPayingLoan(null)}
+          action={payLoan.bind(null, payingLoan.id)}
           fields={[
             { kind: "input", name: "paidDate", label: "วันที่คืนเงิน", type: "date", defaultValue: today },
+            {
+              kind: "preview",
+              name: "totalPreview",
+              render: (values) => {
+                const paidDate = values.paidDate ? new Date(values.paidDate) : new Date();
+                const calc = loanCalc({ ...payingLoan, dueDate: new Date(payingLoan.dueDate) }, paidDate);
+                const total = payingLoan.amount + payingLoan.interest + calc.fee;
+                return (
+                  <div style={{ background: "#f5f0fc", borderRadius: 12, padding: "12px 14px", fontSize: 13 }}>
+                    <div style={{ color: "#7a6e90", marginBottom: 4 }}>ถ้าคืนวันที่เลือก ต้องจ่ายรวม</div>
+                    <div className="num" style={{ fontSize: 20, fontWeight: 700, color: "#40354f" }}>
+                      {fmtBaht(total)}
+                    </div>
+                    <div style={{ color: "#9b8fb0", marginTop: 4 }}>
+                      เงินต้น {fmtBaht(payingLoan.amount)} + ดอกเบี้ย {fmtBaht(payingLoan.interest)}
+                      {calc.fee > 0 && ` + ค่าปรับล่าช้า ${fmtBaht(calc.fee)} (${calc.lateDays} วัน)`}
+                    </div>
+                  </div>
+                );
+              },
+            },
             { kind: "select", name: "inAccountName", label: "รับเงินเข้าบัญชี", options: accounts.map((a) => a.name), defaultValue: accounts[0]?.name },
             ...(hasWallets
               ? [

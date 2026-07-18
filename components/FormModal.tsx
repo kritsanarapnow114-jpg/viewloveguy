@@ -16,9 +16,14 @@ export type ModalField =
       optionsByParent: Record<string, string[]>;
       placeholder: string;
       defaultValue?: string;
-    };
+    }
+  | { kind: "preview"; name: string; render: (values: Record<string, string>) => React.ReactNode };
 
 type FormState = { error?: string; success?: boolean };
+
+function fieldDefaultValue(f: ModalField): string {
+  return ("defaultValue" in f && f.defaultValue) || "";
+}
 
 export function FormModal({
   title,
@@ -38,17 +43,14 @@ export function FormModal({
   const { celebrate } = useCelebration();
   const [state, formAction, pending] = useActionState<FormState, FormData>(action, {});
 
-  const [initialParentValues] = useState<Record<string, string>>(() => {
+  const [initialValues] = useState<Record<string, string>>(() => {
     const initial: Record<string, string> = {};
     for (const f of fields) {
-      if (f.kind === "dependentSelect") {
-        const parent = fields.find((p) => p.name === f.dependsOn);
-        initial[f.dependsOn] = (parent && "defaultValue" in parent && parent.defaultValue) || "";
-      }
+      if (f.kind !== "preview") initial[f.name] = fieldDefaultValue(f);
     }
     return initial;
   });
-  const [parentValues, setParentValues] = useState<Record<string, string>>(() => ({ ...initialParentValues }));
+  const [values, setValues] = useState<Record<string, string>>(() => ({ ...initialValues }));
 
   useEffect(() => {
     if (state.success) {
@@ -112,74 +114,81 @@ export function FormModal({
         </div>
 
         <form action={formAction} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          {fields.map((f) => (
-            <div key={f.name}>
-              <label style={{ display: "block", fontSize: 13, fontWeight: 500, marginBottom: 6 }}>{f.label}</label>
-              {f.kind === "image" ? (
-                <ImageField name={f.name} defaultValue={f.defaultValue} />
-              ) : f.kind === "select" ? (
-                <select
-                  name={f.name}
-                  defaultValue={f.defaultValue}
-                  onChange={(e) => setParentValues((v) => (f.name in v ? { ...v, [f.name]: e.target.value } : v))}
-                  style={{
-                    width: "100%",
-                    padding: "11px 12px",
-                    border: "1px solid #e0d3f0",
-                    borderRadius: 11,
-                    fontSize: 14,
-                    background: "#fff",
-                    outline: "none",
-                  }}
-                >
-                  {f.options.map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
-                </select>
-              ) : f.kind === "dependentSelect" ? (
-                <select
-                  key={parentValues[f.dependsOn] ?? ""}
-                  name={f.name}
-                  defaultValue={parentValues[f.dependsOn] === initialParentValues[f.dependsOn] ? f.defaultValue : ""}
-                  style={{
-                    width: "100%",
-                    padding: "11px 12px",
-                    border: "1px solid #e0d3f0",
-                    borderRadius: 11,
-                    fontSize: 14,
-                    background: "#fff",
-                    outline: "none",
-                  }}
-                >
-                  <option value="">{f.placeholder}</option>
-                  {(f.optionsByParent[parentValues[f.dependsOn] ?? ""] || []).map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <input
-                  name={f.name}
-                  type={f.type || "text"}
-                  defaultValue={f.defaultValue}
-                  placeholder={f.placeholder}
-                  step={f.type === "number" ? "any" : undefined}
-                  style={{
-                    width: "100%",
-                    padding: "11px 12px",
-                    border: "1px solid #e0d3f0",
-                    borderRadius: 11,
-                    fontSize: 14,
-                    background: "#fff",
-                    outline: "none",
-                  }}
-                />
-              )}
-            </div>
-          ))}
+          {fields.map((f) => {
+            if (f.kind === "preview") {
+              return <div key={f.name}>{f.render(values)}</div>;
+            }
+            return (
+              <div key={f.name}>
+                <label style={{ display: "block", fontSize: 13, fontWeight: 500, marginBottom: 6 }}>{f.label}</label>
+                {f.kind === "image" ? (
+                  <ImageField name={f.name} defaultValue={f.defaultValue} />
+                ) : f.kind === "select" ? (
+                  <select
+                    name={f.name}
+                    defaultValue={f.defaultValue}
+                    onChange={(e) => setValues((v) => ({ ...v, [f.name]: e.target.value }))}
+                    style={{
+                      width: "100%",
+                      padding: "11px 12px",
+                      border: "1px solid #e0d3f0",
+                      borderRadius: 11,
+                      fontSize: 14,
+                      background: "#fff",
+                      outline: "none",
+                    }}
+                  >
+                    {f.options.map((o) => (
+                      <option key={o} value={o}>
+                        {o}
+                      </option>
+                    ))}
+                  </select>
+                ) : f.kind === "dependentSelect" ? (
+                  <select
+                    key={values[f.dependsOn] ?? ""}
+                    name={f.name}
+                    defaultValue={values[f.dependsOn] === initialValues[f.dependsOn] ? f.defaultValue : ""}
+                    onChange={(e) => setValues((v) => ({ ...v, [f.name]: e.target.value }))}
+                    style={{
+                      width: "100%",
+                      padding: "11px 12px",
+                      border: "1px solid #e0d3f0",
+                      borderRadius: 11,
+                      fontSize: 14,
+                      background: "#fff",
+                      outline: "none",
+                    }}
+                  >
+                    <option value="">{f.placeholder}</option>
+                    {(f.optionsByParent[values[f.dependsOn] ?? ""] || []).map((o) => (
+                      <option key={o} value={o}>
+                        {o}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    name={f.name}
+                    type={f.type || "text"}
+                    defaultValue={f.defaultValue}
+                    placeholder={f.placeholder}
+                    step={f.type === "number" ? "any" : undefined}
+                    onChange={(e) => setValues((v) => ({ ...v, [f.name]: e.target.value }))}
+                    style={{
+                      width: "100%",
+                      padding: "11px 12px",
+                      border: "1px solid #e0d3f0",
+                      borderRadius: 11,
+                      fontSize: 14,
+                      background: "#fff",
+                      outline: "none",
+                    }}
+                  />
+                )}
+              </div>
+            );
+          })}
 
           {state.error && <div style={{ color: "#d0658a", fontSize: 12.5, marginTop: 12 }}>{state.error}</div>}
 
