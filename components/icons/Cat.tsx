@@ -73,6 +73,19 @@ export function CatSitting({ size = "100%" }: CatSittingProps) {
   );
 }
 
+/** Simple solid paw-print silhouette, used as a decorative status watermark. */
+export function PawPrint({ color = "#000", size = "100%" }: { color?: string; size?: number | string }) {
+  return (
+    <svg viewBox="0 0 48 48" width={size} height={size} style={{ display: "block" }}>
+      <ellipse cx="24" cy="33" rx="12.5" ry="10.5" fill={color} />
+      <ellipse cx="8.5" cy="19" rx="5" ry="6.2" fill={color} transform="rotate(-18 8.5 19)" />
+      <ellipse cx="19" cy="9" rx="5" ry="6.4" fill={color} transform="rotate(-6 19 9)" />
+      <ellipse cx="30" cy="9" rx="5" ry="6.4" fill={color} transform="rotate(6 30 9)" />
+      <ellipse cx="40.5" cy="19" rx="5" ry="6.2" fill={color} transform="rotate(18 40.5 19)" />
+    </svg>
+  );
+}
+
 /** Big 84x84 hero illustration used on the login page. */
 export function CatHero({ size = "100%" }: { size?: number | string }) {
   return (

@@ -7,7 +7,7 @@ import { PageHeader, SearchBox, AddButton } from "@/components/PageHeader";
 import { ExportControls } from "@/components/ExportControls";
 import { FormModal } from "@/components/FormModal";
 import { useToast } from "@/components/ToastProvider";
-import { CatSitting } from "@/components/icons/Cat";
+import { CatSitting, PawPrint } from "@/components/icons/Cat";
 import { createLoan, updateLoan, payLoan, deleteLoan } from "@/app/actions/loans";
 
 function walletLabel(accountName: string, walletName: string) {
@@ -38,6 +38,13 @@ const STATUS_STYLE: Record<LoanStatus, { label: string; bg: string; color: strin
   due: { label: "ใกล้กำหนด", bg: "#fdf3ea", color: "#a5771a", accent: "#d99a4a" },
   overdue: { label: "เกินกำหนด", bg: "#fbe9f0", color: "#b8446e", accent: "#d0658a" },
   paid: { label: "ชำระแล้ว", bg: "#e3f2ec", color: "#3a8a6f", accent: "#4fa98a" },
+};
+
+const PAW_COLOR: Record<LoanStatus, string> = {
+  active: "#9b7fd4",
+  due: "#e8c34a",
+  overdue: "#e2645a",
+  paid: "#4fa98a",
 };
 
 function RepayQuote({ loan }: { loan: LoanView }) {
@@ -150,7 +157,33 @@ export function LoansClient({
         {filtered.map(({ l, c }) => {
           const st = STATUS_STYLE[c.status];
           return (
-            <div key={l.id} style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, padding: "20px 22px", borderLeft: `5px solid ${st.accent}`, position: "relative" }}>
+            <div
+              key={l.id}
+              style={{
+                background: "#fff",
+                border: "1px solid #ece2f7",
+                borderRadius: 18,
+                padding: "20px 22px",
+                borderLeft: `5px solid ${st.accent}`,
+                position: "relative",
+                overflow: "hidden",
+                zIndex: 0,
+              }}
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  right: l.paid ? -14 : -6,
+                  bottom: l.paid ? -14 : -6,
+                  width: l.paid ? 130 : 66,
+                  height: l.paid ? 130 : 66,
+                  opacity: l.paid ? 0.4 : 0.16,
+                  zIndex: -1,
+                  pointerEvents: "none",
+                }}
+              >
+                <PawPrint color={PAW_COLOR[c.status]} />
+              </span>
               {canEdit && (
                 <button
                   onClick={() => setEditingLoan(l)}
