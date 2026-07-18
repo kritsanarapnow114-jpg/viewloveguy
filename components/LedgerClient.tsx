@@ -2,8 +2,10 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { fmtBaht } from "@/lib/format";
+import { defaultDateRange, inDateRange } from "@/lib/dateRange";
 import { PageHeader, SearchBox, AddButton } from "./PageHeader";
 import { ExportControls } from "./ExportControls";
+import { DateRangeFilter } from "./DateRangeFilter";
 import { FormModal, type ModalField } from "./FormModal";
 import { useToast } from "./ToastProvider";
 import { createTransaction, deleteTransaction, type TxKind } from "@/app/actions/transactions";
@@ -35,6 +37,7 @@ export function LedgerClient({
   canEdit: boolean;
 }) {
   const [search, setSearch] = useState("");
+  const [range, setRange] = useState(defaultDateRange);
   const [modalOpen, setModalOpen] = useState(false);
   const [, startTransition] = useTransition();
   const { showToast } = useToast();
@@ -46,9 +49,12 @@ export function LedgerClient({
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return rows;
-    return rows.filter((r) => r.note.toLowerCase().includes(q) || r.category.toLowerCase().includes(q) || r.accountName.toLowerCase().includes(q));
-  }, [rows, search]);
+    return rows.filter((r) => {
+      if (!inDateRange(r.date, range)) return false;
+      if (!q) return true;
+      return r.note.toLowerCase().includes(q) || r.category.toLowerCase().includes(q) || r.accountName.toLowerCase().includes(q);
+    });
+  }, [rows, search, range]);
 
   const total = filtered.reduce((a, b) => a + b.amount, 0);
 
@@ -83,9 +89,22 @@ export function LedgerClient({
   return (
     <div>
       <PageHeader title={title} subtitle={subtitle}>
+        <DateRangeFilter value={range} onChange={setRange} />
         <SearchBox value={search} onChange={setSearch} />
         {canEdit && <AddButton label={kind === "income" ? "บันทึกรับ" : "บันทึกจ่าย"} onClick={() => setModalOpen(true)} />}
-        {canEdit && <ExportControls />}
+        {canEdit && (
+          <ExportControls
+            filename={`${kind === "income" ? "รายการรับ" : "รายการจ่าย"}.xlsx`}
+            sheetName={kind === "income" ? "รายการรับ" : "รายการจ่าย"}
+            rows={filtered.map((r) => ({
+              วันที่: r.dateText,
+              รายการ: r.note,
+              หมวดหมู่: r.category,
+              บัญชี: r.accountName,
+              จำนวนเงิน: r.amount,
+            }))}
+          />
+        )}
       </PageHeader>
 
       <div style={{ display: "flex", gap: 16, marginBottom: 18, flexWrap: "wrap" }}>

@@ -3,8 +3,10 @@
 import { useMemo, useState, useTransition } from "react";
 import { fmtBaht, thDate } from "@/lib/format";
 import { loanCalc, type LoanStatus } from "@/lib/loan";
+import { defaultDateRange, inDateRange } from "@/lib/dateRange";
 import { PageHeader, SearchBox, AddButton } from "@/components/PageHeader";
 import { ExportControls } from "@/components/ExportControls";
+import { DateRangeFilter } from "@/components/DateRangeFilter";
 import { FormModal } from "@/components/FormModal";
 import { useToast } from "@/components/ToastProvider";
 import { CatSitting, PawPrint } from "@/components/icons/Cat";
@@ -88,6 +90,7 @@ export function LoansClient({
 }) {
   const hasWallets = Object.keys(walletsByAccount).length > 0;
   const [search, setSearch] = useState("");
+  const [range, setRange] = useState(defaultDateRange);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLoan, setEditingLoan] = useState<LoanView | null>(null);
   const [payingLoan, setPayingLoan] = useState<LoanView | null>(null);
@@ -111,7 +114,7 @@ export function LoansClient({
 
   const q = search.trim().toLowerCase();
   const filtered = calcs
-    .filter((x) => !q || x.l.borrower.toLowerCase().includes(q))
+    .filter((x) => inDateRange(x.l.borrowDate, range) && (!q || x.l.borrower.toLowerCase().includes(q)))
     .sort((a, b) => Number(a.l.paid) - Number(b.l.paid) || new Date(a.l.dueDate).getTime() - new Date(b.l.dueDate).getTime());
 
   const today = new Date().toISOString().slice(0, 10);
@@ -121,9 +124,25 @@ export function LoansClient({
   return (
     <div>
       <PageHeader title="ปล่อยเงินกู้" subtitle="จัดการสัญญาเงินกู้ ดอกเบี้ย และกำหนดคืน">
+        <DateRangeFilter value={range} onChange={setRange} />
         <SearchBox value={search} onChange={setSearch} />
         {canEdit && <AddButton label="เพิ่มสัญญา" onClick={() => setModalOpen(true)} />}
-        {canEdit && <ExportControls />}
+        {canEdit && (
+          <ExportControls
+            filename="ปล่อยเงินกู้.xlsx"
+            sheetName="ปล่อยเงินกู้"
+            rows={filtered.map(({ l, c }) => ({
+              ผู้ยืม: l.borrower,
+              วันที่ยืม: thDate(l.borrowDate),
+              เงินต้น: l.amount,
+              ดอกเบี้ย: l.interest,
+              กำหนดคืน: thDate(l.dueDate),
+              ค่าปรับล่าช้า: c.fee,
+              สถานะ: l.paid ? "ชำระแล้ว" : STATUS_STYLE[c.status].label,
+              รวมที่ต้องคืน: c.total,
+            }))}
+          />
+        )}
       </PageHeader>
 
       <div style={{ display: "flex", gap: 16, marginBottom: 18, flexWrap: "wrap" }}>

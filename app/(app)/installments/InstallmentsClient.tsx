@@ -3,8 +3,10 @@
 import { useMemo, useState, useTransition } from "react";
 import { fmtBaht, thDate } from "@/lib/format";
 import { installmentCalc, type InstallmentStatus } from "@/lib/installment";
+import { defaultDateRange, inDateRange } from "@/lib/dateRange";
 import { PageHeader, SearchBox, AddButton } from "@/components/PageHeader";
 import { ExportControls } from "@/components/ExportControls";
+import { DateRangeFilter } from "@/components/DateRangeFilter";
 import { FormModal } from "@/components/FormModal";
 import { useToast } from "@/components/ToastProvider";
 import { CatSitting } from "@/components/icons/Cat";
@@ -38,6 +40,7 @@ export function InstallmentsClient({
   canEdit: boolean;
 }) {
   const [search, setSearch] = useState("");
+  const [range, setRange] = useState(defaultDateRange);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingInstallment, setEditingInstallment] = useState<InstallmentView | null>(null);
   const [payingInstallment, setPayingInstallment] = useState<InstallmentView | null>(null);
@@ -63,7 +66,7 @@ export function InstallmentsClient({
 
   const q = search.trim().toLowerCase();
   const filtered = calcs
-    .filter((x) => !q || x.i.item.toLowerCase().includes(q))
+    .filter((x) => inDateRange(x.i.startDate, range) && (!q || x.i.item.toLowerCase().includes(q)))
     .sort((a, b) => Number(a.c.status === "completed") - Number(b.c.status === "completed") || a.c.nextDueDate.getTime() - b.c.nextDueDate.getTime());
 
   const today = new Date().toISOString().slice(0, 10);
@@ -71,9 +74,24 @@ export function InstallmentsClient({
   return (
     <div>
       <PageHeader title="ผ่อนชำระสินค้า" subtitle="ติดตามรายการผ่อนสินค้ารายเดือน เช่น ผ่อนช้อปปี้ 12 เดือน">
+        <DateRangeFilter value={range} onChange={setRange} />
         <SearchBox value={search} onChange={setSearch} />
         {canEdit && <AddButton label="เพิ่มรายการผ่อน" onClick={() => setModalOpen(true)} />}
-        {canEdit && <ExportControls />}
+        {canEdit && (
+          <ExportControls
+            filename="ผ่อนชำระสินค้า.xlsx"
+            sheetName="ผ่อนชำระสินค้า"
+            rows={filtered.map(({ i, c }) => ({
+              รายการ: i.item,
+              เริ่มผ่อน: thDate(i.startDate),
+              ยอดรวมทั้งหมด: i.totalAmount,
+              จำนวนงวด: i.months,
+              ผ่อนแล้ว: i.paidMonths,
+              สถานะ: STATUS_STYLE[c.status].label,
+              คงเหลือ: c.remainingAmount,
+            }))}
+          />
+        )}
       </PageHeader>
 
       <div style={{ display: "flex", gap: 16, marginBottom: 18, flexWrap: "wrap" }}>

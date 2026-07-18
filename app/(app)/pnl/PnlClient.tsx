@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { fmtBaht } from "@/lib/format";
+import { defaultDateRange, inDateRange } from "@/lib/dateRange";
 import { PageHeader } from "@/components/PageHeader";
 import { ExportControls } from "@/components/ExportControls";
+import { DateRangeFilter } from "@/components/DateRangeFilter";
 
 type TxView = { date: string; category: string; amount: number };
-type Period = "all" | "year" | "month";
 
 function byCategory(list: TxView[]) {
   const m: Record<string, number> = {};
@@ -20,19 +21,10 @@ function byCategory(list: TxView[]) {
 }
 
 export function PnlClient({ income, expense, canEdit }: { income: TxView[]; expense: TxView[]; canEdit: boolean }) {
-  const [period, setPeriod] = useState<Period>("all");
-  const now = useMemo(() => new Date(), []);
+  const [range, setRange] = useState(defaultDateRange);
 
-  const inRange = (iso: string) => {
-    if (period === "all") return true;
-    const d = new Date(iso);
-    if (period === "month") return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
-    if (period === "year") return d.getFullYear() === now.getFullYear();
-    return true;
-  };
-
-  const inc = income.filter((r) => inRange(r.date));
-  const exp = expense.filter((r) => inRange(r.date));
+  const inc = income.filter((r) => inDateRange(r.date, range));
+  const exp = expense.filter((r) => inDateRange(r.date, range));
   const incSum = inc.reduce((a, b) => a + b.amount, 0);
   const expSum = exp.reduce((a, b) => a + b.amount, 0);
   const net = incSum - expSum;
@@ -40,16 +32,23 @@ export function PnlClient({ income, expense, canEdit }: { income: TxView[]; expe
   const incomeCats = byCategory(inc);
   const expenseCats = byCategory(exp);
 
-  const periods: { key: Period; label: string }[] = [
-    { key: "all", label: "ทั้งหมด" },
-    { key: "year", label: "ปีนี้" },
-    { key: "month", label: "เดือนนี้" },
-  ];
-
   return (
     <div>
       <PageHeader title="กำไร - ขาดทุน" subtitle="สรุปรายรับ รายจ่าย และกำไรสุทธิ">
-        {canEdit && <ExportControls />}
+        <DateRangeFilter value={range} onChange={setRange} />
+        {canEdit && (
+          <ExportControls
+            filename="กำไร-ขาดทุน.xlsx"
+            sheetName="สรุป"
+            rows={[
+              { หมวดหมู่: "รายรับรวม", จำนวนเงิน: incSum },
+              ...incomeCats.map((c) => ({ หมวดหมู่: `รายรับ - ${c.name}`, จำนวนเงิน: inc.filter((r) => r.category === c.name).reduce((a, b) => a + b.amount, 0) })),
+              { หมวดหมู่: "รายจ่ายรวม", จำนวนเงิน: expSum },
+              ...expenseCats.map((c) => ({ หมวดหมู่: `รายจ่าย - ${c.name}`, จำนวนเงิน: exp.filter((r) => r.category === c.name).reduce((a, b) => a + b.amount, 0) })),
+              { หมวดหมู่: net >= 0 ? "กำไรสุทธิ" : "ขาดทุนสุทธิ", จำนวนเงิน: net },
+            ]}
+          />
+        )}
       </PageHeader>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 16, marginBottom: 18 }}>
@@ -77,30 +76,6 @@ export function PnlClient({ income, expense, canEdit }: { income: TxView[]; expe
             {margin}
           </div>
         </div>
-      </div>
-
-      <div style={{ display: "flex", gap: 12, marginBottom: 18, flexWrap: "wrap" }}>
-        {periods.map((p) => {
-          const active = period === p.key;
-          return (
-            <button
-              key={p.key}
-              onClick={() => setPeriod(p.key)}
-              style={{
-                padding: "8px 16px",
-                border: `1px solid ${active ? "#7c5cc4" : "#e0d3f0"}`,
-                background: active ? "#7c5cc4" : "#fff",
-                color: active ? "#fff" : "#7a6e90",
-                borderRadius: 20,
-                fontSize: 13,
-                fontWeight: active ? 600 : 500,
-                cursor: "pointer",
-              }}
-            >
-              {p.label}
-            </button>
-          );
-        })}
       </div>
 
       <div className="dash-cols" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>

@@ -39,7 +39,20 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
     <div>
       <PageHeader title={account.name} subtitle="รายการรับ-จ่ายทั้งหมดของบัญชีนี้">
         {canEdit && <TransferButton accountNames={allAccounts.map((a) => a.name)} walletsByAccount={walletsByAccount} defaultFromAccountName={account.name} />}
-        {canEdit && <ExportControls />}
+        {canEdit && (
+          <ExportControls
+            filename={`${account.name}.xlsx`}
+            sheetName="รายการ"
+            rows={rows.map((r) => ({
+              วันที่: r.dateText,
+              ประเภท: r.isIncome ? "รับ" : "จ่าย",
+              รายการ: r.note,
+              หมวดหมู่: r.category,
+              กระเป๋า: r.walletName ?? "",
+              จำนวนเงิน: r.amount,
+            }))}
+          />
+        )}
       </PageHeader>
 
       <Link href="/accounts" style={{ display: "inline-block", border: "none", background: "none", color: "#7a6e90", fontSize: 13.5, padding: 0, marginBottom: 16 }}>
