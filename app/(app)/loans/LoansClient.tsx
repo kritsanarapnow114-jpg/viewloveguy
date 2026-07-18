@@ -173,11 +173,11 @@ export function LoansClient({
               <span
                 style={{
                   position: "absolute",
-                  right: l.paid ? -14 : -6,
-                  bottom: l.paid ? -14 : -6,
-                  width: l.paid ? 130 : 66,
-                  height: l.paid ? 130 : 66,
-                  opacity: l.paid ? 0.4 : 0.16,
+                  right: l.paid ? -22 : -12,
+                  bottom: l.paid ? -22 : -12,
+                  width: l.paid ? 200 : 110,
+                  height: l.paid ? 200 : 110,
+                  opacity: l.paid ? 0.42 : 0.2,
                   zIndex: -1,
                   pointerEvents: "none",
                 }}
@@ -261,7 +261,20 @@ export function LoansClient({
                     <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>ยืมเมื่อ {thDate(l.borrowDate)}</div>
                   </div>
                 </div>
-                <span style={{ fontSize: 11.5, fontWeight: 600, padding: "4px 11px", borderRadius: 20, background: st.bg, color: st.color, marginRight: 60 }}>{st.label}</span>
+                <span
+                  style={{
+                    fontSize: 11.5,
+                    fontWeight: 600,
+                    padding: "4px 11px",
+                    borderRadius: 20,
+                    background: st.bg,
+                    color: st.color,
+                    marginRight: !canEdit ? 0 : l.paid ? 60 : 92,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {st.label}
+                </span>
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, margin: "18px 0 14px" }}>
@@ -340,7 +353,20 @@ export function LoansClient({
                     บันทึกรับคืน
                   </button>
                 )}
-                {l.paid && <span style={{ fontSize: 12.5, color: "#4fa98a", fontWeight: 600 }}>✓ ชำระครบแล้ว</span>}
+                {l.paid && (
+                  <span
+                    style={{
+                      fontSize: 12.5,
+                      color: "#3a8a6f",
+                      fontWeight: 600,
+                      background: "#e3f2ec",
+                      padding: "5px 12px",
+                      borderRadius: 20,
+                    }}
+                  >
+                    ✓ ชำระครบแล้ว
+                  </span>
+                )}
               </div>
             </div>
           );
