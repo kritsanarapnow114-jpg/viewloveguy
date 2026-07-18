@@ -1,16 +1,23 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getAccountWithBalance } from "@/lib/accounts";
-import { getWalletsWithBalance } from "@/lib/wallets";
+import { getAccountWithBalance, getAccountsWithBalance } from "@/lib/accounts";
+import { getWalletsWithBalance, getWalletsByAccount } from "@/lib/wallets";
 import { getCurrentUser } from "@/lib/session";
 import { fmtBaht, thDate } from "@/lib/format";
 import { PageHeader } from "@/components/PageHeader";
 import { ExportControls } from "@/components/ExportControls";
 import { WalletsSection } from "@/components/WalletsSection";
+import { TransferButton } from "@/components/TransferButton";
 
 export default async function AccountDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [account, wallets, user] = await Promise.all([getAccountWithBalance(id), getWalletsWithBalance(id), getCurrentUser()]);
+  const [account, wallets, allAccounts, walletsByAccount, user] = await Promise.all([
+    getAccountWithBalance(id),
+    getWalletsWithBalance(id),
+    getAccountsWithBalance(),
+    getWalletsByAccount(),
+    getCurrentUser(),
+  ]);
   if (!account) notFound();
 
   const rows = [...account.transactions]
@@ -31,6 +38,7 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
   return (
     <div>
       <PageHeader title={account.name} subtitle="รายการรับ-จ่ายทั้งหมดของบัญชีนี้">
+        {canEdit && <TransferButton accountNames={allAccounts.map((a) => a.name)} walletsByAccount={walletsByAccount} defaultFromAccountName={account.name} />}
         {canEdit && <ExportControls />}
       </PageHeader>
 
