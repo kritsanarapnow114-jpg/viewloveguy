@@ -4,7 +4,6 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
 import { walletLabel } from "@/lib/wallets";
-import { installmentPaymentAmount } from "@/lib/installment";
 
 export type InstallmentFormState = { error?: string; success?: boolean };
 
@@ -32,21 +31,18 @@ export async function createInstallment(_prev: InstallmentFormState, formData: F
   const item = String(formData.get("item") || "").trim();
   if (!item) return { error: "กรุณากรอกชื่อสินค้า/รายการ" };
 
-  const totalAmount = Number(formData.get("totalAmount"));
-  if (!totalAmount || totalAmount <= 0) return { error: "กรุณากรอกยอดรวมให้ถูกต้อง" };
-
-  const months = Math.round(Number(formData.get("months")));
-  if (!months || months <= 0) return { error: "กรุณากรอกจำนวนงวดให้ถูกต้อง" };
+  const amounts = parseAmounts(formData.get("amounts"));
+  if (!amounts) return { error: "กรุณากรอกยอดผ่อนแต่ละงวดให้ถูกต้อง (ทุกงวดต้องมากกว่า 0)" };
 
   const startDateStr = String(formData.get("startDate") || "");
-  const monthlyAmount = Math.round((totalAmount / months) * 100) / 100;
+  const totalAmount = Math.round(amounts.reduce((a, b) => a + b, 0) * 100) / 100;
 
   await prisma.installment.create({
     data: {
       item,
       totalAmount,
-      months,
-      monthlyAmount,
+      months: amounts.length,
+      amounts,
       startDate: startDateStr ? new Date(startDateStr) : new Date(),
     },
   });
@@ -55,29 +51,44 @@ export async function createInstallment(_prev: InstallmentFormState, formData: F
   return { success: true };
 }
 
+function parseAmounts(raw: FormDataEntryValue | null): number[] | null {
+  if (!raw) return null;
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(String(raw));
+  } catch {
+    return null;
+  }
+  if (!Array.isArray(parsed) || parsed.length === 0) return null;
+  const amounts = parsed.map((v) => Number(v));
+  if (amounts.some((n) => !Number.isFinite(n) || n <= 0)) return null;
+  return amounts.map((n) => Math.round(n * 100) / 100);
+}
+
 export async function updateInstallment(id: string, _prev: InstallmentFormState, formData: FormData): Promise<InstallmentFormState> {
   const user = await getCurrentUser();
   if (!user || user.role !== "ADMIN") return { error: "ไม่มีสิทธิ์ทำรายการนี้" };
 
+  const existing = await prisma.installment.findUnique({ where: { id } });
+  if (!existing) return { error: "ไม่พบรายการผ่อนชำระนี้" };
+
   const item = String(formData.get("item") || "").trim();
   if (!item) return { error: "กรุณากรอกชื่อสินค้า/รายการ" };
 
-  const totalAmount = Number(formData.get("totalAmount"));
-  if (!totalAmount || totalAmount <= 0) return { error: "กรุณากรอกยอดรวมให้ถูกต้อง" };
-
-  const months = Math.round(Number(formData.get("months")));
-  if (!months || months <= 0) return { error: "กรุณากรอกจำนวนงวดให้ถูกต้อง" };
+  const amounts = parseAmounts(formData.get("amounts"));
+  if (!amounts) return { error: "กรุณากรอกยอดผ่อนแต่ละงวดให้ถูกต้อง (ทุกงวดต้องมากกว่า 0)" };
+  if (amounts.length < existing.paidMonths) return { error: "จำนวนงวดต้องไม่น้อยกว่างวดที่จ่ายไปแล้ว" };
 
   const startDateStr = String(formData.get("startDate") || "");
-  const monthlyAmount = Math.round((totalAmount / months) * 100) / 100;
+  const totalAmount = Math.round(amounts.reduce((a, b) => a + b, 0) * 100) / 100;
 
   await prisma.installment.update({
     where: { id },
     data: {
       item,
       totalAmount,
-      months,
-      monthlyAmount,
+      months: amounts.length,
+      amounts,
       startDate: startDateStr ? new Date(startDateStr) : new Date(),
     },
   });
@@ -104,7 +115,7 @@ export async function payInstallment(id: string, _prev: InstallmentFormState, fo
 
   const paidDate = paidDateStr ? new Date(paidDateStr) : new Date();
   const nextMonthNo = installment.paidMonths + 1;
-  const payAmount = installmentPaymentAmount(installment, nextMonthNo);
+  const payAmount = installment.amounts[installment.paidMonths];
 
   await prisma.$transaction(async (tx) => {
     const payTx = await tx.transaction.create({

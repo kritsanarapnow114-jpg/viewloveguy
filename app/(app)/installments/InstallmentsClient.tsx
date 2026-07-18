@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { fmtBaht, thDate } from "@/lib/format";
-import { installmentCalc, installmentPaymentAmount, type InstallmentStatus } from "@/lib/installment";
+import { installmentCalc, type InstallmentStatus } from "@/lib/installment";
 import { PageHeader, SearchBox, AddButton } from "@/components/PageHeader";
 import { ExportControls } from "@/components/ExportControls";
 import { FormModal } from "@/components/FormModal";
@@ -15,7 +15,7 @@ type InstallmentView = {
   item: string;
   totalAmount: number;
   months: number;
-  monthlyAmount: number;
+  amounts: number[];
   startDate: string;
   paidMonths: number;
 };
@@ -180,15 +180,15 @@ export function InstallmentsClient({
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, margin: "16px 0 14px" }}>
                 <div>
-                  <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>ยอดผ่อน/เดือน</div>
-                  <div className="num" style={{ fontSize: 17, fontWeight: 600, marginTop: 2 }}>
-                    {fmtBaht(i.monthlyAmount)}
-                  </div>
-                </div>
-                <div>
                   <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>ยอดรวมทั้งหมด</div>
                   <div className="num" style={{ fontSize: 17, fontWeight: 600, marginTop: 2 }}>
                     {fmtBaht(i.totalAmount)}
+                  </div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>เฉลี่ย/เดือน</div>
+                  <div className="num" style={{ fontSize: 17, fontWeight: 600, marginTop: 2 }}>
+                    {fmtBaht(i.totalAmount / i.months)}
                   </div>
                 </div>
                 {c.status !== "completed" && (
@@ -201,13 +201,17 @@ export function InstallmentsClient({
                 )}
                 {c.status !== "completed" && (
                   <div>
-                    <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>ยอดงวดถัดไป</div>
+                    <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>ยอดงวดถัดไป (งวดที่ {i.paidMonths + 1}/{i.months})</div>
                     <div
                       className="num"
-                      style={{ fontSize: 13.5, fontWeight: 500, marginTop: 4, color: c.nextPaymentAmount !== i.monthlyAmount ? "#d0658a" : undefined }}
+                      style={{
+                        fontSize: 13.5,
+                        fontWeight: 500,
+                        marginTop: 4,
+                        color: Math.abs(c.nextPaymentAmount - i.totalAmount / i.months) > 0.005 ? "#d0658a" : undefined,
+                      }}
                     >
                       {fmtBaht(c.nextPaymentAmount)}
-                      {c.nextPaymentAmount !== i.monthlyAmount && " (งวดสุดท้าย)"}
                     </div>
                   </div>
                 )}
@@ -247,9 +251,16 @@ export function InstallmentsClient({
           action={createInstallment}
           fields={[
             { kind: "input", name: "item", label: "ชื่อสินค้า/รายการ", placeholder: "เช่น ผ่อนช้อปปี้ - โน้ตบุ๊ก" },
-            { kind: "input", name: "totalAmount", label: "ยอดรวมทั้งหมด (บาท)", type: "number", placeholder: "0" },
             { kind: "input", name: "months", label: "จำนวนงวด (เดือน)", type: "number", placeholder: "12" },
+            { kind: "input", name: "totalAmount", label: "ยอดรวมทั้งหมด (บาท) — ใช้แบ่งเท่ากันอัตโนมัติ", type: "number", placeholder: "0" },
             { kind: "input", name: "startDate", label: "วันที่เริ่มผ่อนงวดแรก", type: "date", defaultValue: today },
+            {
+              kind: "scheduleAmounts",
+              name: "amounts",
+              label: "ยอดผ่อนแต่ละงวด (บาท) — แก้ทีละงวดได้ เพราะบางแพลตฟอร์มจ่ายไม่เท่ากันทุกงวด",
+              monthsField: "months",
+              totalField: "totalAmount",
+            },
           ]}
         />
       )}
@@ -263,9 +274,17 @@ export function InstallmentsClient({
           action={updateInstallment.bind(null, editingInstallment.id)}
           fields={[
             { kind: "input", name: "item", label: "ชื่อสินค้า/รายการ", placeholder: "เช่น ผ่อนช้อปปี้ - โน้ตบุ๊ก", defaultValue: editingInstallment.item },
-            { kind: "input", name: "totalAmount", label: "ยอดรวมทั้งหมด (บาท)", type: "number", placeholder: "0", defaultValue: String(editingInstallment.totalAmount) },
             { kind: "input", name: "months", label: "จำนวนงวด (เดือน)", type: "number", placeholder: "12", defaultValue: String(editingInstallment.months) },
+            { kind: "input", name: "totalAmount", label: "ยอดรวมทั้งหมด (บาท) — ใช้แบ่งเท่ากันอัตโนมัติ", type: "number", placeholder: "0", defaultValue: String(editingInstallment.totalAmount) },
             { kind: "input", name: "startDate", label: "วันที่เริ่มผ่อนงวดแรก", type: "date", defaultValue: editingInstallment.startDate.slice(0, 10) },
+            {
+              kind: "scheduleAmounts",
+              name: "amounts",
+              label: "ยอดผ่อนแต่ละงวด (บาท) — แก้ทีละงวดได้ เพราะบางแพลตฟอร์มจ่ายไม่เท่ากันทุกงวด",
+              monthsField: "months",
+              totalField: "totalAmount",
+              defaultAmounts: editingInstallment.amounts,
+            },
           ]}
         />
       )}
@@ -283,7 +302,7 @@ export function InstallmentsClient({
               name: "amountPreview",
               render: () => {
                 const nextMonthNo = payingInstallment.paidMonths + 1;
-                const payAmount = installmentPaymentAmount(payingInstallment, nextMonthNo);
+                const payAmount = payingInstallment.amounts[payingInstallment.paidMonths];
                 const isLast = nextMonthNo >= payingInstallment.months;
                 return (
                   <div style={{ background: "#f5f0fc", borderRadius: 12, padding: "12px 14px", fontSize: 13 }}>
@@ -293,7 +312,7 @@ export function InstallmentsClient({
                     <div className="num" style={{ fontSize: 20, fontWeight: 700, color: "#40354f" }}>
                       {fmtBaht(payAmount)}
                     </div>
-                    {isLast && <div style={{ color: "#d0658a", marginTop: 4 }}>งวดสุดท้าย — ยอดปัดเศษให้ครบยอดรวมพอดี</div>}
+                    {isLast && <div style={{ color: "#d0658a", marginTop: 4 }}>งวดสุดท้าย</div>}
                   </div>
                 );
               },

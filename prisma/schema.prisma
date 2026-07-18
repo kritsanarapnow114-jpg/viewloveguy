@@ -104,7 +104,7 @@ model Installment {
   item                  String
   totalAmount           Float
   months                Int
-  monthlyAmount         Float
+  amounts               Float[]
   startDate             DateTime
   paidMonths            Int      @default(0)
   paymentTransactionIds String[] @default([])

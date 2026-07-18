@@ -8,27 +8,17 @@ export type InstallmentCalc = {
   nextPaymentAmount: number;
 };
 
-/**
- * The amount due for a given installment number. Every month pays the flat
- * monthlyAmount except the last, which absorbs whatever rounding remainder
- * is left so the payments always sum exactly to totalAmount — matching how
- * real installment plans (e.g. Shopee) round.
- */
-export function installmentPaymentAmount(inst: { totalAmount: number; months: number; monthlyAmount: number }, monthNo: number): number {
-  if (monthNo >= inst.months) {
-    return Math.round((inst.totalAmount - inst.monthlyAmount * (inst.months - 1)) * 100) / 100;
-  }
-  return inst.monthlyAmount;
-}
-
 export function installmentCalc(
-  inst: { totalAmount: number; months: number; monthlyAmount: number; startDate: Date; paidMonths: number },
+  inst: { amounts: number[]; startDate: Date; paidMonths: number },
   now: Date = new Date()
 ): InstallmentCalc {
-  const remainingMonths = Math.max(0, inst.months - inst.paidMonths);
-  const completed = inst.paidMonths >= inst.months;
-  const remainingAmount = completed ? 0 : Math.max(0, Math.round((inst.totalAmount - inst.paidMonths * inst.monthlyAmount) * 100) / 100);
-  const nextPaymentAmount = completed ? 0 : installmentPaymentAmount(inst, inst.paidMonths + 1);
+  const months = inst.amounts.length;
+  const remainingMonths = Math.max(0, months - inst.paidMonths);
+  const completed = inst.paidMonths >= months;
+  const remainingAmount = completed
+    ? 0
+    : Math.round(inst.amounts.slice(inst.paidMonths).reduce((a, b) => a + b, 0) * 100) / 100;
+  const nextPaymentAmount = completed ? 0 : inst.amounts[inst.paidMonths];
 
   const nextDueDate = new Date(inst.startDate);
   nextDueDate.setMonth(nextDueDate.getMonth() + inst.paidMonths);
@@ -38,4 +28,15 @@ export function installmentCalc(
   else if (nextDueDate.getTime() < now.getTime()) status = "due";
 
   return { status, remainingMonths, remainingAmount, nextDueDate, nextPaymentAmount };
+}
+
+/** Quick equal-split helper: divides totalAmount into `months` payments, with the
+ * last one absorbing the rounding remainder. Used to pre-fill a per-month schedule
+ * that the user can then adjust to match a real (often uneven) plan. */
+export function splitEqually(totalAmount: number, months: number): number[] {
+  if (months <= 0) return [];
+  const monthly = Math.round((totalAmount / months) * 100) / 100;
+  const amounts = Array(months).fill(monthly);
+  amounts[months - 1] = Math.round((totalAmount - monthly * (months - 1)) * 100) / 100;
+  return amounts;
 }

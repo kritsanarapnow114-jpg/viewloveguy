@@ -16,7 +16,7 @@ export default async function InstallmentsPage() {
     item: i.item,
     totalAmount: i.totalAmount,
     months: i.months,
-    monthlyAmount: i.monthlyAmount,
+    amounts: i.amounts,
     startDate: i.startDate.toISOString(),
     paidMonths: i.paidMonths,
   }));

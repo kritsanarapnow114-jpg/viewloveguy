@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { useCelebration } from "./CelebrationProvider";
 import { compressImageFile } from "@/lib/image";
+import { fmtBaht } from "@/lib/format";
 
 export type ModalField =
   | { kind: "input"; name: string; label: string; type?: string; placeholder?: string; defaultValue?: string }
@@ -17,7 +18,15 @@ export type ModalField =
       placeholder: string;
       defaultValue?: string;
     }
-  | { kind: "preview"; name: string; render: (values: Record<string, string>) => React.ReactNode };
+  | { kind: "preview"; name: string; render: (values: Record<string, string>) => React.ReactNode }
+  | {
+      kind: "scheduleAmounts";
+      name: string;
+      label: string;
+      monthsField: string;
+      totalField?: string;
+      defaultAmounts?: number[];
+    };
 
 type FormState = { error?: string; success?: boolean };
 
@@ -123,6 +132,13 @@ export function FormModal({
                 <label style={{ display: "block", fontSize: 13, fontWeight: 500, marginBottom: 6 }}>{f.label}</label>
                 {f.kind === "image" ? (
                   <ImageField name={f.name} defaultValue={f.defaultValue} />
+                ) : f.kind === "scheduleAmounts" ? (
+                  <ScheduleAmountsField
+                    name={f.name}
+                    monthsCount={Math.max(0, Math.min(60, Math.round(Number(values[f.monthsField]) || 0)))}
+                    totalAmount={f.totalField ? Number(values[f.totalField]) || 0 : 0}
+                    defaultAmounts={f.defaultAmounts}
+                  />
                 ) : f.kind === "select" ? (
                   <select
                     name={f.name}
@@ -286,6 +302,91 @@ function ImageField({ name, defaultValue }: { name: string; defaultValue?: strin
         <input type="file" accept="image/*" onChange={onPick} style={{ display: "none" }} />
       </label>
       {error && <div style={{ color: "#d0658a", fontSize: 12, marginTop: 6 }}>{error}</div>}
+    </div>
+  );
+}
+
+function ScheduleAmountsField({
+  name,
+  monthsCount,
+  totalAmount,
+  defaultAmounts,
+}: {
+  name: string;
+  monthsCount: number;
+  totalAmount: number;
+  defaultAmounts?: number[];
+}) {
+  const [valuesMap, setValuesMap] = useState<Record<number, string>>(() => {
+    const m: Record<number, string> = {};
+    (defaultAmounts ?? []).forEach((n, i) => {
+      m[i] = String(n);
+    });
+    return m;
+  });
+
+  const amounts = Array.from({ length: monthsCount }, (_, i) => valuesMap[i] ?? "");
+  const total = amounts.reduce((a, b) => a + (Number(b) || 0), 0);
+
+  const fillEqually = () => {
+    if (!totalAmount || monthsCount <= 0) return;
+    const monthly = Math.round((totalAmount / monthsCount) * 100) / 100;
+    const next: Record<number, string> = {};
+    for (let i = 0; i < monthsCount; i++) next[i] = String(monthly);
+    next[monthsCount - 1] = String(Math.round((totalAmount - monthly * (monthsCount - 1)) * 100) / 100);
+    setValuesMap(next);
+  };
+
+  return (
+    <div>
+      <input type="hidden" name={name} value={JSON.stringify(amounts.map((a) => Number(a) || 0))} />
+      {totalAmount > 0 && monthsCount > 0 && (
+        <button
+          type="button"
+          onClick={fillEqually}
+          style={{
+            fontSize: 12,
+            color: "#7c5cc4",
+            background: "#f5f0fc",
+            border: "1px solid #e0d3f0",
+            borderRadius: 8,
+            padding: "6px 10px",
+            cursor: "pointer",
+            marginBottom: 8,
+          }}
+        >
+          แบ่งเท่ากันอัตโนมัติจากยอดรวม
+        </button>
+      )}
+      <div style={{ display: "flex", flexDirection: "column", gap: 8, maxHeight: 260, overflowY: "auto", paddingRight: 2 }}>
+        {amounts.map((a, idx) => (
+          <div key={idx} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ width: 62, fontSize: 12, color: "#7a6e90", flexShrink: 0 }}>งวดที่ {idx + 1}</span>
+            <input
+              type="number"
+              step="any"
+              value={a}
+              placeholder="0"
+              onChange={(e) => {
+                const v = e.target.value;
+                setValuesMap((prev) => ({ ...prev, [idx]: v }));
+              }}
+              style={{
+                flex: 1,
+                padding: "8px 10px",
+                border: "1px solid #e0d3f0",
+                borderRadius: 9,
+                fontSize: 13.5,
+                outline: "none",
+              }}
+            />
+          </div>
+        ))}
+        {amounts.length === 0 && <div style={{ fontSize: 12.5, color: "#b8a9d0" }}>กรอกจำนวนงวดก่อนเพื่อกำหนดยอดแต่ละงวด</div>}
+      </div>
+      <div style={{ fontSize: 12.5, color: "#7a6e90", marginTop: 8, textAlign: "right" }}>
+        รวมทั้งหมด: <span className="num" style={{ fontWeight: 600, color: "#40354f" }}>{fmtBaht(total)}</span>
+      </div>
     </div>
   );
 }
