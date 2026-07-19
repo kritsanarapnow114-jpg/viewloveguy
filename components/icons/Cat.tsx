@@ -86,6 +86,44 @@ export function PawPrint({ color = "#000", size = "100%" }: { color?: string; si
   );
 }
 
+/** 84x84 cat hugging a big coin — used to warm up money-related confirmation popups. */
+export function CatCoin({ size = "100%" }: { size?: number | string }) {
+  const GOLD = "#f0c85a";
+  const GOLD_DARK = "#dba934";
+  return (
+    <svg viewBox="0 0 84 84" width={size} height={size} style={{ display: "block" }}>
+      <StickerDefs id="catCoinShadow" />
+      <g filter="url(#catCoinShadow)">
+        <ellipse cx="42" cy="79" rx="24" ry="3.5" fill="rgba(60,40,30,.16)" />
+
+        <path d="M16 34 L20 12 L32 24 Z" fill={SEAL} stroke={INK} strokeWidth="1.6" strokeLinejoin="round" />
+        <path d="M68 34 L64 12 L52 24 Z" fill={SEAL} stroke={INK} strokeWidth="1.6" strokeLinejoin="round" />
+        <path d="M19.5 28.5 L22.5 15.5 L30 23 Z" fill="#f2a9c4" />
+        <path d="M64.5 28.5 L61.5 15.5 L54 23 Z" fill="#f2a9c4" />
+        <ellipse cx="42" cy="35" rx="21" ry="18.5" fill={CREAM} stroke={INK} strokeWidth="1.6" />
+        <ellipse cx="42" cy="38.5" rx="15.5" ry="12.5" fill={SEAL} stroke={INK} strokeWidth="1.2" />
+        <path d="M42 26.5 L46 35.5 L42.7 47 L39.4 35.5 Z" fill={CREAM} stroke={INK} strokeWidth="0.9" strokeLinejoin="round" />
+        <ellipse cx="34" cy="35.5" rx="4.3" ry="5" fill="#4fa3d9" stroke={INK} strokeWidth="1.2" />
+        <ellipse cx="50" cy="35.5" rx="4.3" ry="5" fill="#4fa3d9" stroke={INK} strokeWidth="1.2" />
+        <circle cx="34" cy="36.3" r="1.7" fill={INK} />
+        <circle cx="50" cy="36.3" r="1.7" fill={INK} />
+        <circle cx="32.4" cy="33.8" r="1.1" fill="#fff" />
+        <circle cx="48.4" cy="33.8" r="1.1" fill="#fff" />
+        <path d="M39.7 41.2 L44.3 41.2 L42 44.2 Z" fill="#e8749a" stroke={INK} strokeWidth="0.8" strokeLinejoin="round" />
+
+        <circle cx="42" cy="58" r="21" fill={GOLD} stroke={INK} strokeWidth="1.8" />
+        <circle cx="42" cy="58" r="16" fill="none" stroke={GOLD_DARK} strokeWidth="1.6" />
+        <text x="42" y="65" textAnchor="middle" fontSize="20" fontWeight="700" fill={GOLD_DARK} fontFamily="sans-serif">
+          ฿
+        </text>
+
+        <ellipse cx="17" cy="60" rx="7.5" ry="6" fill={CREAM} stroke={INK} strokeWidth="1.3" transform="rotate(-18 17 60)" />
+        <ellipse cx="67" cy="60" rx="7.5" ry="6" fill={CREAM} stroke={INK} strokeWidth="1.3" transform="rotate(18 67 60)" />
+      </g>
+    </svg>
+  );
+}
+
 /** Big 84x84 hero illustration used on the login page. */
 export function CatHero({ size = "100%" }: { size?: number | string }) {
   return (

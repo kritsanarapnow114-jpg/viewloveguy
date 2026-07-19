@@ -41,6 +41,7 @@ export function FormModal({
   onClose,
   successMessage,
   submitLabel = "บันทึก",
+  illustration,
 }: {
   title: string;
   fields: ModalField[];
@@ -48,6 +49,7 @@ export function FormModal({
   onClose: () => void;
   successMessage?: string;
   submitLabel?: string;
+  illustration?: React.ReactNode;
 }) {
   const { celebrate } = useCelebration();
   const [state, formAction, pending] = useActionState<FormState, FormData>(action, {});
@@ -117,6 +119,7 @@ export function FormModal({
           >
             ✕
           </button>
+          {illustration && <div style={{ width: 84, height: 84, marginBottom: 6 }}>{illustration}</div>}
           <h3 className="mali" style={{ margin: 0, fontSize: 19, fontWeight: 600 }}>
             {title}
           </h3>

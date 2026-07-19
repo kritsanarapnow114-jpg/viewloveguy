@@ -8,7 +8,7 @@ import { ExportControls } from "@/components/ExportControls";
 import { StatusFilter } from "@/components/StatusFilter";
 import { FormModal } from "@/components/FormModal";
 import { useToast } from "@/components/ToastProvider";
-import { CatSitting, PawPrint } from "@/components/icons/Cat";
+import { CatSitting, PawPrint, CatCoin } from "@/components/icons/Cat";
 import { createLoan, updateLoan, payLoan, deleteLoan } from "@/app/actions/loans";
 
 function walletLabel(accountName: string, walletName: string) {
@@ -477,6 +477,7 @@ export function LoansClient({
           title="บันทึกรับคืนเงินกู้"
           submitLabel="บันทึกรับคืน"
           successMessage="บันทึกการรับคืนเงินกู้แล้ว"
+          illustration={<CatCoin />}
           onClose={() => setPayingLoan(null)}
           action={payLoan.bind(null, payingLoan.id)}
           fields={[
