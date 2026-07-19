@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useCelebration } from "./CelebrationProvider";
 import { compressImageFile } from "@/lib/image";
 import { fmtBaht } from "@/lib/format";
@@ -63,6 +63,10 @@ export function FormModal({
   });
   const [values, setValues] = useState<Record<string, string>>(() => ({ ...initialValues }));
 
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const [dragging, setDragging] = useState(false);
+  const dragRef = useRef<{ startX: number; startY: number; origX: number; origY: number; rect: DOMRect } | null>(null);
+
   useEffect(() => {
     if (state.success) {
       if (successMessage) celebrate(successMessage);
@@ -70,6 +74,37 @@ export function FormModal({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.success]);
+
+  useEffect(() => {
+    const margin = 48;
+    const onMove = (e: PointerEvent) => {
+      if (!dragRef.current) return;
+      const { startX, startY, origX, origY, rect } = dragRef.current;
+      let dx = e.clientX - startX;
+      let dy = e.clientY - startY;
+      dx = Math.min(Math.max(dx, margin - rect.right), window.innerWidth - margin - rect.left);
+      dy = Math.min(Math.max(dy, margin - rect.bottom), window.innerHeight - margin - rect.top);
+      setPos({ x: origX + dx, y: origY + dy });
+    };
+    const onUp = () => {
+      dragRef.current = null;
+      setDragging(false);
+      document.body.style.userSelect = "";
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+    };
+  }, []);
+
+  const startDrag = (e: React.PointerEvent) => {
+    if ((e.target as HTMLElement).closest("button")) return;
+    dragRef.current = { startX: e.clientX, startY: e.clientY, origX: pos.x, origY: pos.y, rect: e.currentTarget.getBoundingClientRect() };
+    setDragging(true);
+    document.body.style.userSelect = "none";
+  };
 
   return (
     <div
@@ -94,12 +129,24 @@ export function FormModal({
           padding: "24px 30px 28px",
           width: "100%",
           maxWidth: 440,
-          animation: "popIn .28s ease",
+          animation: dragging ? undefined : "popIn .28s ease",
           maxHeight: "92vh",
           overflow: "auto",
+          transform: `translate(${pos.x}px, ${pos.y}px)`,
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 18, position: "relative" }}>
+        <div
+          onPointerDown={startDrag}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginBottom: 18,
+            position: "relative",
+            cursor: dragging ? "grabbing" : "grab",
+            touchAction: "none",
+          }}
+        >
           <button
             type="button"
             onClick={onClose}
