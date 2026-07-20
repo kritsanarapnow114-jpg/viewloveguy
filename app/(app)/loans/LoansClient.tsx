@@ -3,6 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import { fmtBaht, thDate } from "@/lib/format";
 import { loanCalc, type LoanStatus } from "@/lib/loan";
+import { saveCardAsImage } from "@/lib/saveCardImage";
 import { PageHeader, SearchBox, AddButton } from "@/components/PageHeader";
 import { ExportControls } from "@/components/ExportControls";
 import { StatusFilter } from "@/components/StatusFilter";
@@ -105,6 +106,20 @@ export function LoansClient({
     });
   };
 
+  const handleSaveImage = async (id: string, borrower: string) => {
+    const el = document.querySelector<HTMLElement>(`[data-card-id="${id}"]`);
+    if (!el) return;
+    const hidden = el.querySelectorAll<HTMLElement>("[data-card-hide]");
+    hidden.forEach((n) => (n.style.visibility = "hidden"));
+    try {
+      await saveCardAsImage(el, `เงินกู้-${borrower}.png`);
+    } catch {
+      showToast("บันทึกรูปไม่สำเร็จ ลองใหม่อีกครั้ง");
+    } finally {
+      hidden.forEach((n) => (n.style.visibility = ""));
+    }
+  };
+
   const calcs = useMemo(() => loans.map((l) => ({ l, c: loanCalc({ ...l, dueDate: new Date(l.dueDate) }) })), [loans]);
   const outstanding = calcs.filter((x) => !x.l.paid).reduce((a, b) => a + b.l.amount, 0);
   const totalInterest = calcs.filter((x) => !x.l.paid).reduce((a, b) => a + b.l.interest, 0);
@@ -179,9 +194,15 @@ export function LoansClient({
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(320px,1fr))", gap: 16 }}>
         {filtered.map(({ l, c }) => {
           const st = STATUS_STYLE[c.status];
+          const icons: { key: string; title: string; color: string; active?: boolean; onClick: () => void; label: string }[] = [];
+          icons.push({ key: "save", title: "บันทึกเป็นรูปภาพ", color: "#7c5cc4", onClick: () => handleSaveImage(l.id, l.borrower), label: "📷" });
+          if (!l.paid) icons.push({ key: "quote", title: "เช็คยอดคืน", color: "#7c5cc4", active: quoteOpenId === l.id, onClick: () => setQuoteOpenId(quoteOpenId === l.id ? null : l.id), label: "⋯" });
+          if (canEdit) icons.push({ key: "edit", title: "แก้ไขสัญญา", color: "#7c5cc4", onClick: () => setEditingLoan(l), label: "✎" });
+          if (canEdit) icons.push({ key: "delete", title: "ลบสัญญา", color: "#d0658a", onClick: () => handleDelete(l.id), label: "✕" });
           return (
             <div
               key={l.id}
+              data-card-id={l.id}
               style={{
                 background: "#fff",
                 border: "1px solid #ece2f7",
@@ -207,73 +228,31 @@ export function LoansClient({
               >
                 <PawPrint color={PAW_COLOR[c.status]} />
               </span>
-              {canEdit && (
+              {icons.map((btn, i) => (
                 <button
-                  onClick={() => setEditingLoan(l)}
-                  title="แก้ไขสัญญา"
+                  key={btn.key}
+                  data-card-hide
+                  onClick={btn.onClick}
+                  title={btn.title}
                   style={{
                     position: "absolute",
-                    right: 44,
+                    right: 12 + i * 32,
                     top: 12,
                     border: "none",
-                    background: "#f5f0fc",
+                    background: btn.active ? "#e7dcf7" : "#f5f0fc",
                     width: 24,
                     height: 24,
                     borderRadius: 7,
                     cursor: "pointer",
-                    color: "#7c5cc4",
-                    fontSize: 11,
-                    opacity: 0.75,
-                  }}
-                >
-                  ✎
-                </button>
-              )}
-              {canEdit && (
-                <button
-                  onClick={() => handleDelete(l.id)}
-                  title="ลบสัญญา"
-                  style={{
-                    position: "absolute",
-                    right: 12,
-                    top: 12,
-                    border: "none",
-                    background: "#f5f0fc",
-                    width: 24,
-                    height: 24,
-                    borderRadius: 7,
-                    cursor: "pointer",
-                    color: "#d0658a",
+                    color: btn.color,
                     fontSize: 12,
-                    opacity: 0.75,
-                  }}
-                >
-                  ✕
-                </button>
-              )}
-              {!l.paid && (
-                <button
-                  onClick={() => setQuoteOpenId(quoteOpenId === l.id ? null : l.id)}
-                  title="เช็คยอดคืน"
-                  style={{
-                    position: "absolute",
-                    right: canEdit ? 76 : 12,
-                    top: 12,
-                    border: "none",
-                    background: quoteOpenId === l.id ? "#e7dcf7" : "#f5f0fc",
-                    width: 24,
-                    height: 24,
-                    borderRadius: 7,
-                    cursor: "pointer",
-                    color: "#7c5cc4",
-                    fontSize: 13,
                     opacity: 0.75,
                     lineHeight: 1,
                   }}
                 >
-                  ⋯
+                  {btn.label}
                 </button>
-              )}
+              ))}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
                   <span style={{ width: 36, height: 47, display: "block", flex: "0 0 36px" }}>
@@ -292,7 +271,7 @@ export function LoansClient({
                     borderRadius: 20,
                     background: st.bg,
                     color: st.color,
-                    marginRight: !canEdit ? 0 : l.paid ? 60 : 92,
+                    marginRight: 8 + icons.length * 32,
                     whiteSpace: "nowrap",
                   }}
                 >
