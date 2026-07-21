@@ -9,6 +9,7 @@ import { StatusFilter } from "@/components/StatusFilter";
 import { FormModal } from "@/components/FormModal";
 import { useToast } from "@/components/ToastProvider";
 import { CatSitting } from "@/components/icons/Cat";
+import { IconEdit, IconClose, IconCheck } from "@/components/icons/Icons";
 import { createInstallment, updateInstallment, payInstallment, deleteInstallment } from "@/app/actions/installments";
 
 type InstallmentView = {
@@ -173,6 +174,8 @@ export function InstallmentsClient({
                       onClick={() => setEditingInstallment(i)}
                       title="แก้ไขรายการ"
                       style={{
+                        display: "grid",
+                        placeItems: "center",
                         border: "none",
                         background: "#f5f0fc",
                         width: 24,
@@ -180,12 +183,11 @@ export function InstallmentsClient({
                         borderRadius: 7,
                         cursor: "pointer",
                         color: "#7c5cc4",
-                        fontSize: 11,
                         opacity: 0.75,
                         flex: "0 0 auto",
                       }}
                     >
-                      ✎
+                      <IconEdit size={12} />
                     </button>
                   )}
                   {canEdit && (
@@ -193,6 +195,8 @@ export function InstallmentsClient({
                       onClick={() => handleDelete(i.id)}
                       title="ลบรายการ"
                       style={{
+                        display: "grid",
+                        placeItems: "center",
                         border: "none",
                         background: "#f5f0fc",
                         width: 24,
@@ -200,12 +204,11 @@ export function InstallmentsClient({
                         borderRadius: 7,
                         cursor: "pointer",
                         color: "#d0658a",
-                        fontSize: 12,
                         opacity: 0.75,
                         flex: "0 0 auto",
                       }}
                     >
-                      ✕
+                      <IconClose size={12} />
                     </button>
                   )}
                 </div>
@@ -277,7 +280,12 @@ export function InstallmentsClient({
                     จ่ายงวดนี้
                   </button>
                 )}
-                {c.status === "completed" && <span style={{ fontSize: 12.5, color: "#4fa98a", fontWeight: 600 }}>✓ ผ่อนครบแล้ว</span>}
+                {c.status === "completed" && (
+                  <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12.5, color: "#4fa98a", fontWeight: 600 }}>
+                    <IconCheck size={12} />
+                    ผ่อนครบแล้ว
+                  </span>
+                )}
               </div>
             </div>
           );

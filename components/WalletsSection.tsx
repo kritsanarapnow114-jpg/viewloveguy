@@ -9,6 +9,7 @@ import { LOW_BALANCE_THRESHOLD } from "@/lib/constants";
 import { FormModal } from "./FormModal";
 import { useToast } from "./ToastProvider";
 import { DogSitting } from "./icons/Dog";
+import { IconEdit, IconTrash } from "./icons/Icons";
 import { createWallet, updateWallet, deleteWallet, reorderWallets } from "@/app/actions/wallets";
 
 type WalletView = { id: string; name: string; balance: number; openingBalance: number };
@@ -80,11 +81,12 @@ function SortableWalletCard({
             borderRadius: 6,
             cursor: "pointer",
             color: "#7c5cc4",
-            fontSize: 9.5,
+            display: "grid",
+            placeItems: "center",
             opacity: 0.75,
           }}
         >
-          ✎
+          <IconEdit size={11} />
         </button>
       )}
       {canEdit && (
@@ -102,11 +104,12 @@ function SortableWalletCard({
             borderRadius: 6,
             cursor: "pointer",
             color: "#d0658a",
-            fontSize: 10,
+            display: "grid",
+            placeItems: "center",
             opacity: 0.75,
           }}
         >
-          ✕
+          <IconTrash size={11} />
         </button>
       )}
       <span style={{ width: 26, height: 34, display: "block", marginTop: 30, marginBottom: 6 }}>

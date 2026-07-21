@@ -12,6 +12,7 @@ import { FormModal } from "@/components/FormModal";
 import { TransferButton } from "@/components/TransferButton";
 import { useToast } from "@/components/ToastProvider";
 import { CatSitting } from "@/components/icons/Cat";
+import { IconEdit, IconClose, IconPaw, IconChevronRight } from "@/components/icons/Icons";
 import { createAccount, updateAccount, deleteAccount, reorderAccounts } from "@/app/actions/accounts";
 
 type AccountView = {
@@ -108,6 +109,8 @@ function SortableAccountCard({
             right: 36,
             top: 9,
             zIndex: 2,
+            display: "grid",
+            placeItems: "center",
             border: "none",
             background: "#f5f0fc",
             width: 22,
@@ -115,11 +118,10 @@ function SortableAccountCard({
             borderRadius: 7,
             cursor: "pointer",
             color: "#7c5cc4",
-            fontSize: 10.5,
             opacity: 0.75,
           }}
         >
-          ✎
+          <IconEdit size={11} />
         </button>
       )}
       {canEdit && (
@@ -135,6 +137,8 @@ function SortableAccountCard({
             right: 9,
             top: 9,
             zIndex: 2,
+            display: "grid",
+            placeItems: "center",
             border: "none",
             background: "#f5f0fc",
             width: 22,
@@ -142,11 +146,10 @@ function SortableAccountCard({
             borderRadius: 7,
             cursor: "pointer",
             color: "#d0658a",
-            fontSize: 11.5,
             opacity: 0.75,
           }}
         >
-          ✕
+          <IconClose size={11} />
         </button>
       )}
       <div style={{ position: "relative", marginTop: 30 }}>
@@ -163,7 +166,11 @@ function SortableAccountCard({
         <div className="num" style={{ fontSize: 19, fontWeight: 600, marginTop: 9, letterSpacing: "-.02em", color: low ? "#d0658a" : "#40354f" }}>
           {fmtBaht(a.balance)}
         </div>
-        <div style={{ fontSize: 10.5, color: "#b8a9d0", marginTop: 7 }}>🐾 ดูรายการ →</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10.5, color: "#b8a9d0", marginTop: 7 }}>
+          <IconPaw size={9} color="#d9c8ef" />
+          ดูรายการ
+          <IconChevronRight size={10} />
+        </div>
       </div>
     </Link>
   );

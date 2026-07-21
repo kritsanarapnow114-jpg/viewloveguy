@@ -1,3 +1,5 @@
+import { IconSearch, IconPlus, IconDownload } from "./icons/Icons";
+
 export function PageHeader({
   title,
   subtitle,
@@ -23,13 +25,15 @@ export function PageHeader({
 export function SearchBox({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
     <div style={{ position: "relative" }}>
-      <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#b8a9d0", fontSize: 13 }}>⌕</span>
+      <span style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", color: "#b8a9d0", display: "flex" }}>
+        <IconSearch size={14} />
+      </span>
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="ค้นหา…"
         style={{
-          padding: "10px 12px 10px 30px",
+          padding: "10px 12px 10px 32px",
           border: "1px solid #e0d3f0",
           borderRadius: 11,
           fontSize: 13.5,
@@ -47,6 +51,9 @@ export function AddButton({ label, onClick }: { label: string; onClick: () => vo
     <button
       onClick={onClick}
       style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 7,
         padding: "10px 16px",
         background: "#7c5cc4",
         color: "#fff",
@@ -58,13 +65,17 @@ export function AddButton({ label, onClick }: { label: string; onClick: () => vo
         whiteSpace: "nowrap",
       }}
     >
-      + {label}
+      <IconPlus size={14} />
+      {label}
     </button>
   );
 }
 
 export function ExportButtons({ onExportPdf, onExportXls }: { onExportPdf: () => void; onExportXls: () => void }) {
   const btnStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: 7,
     padding: "10px 14px",
     background: "#fff",
     color: "#7c5cc4",
@@ -78,10 +89,12 @@ export function ExportButtons({ onExportPdf, onExportXls }: { onExportPdf: () =>
   return (
     <>
       <button onClick={onExportPdf} style={btnStyle}>
-        ↧ PDF
+        <IconDownload size={14} />
+        PDF
       </button>
       <button onClick={onExportXls} style={btnStyle}>
-        ↧ Excel
+        <IconDownload size={14} />
+        Excel
       </button>
     </>
   );

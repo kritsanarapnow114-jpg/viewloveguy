@@ -4,6 +4,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { useCelebration } from "./CelebrationProvider";
 import { compressImageFile } from "@/lib/image";
 import { fmtBaht } from "@/lib/format";
+import { IconClose, IconCamera } from "./icons/Icons";
 
 export type ModalField =
   | { kind: "input"; name: string; label: string; type?: string; placeholder?: string; defaultValue?: string }
@@ -154,17 +155,18 @@ export function FormModal({
               position: "absolute",
               right: 0,
               top: 0,
+              display: "grid",
+              placeItems: "center",
               border: "none",
               background: "#f5f0fc",
               width: 30,
               height: 30,
               borderRadius: 9,
               cursor: "pointer",
-              fontSize: 15,
               color: "#7a6e90",
             }}
           >
-            ✕
+            <IconClose size={14} />
           </button>
           {illustration && <div style={{ width: 84, height: 84, marginBottom: 6 }}>{illustration}</div>}
           <h3 className="mali" style={{ margin: 0, fontSize: 19, fontWeight: 600 }}>
@@ -348,7 +350,16 @@ function ImageField({ name, defaultValue }: { name: string; defaultValue?: strin
           background: "#faf6ff",
         }}
       >
-        {busy ? "กำลังบีบอัดรูป…" : dataUrl ? "เปลี่ยนรูป" : "📷 แนบรูปถ่ายหน้าจอโอนเงิน"}
+        {busy ? (
+          "กำลังบีบอัดรูป…"
+        ) : dataUrl ? (
+          "เปลี่ยนรูป"
+        ) : (
+          <>
+            <IconCamera size={15} />
+            แนบรูปถ่ายหน้าจอโอนเงิน
+          </>
+        )}
         <input type="file" accept="image/*" onChange={onPick} style={{ display: "none" }} />
       </label>
       {error && <div style={{ color: "#d0658a", fontSize: 12, marginTop: 6 }}>{error}</div>}

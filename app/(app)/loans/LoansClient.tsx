@@ -10,6 +10,7 @@ import { StatusFilter } from "@/components/StatusFilter";
 import { FormModal } from "@/components/FormModal";
 import { useToast } from "@/components/ToastProvider";
 import { CatSitting, PawPrint, CatCoin } from "@/components/icons/Cat";
+import { IconCamera, IconMore, IconCalendar, IconEdit, IconClose, IconPaw, IconCheck, IconSearch, IconPin } from "@/components/icons/Icons";
 import { createLoan, updateLoan, payLoan, setPromisedReturnDate, deleteLoan } from "@/app/actions/loans";
 
 function walletLabel(accountName: string, walletName: string) {
@@ -59,7 +60,10 @@ function RepayQuote({ loan }: { loan: LoanView }) {
   return (
     <div style={{ background: "#faf6ff", border: "1px solid #ece2f7", borderRadius: 12, padding: "12px 14px", marginBottom: 14 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 8, flexWrap: "wrap" }}>
-        <span style={{ fontSize: 12, color: "#7a6e90", fontWeight: 500 }}>🔍 เช็คยอดคืน ณ วันที่</span>
+        <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#7a6e90", fontWeight: 500 }}>
+          <IconSearch size={13} />
+          เช็คยอดคืน ณ วันที่
+        </span>
         <input
           type="date"
           value={quoteDate}
@@ -229,12 +233,20 @@ export function LoansClient({
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(320px,1fr))", gap: 16 }}>
         {filtered.map(({ l, c }) => {
           const st = STATUS_STYLE[c.status];
-          const icons: { key: string; title: string; color: string; active?: boolean; onClick: () => void; label: string }[] = [];
-          icons.push({ key: "save", title: "บันทึกเป็นรูปภาพ", color: "#7c5cc4", onClick: () => handleSaveImage(l.id, l.borrower), label: "📷" });
-          if (!l.paid) icons.push({ key: "quote", title: "เช็คยอดคืน", color: "#7c5cc4", active: quoteOpenId === l.id, onClick: () => setQuoteOpenId(quoteOpenId === l.id ? null : l.id), label: "⋯" });
-          if (canEdit && !l.paid) icons.push({ key: "promise", title: "แจ้งวันที่ลูกค้าจะคืน", color: "#a5771a", onClick: () => setPromisingLoan(l), label: "📅" });
-          if (canEdit) icons.push({ key: "edit", title: "แก้ไขสัญญา", color: "#7c5cc4", onClick: () => setEditingLoan(l), label: "✎" });
-          if (canEdit) icons.push({ key: "delete", title: "ลบสัญญา", color: "#d0658a", onClick: () => handleDelete(l.id), label: "✕" });
+          const icons: { key: string; title: string; color: string; active?: boolean; onClick: () => void; label: React.ReactNode }[] = [];
+          icons.push({ key: "save", title: "บันทึกเป็นรูปภาพ", color: "#7c5cc4", onClick: () => handleSaveImage(l.id, l.borrower), label: <IconCamera size={13} /> });
+          if (!l.paid)
+            icons.push({
+              key: "quote",
+              title: "เช็คยอดคืน",
+              color: "#7c5cc4",
+              active: quoteOpenId === l.id,
+              onClick: () => setQuoteOpenId(quoteOpenId === l.id ? null : l.id),
+              label: <IconMore size={14} />,
+            });
+          if (canEdit && !l.paid) icons.push({ key: "promise", title: "แจ้งวันที่ลูกค้าจะคืน", color: "#a5771a", onClick: () => setPromisingLoan(l), label: <IconCalendar size={13} /> });
+          if (canEdit) icons.push({ key: "edit", title: "แก้ไขสัญญา", color: "#7c5cc4", onClick: () => setEditingLoan(l), label: <IconEdit size={13} /> });
+          if (canEdit) icons.push({ key: "delete", title: "ลบสัญญา", color: "#d0658a", onClick: () => handleDelete(l.id), label: <IconClose size={13} /> });
           return (
             <div
               key={l.id}
@@ -308,6 +320,8 @@ export function LoansClient({
                       onClick={btn.onClick}
                       title={btn.title}
                       style={{
+                        display: "grid",
+                        placeItems: "center",
                         border: "none",
                         background: btn.active ? "#e7dcf7" : "#f5f0fc",
                         width: 24,
@@ -315,9 +329,7 @@ export function LoansClient({
                         borderRadius: 7,
                         cursor: "pointer",
                         color: btn.color,
-                        fontSize: 12,
                         opacity: 0.75,
-                        lineHeight: 1,
                         flex: "0 0 auto",
                       }}
                     >
@@ -355,22 +367,25 @@ export function LoansClient({
               </div>
 
               {!l.paid && l.promisedReturnDate && (
-                <div style={{ background: "#eaf3fb", borderRadius: 10, padding: "8px 12px", marginBottom: 12, fontSize: 12, color: "#3a7ca5" }}>
-                  📌 ลูกค้าแจ้งว่าจะคืนวันที่ {thDate(l.promisedReturnDate)}
+                <div style={{ display: "flex", alignItems: "center", gap: 6, background: "#eaf3fb", borderRadius: 10, padding: "8px 12px", marginBottom: 12, fontSize: 12, color: "#3a7ca5" }}>
+                  <IconPin size={13} />
+                  ลูกค้าแจ้งว่าจะคืนวันที่ {thDate(l.promisedReturnDate)}
                 </div>
               )}
 
               {(l.outAccountName || l.inAccountName) && (
                 <div style={{ fontSize: 11.5, color: "#9b8fb0", marginBottom: 12, lineHeight: 1.7 }}>
                   {l.outAccountName && (
-                    <div>
-                      🐾 โอนออกจาก: {l.outAccountName}
+                    <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                      <IconPaw size={11} color="#c9b0ea" />
+                      โอนออกจาก: {l.outAccountName}
                       {l.outWalletName && ` · ${l.outWalletName}`}
                     </div>
                   )}
                   {l.inAccountName && (
-                    <div>
-                      🐾 รับเข้าบัญชี: {l.inAccountName}
+                    <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                      <IconPaw size={11} color="#c9b0ea" />
+                      รับเข้าบัญชี: {l.inAccountName}
                       {l.inWalletName && ` · ${l.inWalletName}`}
                       {l.paidDate && ` (${thDate(l.paidDate)})`}
                     </div>
@@ -412,6 +427,9 @@ export function LoansClient({
                 {l.paid && (
                   <span
                     style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 5,
                       fontSize: 12.5,
                       color: "#3a8a6f",
                       fontWeight: 600,
@@ -420,7 +438,8 @@ export function LoansClient({
                       borderRadius: 20,
                     }}
                   >
-                    ✓ ชำระครบแล้ว
+                    <IconCheck size={12} />
+                    ชำระครบแล้ว
                   </span>
                 )}
               </div>

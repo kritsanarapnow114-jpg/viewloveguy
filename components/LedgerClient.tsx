@@ -9,6 +9,7 @@ import { DateRangeFilter } from "./DateRangeFilter";
 import { FormModal, type ModalField } from "./FormModal";
 import { useToast } from "./ToastProvider";
 import { createTransaction, deleteTransaction, type TxKind } from "@/app/actions/transactions";
+import { IconTrash } from "./icons/Icons";
 
 export type LedgerRow = {
   id: string;
@@ -187,9 +188,9 @@ export function LedgerClient({
                   <button
                     onClick={() => handleDelete(r.id, r.accountId)}
                     title="ลบ"
-                    style={{ border: "none", background: "none", color: "#d0658a", cursor: "pointer", fontSize: 15, padding: 4, opacity: 0.6 }}
+                    style={{ display: "grid", placeItems: "center", border: "none", background: "none", color: "#d0658a", cursor: "pointer", padding: 4, opacity: 0.6 }}
                   >
-                    ✕
+                    <IconTrash size={15} />
                   </button>
                 )}
               </div>
