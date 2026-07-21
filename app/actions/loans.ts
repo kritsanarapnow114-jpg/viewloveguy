@@ -147,6 +147,23 @@ export async function updateLoan(id: string, _prev: LoanFormState, formData: For
   return { success: true };
 }
 
+export async function postponeLoan(id: string, _prev: LoanFormState, formData: FormData): Promise<LoanFormState> {
+  const user = await getCurrentUser();
+  if (!user || user.role !== "ADMIN") return { error: "ไม่มีสิทธิ์ทำรายการนี้" };
+
+  const loan = await prisma.loan.findUnique({ where: { id } });
+  if (!loan) return { error: "ไม่พบสัญญาเงินกู้นี้" };
+  if (loan.paid) return { error: "สัญญานี้ชำระครบแล้ว" };
+
+  const dueDateStr = String(formData.get("dueDate") || "");
+  if (!dueDateStr) return { error: "กรุณาเลือกกำหนดคืนใหม่" };
+
+  await prisma.loan.update({ where: { id }, data: { dueDate: new Date(dueDateStr) } });
+
+  revalidateAll([loan.outAccountId, loan.inAccountId]);
+  return { success: true };
+}
+
 export async function payLoan(id: string, _prev: LoanFormState, formData: FormData): Promise<LoanFormState> {
   const user = await getCurrentUser();
   if (!user || user.role !== "ADMIN") return { error: "ไม่มีสิทธิ์ทำรายการนี้" };

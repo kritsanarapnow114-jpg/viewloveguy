@@ -10,7 +10,7 @@ import { StatusFilter } from "@/components/StatusFilter";
 import { FormModal } from "@/components/FormModal";
 import { useToast } from "@/components/ToastProvider";
 import { CatSitting, PawPrint, CatCoin } from "@/components/icons/Cat";
-import { createLoan, updateLoan, payLoan, deleteLoan } from "@/app/actions/loans";
+import { createLoan, updateLoan, payLoan, postponeLoan, deleteLoan } from "@/app/actions/loans";
 
 function walletLabel(accountName: string, walletName: string) {
   return `${accountName} · ${walletName}`;
@@ -94,6 +94,7 @@ export function LoansClient({
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLoan, setEditingLoan] = useState<LoanView | null>(null);
   const [payingLoan, setPayingLoan] = useState<LoanView | null>(null);
+  const [postponingLoan, setPostponingLoan] = useState<LoanView | null>(null);
   const [quoteOpenId, setQuoteOpenId] = useState<string | null>(null);
   const [viewImage, setViewImage] = useState<string | null>(null);
   const [, startTransition] = useTransition();
@@ -197,6 +198,7 @@ export function LoansClient({
           const icons: { key: string; title: string; color: string; active?: boolean; onClick: () => void; label: string }[] = [];
           icons.push({ key: "save", title: "บันทึกเป็นรูปภาพ", color: "#7c5cc4", onClick: () => handleSaveImage(l.id, l.borrower), label: "📷" });
           if (!l.paid) icons.push({ key: "quote", title: "เช็คยอดคืน", color: "#7c5cc4", active: quoteOpenId === l.id, onClick: () => setQuoteOpenId(quoteOpenId === l.id ? null : l.id), label: "⋯" });
+          if (canEdit && !l.paid) icons.push({ key: "postpone", title: "เลื่อนกำหนดคืน", color: "#a5771a", onClick: () => setPostponingLoan(l), label: "📅" });
           if (canEdit) icons.push({ key: "edit", title: "แก้ไขสัญญา", color: "#7c5cc4", onClick: () => setEditingLoan(l), label: "✎" });
           if (canEdit) icons.push({ key: "delete", title: "ลบสัญญา", color: "#d0658a", onClick: () => handleDelete(l.id), label: "✕" });
           return (
@@ -496,6 +498,31 @@ export function LoansClient({
                 ]
               : []),
             { kind: "image", name: "repaymentImage", label: "รูปหลักฐานการรับคืน (ถ้ามี)" },
+          ]}
+        />
+      )}
+
+      {postponingLoan && (
+        <FormModal
+          title="เลื่อนกำหนดคืน"
+          submitLabel="เลื่อนกำหนด"
+          successMessage="เลื่อนกำหนดคืนแล้ว"
+          onClose={() => setPostponingLoan(null)}
+          action={postponeLoan.bind(null, postponingLoan.id)}
+          fields={[
+            {
+              kind: "preview",
+              name: "currentDuePreview",
+              render: () => (
+                <div style={{ background: "#fdf3ea", borderRadius: 12, padding: "12px 14px", fontSize: 13 }}>
+                  <div style={{ color: "#7a6e90" }}>กำหนดคืนเดิม</div>
+                  <div className="num" style={{ fontSize: 17, fontWeight: 700, color: "#40354f", marginTop: 2 }}>
+                    {thDate(postponingLoan.dueDate)}
+                  </div>
+                </div>
+              ),
+            },
+            { kind: "input", name: "dueDate", label: "กำหนดคืนใหม่", type: "date", defaultValue: postponingLoan.dueDate.slice(0, 10) },
           ]}
         />
       )}
