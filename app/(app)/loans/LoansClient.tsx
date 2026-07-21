@@ -92,6 +92,7 @@ export function LoansClient({
   const hasWallets = Object.keys(walletsByAccount).length > 0;
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<LoanStatus | "all">("all");
+  const [dueByDate, setDueByDate] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLoan, setEditingLoan] = useState<LoanView | null>(null);
   const [payingLoan, setPayingLoan] = useState<LoanView | null>(null);
@@ -130,7 +131,17 @@ export function LoansClient({
 
   const q = search.trim().toLowerCase();
   const filtered = calcs
-    .filter((x) => (statusFilter === "all" || x.c.status === statusFilter) && (!q || x.l.borrower.toLowerCase().includes(q)))
+    .filter((x) => {
+      if (statusFilter !== "all" && x.c.status !== statusFilter) return false;
+      if (q && !x.l.borrower.toLowerCase().includes(q)) return false;
+      if (dueByDate) {
+        if (x.l.paid) return false;
+        const dueBy = x.l.dueDate.slice(0, 10) <= dueByDate;
+        const promiseBy = x.l.promisedReturnDate ? x.l.promisedReturnDate.slice(0, 10) <= dueByDate : false;
+        if (!dueBy && !promiseBy) return false;
+      }
+      return true;
+    })
     .sort((a, b) => Number(a.l.paid) - Number(b.l.paid) || new Date(a.l.dueDate).getTime() - new Date(b.l.dueDate).getTime());
 
   const today = new Date().toISOString().slice(0, 10);
@@ -192,6 +203,28 @@ export function LoansClient({
         onChange={setStatusFilter}
         options={(Object.keys(STATUS_STYLE) as LoanStatus[]).map((k) => ({ key: k, label: STATUS_STYLE[k].label }))}
       />
+
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18, flexWrap: "wrap" }}>
+        <span style={{ fontSize: 13, color: "#7a6e90" }}>เช็คว่าจะถึงกำหนดภายในวันที่ (รวมวันที่ลูกค้าแจ้งใหม่)</span>
+        <input
+          type="date"
+          value={dueByDate}
+          onChange={(e) => setDueByDate(e.target.value)}
+          style={{ border: "1px solid #e0d3f0", borderRadius: 9, padding: "7px 8px", fontSize: 12.5, background: "#fff", outline: "none" }}
+        />
+        {dueByDate && (
+          <>
+            <span style={{ fontSize: 12.5, color: "#7c5cc4", fontWeight: 600 }}>พบ {filtered.length} สัญญา</span>
+            <button
+              type="button"
+              onClick={() => setDueByDate("")}
+              style={{ border: "none", background: "#f5f0fc", color: "#7a6e90", borderRadius: 9, padding: "6px 12px", fontSize: 12.5, cursor: "pointer" }}
+            >
+              ล้าง
+            </button>
+          </>
+        )}
+      </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(320px,1fr))", gap: 16 }}>
         {filtered.map(({ l, c }) => {
