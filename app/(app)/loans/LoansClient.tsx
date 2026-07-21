@@ -264,55 +264,67 @@ export function LoansClient({
               >
                 <PawPrint color={PAW_COLOR[c.status]} />
               </span>
-              {icons.map((btn, i) => (
-                <button
-                  key={btn.key}
-                  data-card-hide
-                  onClick={btn.onClick}
-                  title={btn.title}
-                  style={{
-                    position: "absolute",
-                    right: 12 + i * 32,
-                    top: 12,
-                    border: "none",
-                    background: btn.active ? "#e7dcf7" : "#f5f0fc",
-                    width: 24,
-                    height: 24,
-                    borderRadius: 7,
-                    cursor: "pointer",
-                    color: btn.color,
-                    fontSize: 12,
-                    opacity: 0.75,
-                    lineHeight: 1,
-                  }}
-                >
-                  {btn.label}
-                </button>
-              ))}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10, flexWrap: "wrap" }}>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: 11, minWidth: 0, flex: "1 1 160px" }}>
                   <span style={{ width: 36, height: 47, display: "block", flex: "0 0 36px" }}>
                     <CatSitting />
                   </span>
-                  <div>
-                    <div style={{ fontSize: 15, fontWeight: 600 }}>{l.borrower}</div>
-                    <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>ยืมเมื่อ {thDate(l.borrowDate)}</div>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div
+                      title={l.borrower}
+                      style={{
+                        fontSize: 15,
+                        fontWeight: 600,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      {l.borrower}
+                    </div>
+                    <div style={{ fontSize: 11.5, color: "#9b8fb0", marginTop: 2 }}>ยืมเมื่อ {thDate(l.borrowDate)}</div>
                   </div>
                 </div>
-                <span
-                  style={{
-                    fontSize: 11.5,
-                    fontWeight: 600,
-                    padding: "4px 11px",
-                    borderRadius: 20,
-                    background: st.bg,
-                    color: st.color,
-                    marginRight: 8 + icons.length * 32,
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {st.label}
-                </span>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", justifyContent: "flex-end", flex: "0 1 auto" }}>
+                  <span
+                    style={{
+                      fontSize: 11.5,
+                      fontWeight: 600,
+                      padding: "4px 11px",
+                      borderRadius: 20,
+                      background: st.bg,
+                      color: st.color,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {st.label}
+                  </span>
+                  {icons.map((btn) => (
+                    <button
+                      key={btn.key}
+                      data-card-hide
+                      onClick={btn.onClick}
+                      title={btn.title}
+                      style={{
+                        border: "none",
+                        background: btn.active ? "#e7dcf7" : "#f5f0fc",
+                        width: 24,
+                        height: 24,
+                        borderRadius: 7,
+                        cursor: "pointer",
+                        color: btn.color,
+                        fontSize: 12,
+                        opacity: 0.75,
+                        lineHeight: 1,
+                        flex: "0 0 auto",
+                      }}
+                    >
+                      {btn.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, margin: "18px 0 14px" }}>

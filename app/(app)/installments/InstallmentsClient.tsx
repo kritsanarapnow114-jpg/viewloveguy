@@ -131,61 +131,84 @@ export function InstallmentsClient({
           const progressPct = Math.round((i.paidMonths / i.months) * 100);
           return (
             <div key={i.id} style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, padding: "20px 22px", borderLeft: `5px solid ${st.accent}`, position: "relative" }}>
-              {canEdit && (
-                <button
-                  onClick={() => setEditingInstallment(i)}
-                  title="แก้ไขรายการ"
-                  style={{
-                    position: "absolute",
-                    right: 44,
-                    top: 12,
-                    border: "none",
-                    background: "#f5f0fc",
-                    width: 24,
-                    height: 24,
-                    borderRadius: 7,
-                    cursor: "pointer",
-                    color: "#7c5cc4",
-                    fontSize: 11,
-                    opacity: 0.75,
-                  }}
-                >
-                  ✎
-                </button>
-              )}
-              {canEdit && (
-                <button
-                  onClick={() => handleDelete(i.id)}
-                  title="ลบรายการ"
-                  style={{
-                    position: "absolute",
-                    right: 12,
-                    top: 12,
-                    border: "none",
-                    background: "#f5f0fc",
-                    width: 24,
-                    height: 24,
-                    borderRadius: 7,
-                    cursor: "pointer",
-                    color: "#d0658a",
-                    fontSize: 12,
-                    opacity: 0.75,
-                  }}
-                >
-                  ✕
-                </button>
-              )}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10, flexWrap: "wrap" }}>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: 11, minWidth: 0, flex: "1 1 160px" }}>
                   <span style={{ width: 36, height: 47, display: "block", flex: "0 0 36px" }}>
                     <CatSitting />
                   </span>
-                  <div>
-                    <div style={{ fontSize: 15, fontWeight: 600 }}>{i.item}</div>
-                    <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>เริ่มผ่อน {thDate(i.startDate)}</div>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div
+                      title={i.item}
+                      style={{
+                        fontSize: 15,
+                        fontWeight: 600,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      {i.item}
+                    </div>
+                    <div style={{ fontSize: 11.5, color: "#9b8fb0", marginTop: 2 }}>เริ่มผ่อน {thDate(i.startDate)}</div>
                   </div>
                 </div>
-                <span style={{ fontSize: 11.5, fontWeight: 600, padding: "4px 11px", borderRadius: 20, background: st.bg, color: st.color, marginRight: 60 }}>{st.label}</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", justifyContent: "flex-end", flex: "0 1 auto" }}>
+                  <span
+                    style={{
+                      fontSize: 11.5,
+                      fontWeight: 600,
+                      padding: "4px 11px",
+                      borderRadius: 20,
+                      background: st.bg,
+                      color: st.color,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {st.label}
+                  </span>
+                  {canEdit && (
+                    <button
+                      onClick={() => setEditingInstallment(i)}
+                      title="แก้ไขรายการ"
+                      style={{
+                        border: "none",
+                        background: "#f5f0fc",
+                        width: 24,
+                        height: 24,
+                        borderRadius: 7,
+                        cursor: "pointer",
+                        color: "#7c5cc4",
+                        fontSize: 11,
+                        opacity: 0.75,
+                        flex: "0 0 auto",
+                      }}
+                    >
+                      ✎
+                    </button>
+                  )}
+                  {canEdit && (
+                    <button
+                      onClick={() => handleDelete(i.id)}
+                      title="ลบรายการ"
+                      style={{
+                        border: "none",
+                        background: "#f5f0fc",
+                        width: 24,
+                        height: 24,
+                        borderRadius: 7,
+                        cursor: "pointer",
+                        color: "#d0658a",
+                        fontSize: 12,
+                        opacity: 0.75,
+                        flex: "0 0 auto",
+                      }}
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div style={{ margin: "16px 0 4px" }}>
