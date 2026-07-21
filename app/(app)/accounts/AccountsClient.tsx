@@ -82,12 +82,12 @@ function SortableAccountCard({
             top: 9,
             zIndex: 2,
             border: "none",
-            background: "#f5f0fc",
+            background: "#F5EEFF",
             width: 22,
             height: 22,
             borderRadius: 7,
             cursor: "grab",
-            color: "#7c5cc4",
+            color: "#8B5CF6",
             fontSize: 12,
             opacity: 0.75,
             touchAction: "none",
@@ -112,12 +112,12 @@ function SortableAccountCard({
             display: "grid",
             placeItems: "center",
             border: "none",
-            background: "#f5f0fc",
+            background: "#F5EEFF",
             width: 22,
             height: 22,
             borderRadius: 7,
             cursor: "pointer",
-            color: "#7c5cc4",
+            color: "#8B5CF6",
             opacity: 0.75,
           }}
         >
@@ -140,12 +140,12 @@ function SortableAccountCard({
             display: "grid",
             placeItems: "center",
             border: "none",
-            background: "#f5f0fc",
+            background: "#F5EEFF",
             width: 22,
             height: 22,
             borderRadius: 7,
             cursor: "pointer",
-            color: "#d0658a",
+            color: "#F43F5E",
             opacity: 0.75,
           }}
         >
@@ -157,17 +157,17 @@ function SortableAccountCard({
           <span style={{ width: 32, height: 42, display: "block" }}>
             <CatSitting />
           </span>
-          <span style={{ fontSize: 10.5, color: "#9b8fb0", fontWeight: 500 }}>{a.type === "BANK" ? "บัญชีธนาคาร" : "เงินสด"}</span>
+          <span style={{ fontSize: 10.5, color: "#8B7CA6", fontWeight: 500 }}>{a.type === "BANK" ? "บัญชีธนาคาร" : "เงินสด"}</span>
         </div>
         <div style={{ fontSize: 13.5, fontWeight: 600, marginTop: 11, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{a.name}</div>
-        <div className="num" style={{ fontSize: 11, color: "#b8a9d0", marginTop: 1 }}>
+        <div className="num" style={{ fontSize: 11, color: "#A996C4", marginTop: 1 }}>
           {a.number}
         </div>
-        <div className="num" style={{ fontSize: 19, fontWeight: 600, marginTop: 9, letterSpacing: "-.02em", color: low ? "#d0658a" : "#40354f" }}>
+        <div className="num" style={{ fontSize: 19, fontWeight: 600, marginTop: 9, letterSpacing: "-.02em", color: low ? "#F43F5E" : "#3B2A5C" }}>
           {fmtBaht(a.balance)}
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10.5, color: "#b8a9d0", marginTop: 7 }}>
-          <IconPaw size={9} color="#d9c8ef" />
+        <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10.5, color: "#A996C4", marginTop: 7 }}>
+          <IconPaw size={9} color="#C4B5FD" />
           ดูรายการ
           <IconChevronRight size={10} />
         </div>
@@ -243,7 +243,7 @@ export function AccountsClient({
 
       <div
         style={{
-          background: "linear-gradient(135deg,#7c5cc4,#a98fd8)",
+          background: "linear-gradient(135deg,#8B5CF6,#A78BFA)",
           color: "#fff",
           borderRadius: 18,
           padding: "24px 26px",
@@ -255,12 +255,12 @@ export function AccountsClient({
         }}
       >
         <div>
-          <div style={{ fontSize: 13, color: "#eee3fb" }}>ยอดเงินรวมทุกบัญชี</div>
+          <div style={{ fontSize: 13, color: "#EDE3FF" }}>ยอดเงินรวมทุกบัญชี</div>
           <div className="num" style={{ fontSize: 30, fontWeight: 600, marginTop: 6 }}>
             {fmtBaht(totalBalance)}
           </div>
         </div>
-        <div style={{ fontSize: 13, color: "#eee3fb", textAlign: "right", lineHeight: 1.8 }}>
+        <div style={{ fontSize: 13, color: "#EDE3FF", textAlign: "right", lineHeight: 1.8 }}>
           เงินฝากธนาคาร <span className="num" style={{ color: "#fff" }}>{fmtBaht(bankTotal)}</span>
           <br />
           เงินสด <span className="num" style={{ color: "#fff" }}>{fmtBaht(cashTotal)}</span>

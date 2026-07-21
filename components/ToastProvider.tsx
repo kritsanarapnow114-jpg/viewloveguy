@@ -25,7 +25,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             bottom: 26,
             left: "50%",
             transform: "translateX(-50%)",
-            background: "#40354f",
+            background: "#3B2A5C",
             color: "#fff",
             padding: "12px 20px 12px 14px",
             borderRadius: 14,

@@ -25,8 +25,8 @@ export function TransferButton({
         style={{
           padding: "10px 16px",
           background: "#fff",
-          color: "#7c5cc4",
-          border: "1px solid #e0d3f0",
+          color: "#8B5CF6",
+          border: "1px solid #DCC4FA",
           borderRadius: 11,
           fontSize: 13.5,
           fontWeight: 500,

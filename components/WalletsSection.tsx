@@ -32,8 +32,8 @@ function SortableWalletCard({
       ref={setNodeRef}
       style={{
         position: "relative",
-        background: "#faf6ff",
-        border: "1px solid #ece2f7",
+        background: "#FAF5FF",
+        border: "1px solid #E9D5FF",
         borderRadius: 13,
         padding: "14px 16px",
         transform: CSS.Transform.toString(transform),
@@ -52,12 +52,12 @@ function SortableWalletCard({
             left: 8,
             top: 8,
             border: "none",
-            background: "#f0e9fb",
+            background: "#F3E8FF",
             width: 20,
             height: 20,
             borderRadius: 6,
             cursor: "grab",
-            color: "#7c5cc4",
+            color: "#8B5CF6",
             fontSize: 11,
             opacity: 0.75,
             touchAction: "none",
@@ -75,12 +75,12 @@ function SortableWalletCard({
             right: 32,
             top: 8,
             border: "none",
-            background: "#f0e9fb",
+            background: "#F3E8FF",
             width: 20,
             height: 20,
             borderRadius: 6,
             cursor: "pointer",
-            color: "#7c5cc4",
+            color: "#8B5CF6",
             display: "grid",
             placeItems: "center",
             opacity: 0.75,
@@ -98,12 +98,12 @@ function SortableWalletCard({
             right: 8,
             top: 8,
             border: "none",
-            background: "#f0e9fb",
+            background: "#F3E8FF",
             width: 20,
             height: 20,
             borderRadius: 6,
             cursor: "pointer",
-            color: "#d0658a",
+            color: "#F43F5E",
             display: "grid",
             placeItems: "center",
             opacity: 0.75,
@@ -116,7 +116,7 @@ function SortableWalletCard({
         <DogSitting />
       </span>
       <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>{w.name}</div>
-      <div className="num" style={{ fontSize: 16, fontWeight: 600, color: w.balance < LOW_BALANCE_THRESHOLD ? "#d0658a" : "#4fa98a" }}>
+      <div className="num" style={{ fontSize: 16, fontWeight: 600, color: w.balance < LOW_BALANCE_THRESHOLD ? "#F43F5E" : "#10B981" }}>
         {fmtBaht(w.balance)}
       </div>
     </div>
@@ -158,7 +158,7 @@ export function WalletsSection({ accountId, wallets, canEdit }: { accountId: str
   if (wallets.length === 0 && !canEdit) return null;
 
   return (
-    <div style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, padding: "20px 22px", marginBottom: 18 }}>
+    <div style={{ background: "#fff", border: "1px solid #E9D5FF", borderRadius: 18, padding: "20px 22px", marginBottom: 18 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
         <div className="mali" style={{ fontWeight: 600, fontSize: 16 }}>
           กระเป๋าย่อย
@@ -166,7 +166,7 @@ export function WalletsSection({ accountId, wallets, canEdit }: { accountId: str
         {canEdit && (
           <button
             onClick={() => setModalOpen(true)}
-            style={{ padding: "7px 14px", background: "#7c5cc4", color: "#fff", border: "none", borderRadius: 10, fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}
+            style={{ padding: "7px 14px", background: "#8B5CF6", color: "#fff", border: "none", borderRadius: 10, fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}
           >
             + เพิ่มกระเป๋า
           </button>
@@ -174,7 +174,7 @@ export function WalletsSection({ accountId, wallets, canEdit }: { accountId: str
       </div>
 
       {wallets.length === 0 ? (
-        <div style={{ fontSize: 13, color: "#b8a9d0" }}>ยังไม่มีกระเป๋าย่อยในบัญชีนี้</div>
+        <div style={{ fontSize: 13, color: "#A996C4" }}>ยังไม่มีกระเป๋าย่อยในบัญชีนี้</div>
       ) : (
         <DndContext id={`wallets-dnd-${accountId}`} sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={effectiveIds} strategy={rectSortingStrategy}>

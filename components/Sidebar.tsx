@@ -37,9 +37,9 @@ export function Sidebar({ userName, userRole }: { userName: string; userRole: st
           width: 40,
           height: 40,
           borderRadius: 11,
-          border: "1px solid #ece2f7",
+          border: "1px solid #E9D5FF",
           background: "#fff",
-          color: "#5a5068",
+          color: "#6B5B8A",
           fontSize: 18,
           cursor: "pointer",
           boxShadow: "0 2px 10px rgba(80,50,120,.14)",
@@ -62,7 +62,7 @@ export function Sidebar({ userName, userRole }: { userName: string; userRole: st
           width: 246,
           flex: "0 0 246px",
           background: "#fff",
-          borderRight: "1px solid #ece2f7",
+          borderRight: "1px solid #E9D5FF",
           padding: "22px 16px",
           display: "flex",
           flexDirection: "column",
@@ -101,8 +101,8 @@ export function Sidebar({ userName, userRole }: { userName: string; userRole: st
                 cursor: "pointer",
                 fontSize: 14.5,
                 fontWeight: active ? 600 : 500,
-                background: active ? "#7c5cc4" : "transparent",
-                color: active ? "#fff" : "#5a5068",
+                background: active ? "#8B5CF6" : "transparent",
+                color: active ? "#fff" : "#6B5B8A",
               }}
             >
               <span style={{ width: 22, height: 22, display: "block", flex: "0 0 22px" }}>{item.icon === "cat" ? <CatFace /> : <DogFace />}</span>
@@ -111,14 +111,14 @@ export function Sidebar({ userName, userRole }: { userName: string; userRole: st
           );
         })}
 
-        <div className="side-foot" style={{ marginTop: "auto", paddingTop: 18, borderTop: "1px solid #f0e9f8" }}>
+        <div className="side-foot" style={{ marginTop: "auto", paddingTop: 18, borderTop: "1px solid #F3E8FF" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 11, padding: 8 }}>
             <span style={{ width: 30, height: 30, display: "block", flex: "0 0 30px" }}>
               <CatFace />
             </span>
             <div style={{ minWidth: 0 }}>
               <div style={{ fontSize: 13.5, fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{userName}</div>
-              <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>{userRole}</div>
+              <div style={{ fontSize: 11.5, color: "#8B7CA6" }}>{userRole}</div>
             </div>
           </div>
           <form action={logout}>
@@ -128,11 +128,11 @@ export function Sidebar({ userName, userRole }: { userName: string; userRole: st
                 width: "100%",
                 marginTop: 8,
                 padding: 9,
-                background: "#f5f0fc",
-                border: "1px solid #ece2f7",
+                background: "#F5EEFF",
+                border: "1px solid #E9D5FF",
                 borderRadius: 11,
                 fontSize: 13,
-                color: "#7a6e90",
+                color: "#79668F",
                 cursor: "pointer",
               }}
             >

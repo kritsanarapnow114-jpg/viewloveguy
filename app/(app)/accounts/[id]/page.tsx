@@ -55,26 +55,26 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
         )}
       </PageHeader>
 
-      <Link href="/accounts" style={{ display: "inline-block", border: "none", background: "none", color: "#7a6e90", fontSize: 13.5, padding: 0, marginBottom: 16 }}>
+      <Link href="/accounts" style={{ display: "inline-block", border: "none", background: "none", color: "#79668F", fontSize: 13.5, padding: 0, marginBottom: 16 }}>
         ← กลับไปหน้าบัญชี
       </Link>
 
       <div style={{ display: "flex", gap: 16, marginBottom: 18, flexWrap: "wrap" }}>
-        <div style={{ flex: 1, minWidth: 170, background: "linear-gradient(135deg,#7c5cc4,#a98fd8)", color: "#fff", borderRadius: 16, padding: "16px 20px" }}>
-          <div style={{ fontSize: 12.5, color: "#eee3fb" }}>ยอดคงเหลือปัจจุบัน</div>
+        <div style={{ flex: 1, minWidth: 170, background: "linear-gradient(135deg,#8B5CF6,#A78BFA)", color: "#fff", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#EDE3FF" }}>ยอดคงเหลือปัจจุบัน</div>
           <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6 }}>
             {fmtBaht(account.balance)}
           </div>
         </div>
-        <div style={{ flex: 1, minWidth: 170, background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "16px 20px" }}>
-          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>รับเข้าบัญชีนี้</div>
-          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6, color: "#4fa98a" }}>
+        <div style={{ flex: 1, minWidth: 170, background: "#fff", border: "1px solid #E9D5FF", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#8B7CA6" }}>รับเข้าบัญชีนี้</div>
+          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6, color: "#10B981" }}>
             {"+" + fmtBaht(incSum).slice(1)}
           </div>
         </div>
-        <div style={{ flex: 1, minWidth: 170, background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "16px 20px" }}>
-          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>จ่ายจากบัญชีนี้</div>
-          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6, color: "#d0658a" }}>
+        <div style={{ flex: 1, minWidth: 170, background: "#fff", border: "1px solid #E9D5FF", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#8B7CA6" }}>จ่ายจากบัญชีนี้</div>
+          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6, color: "#F43F5E" }}>
             {"−" + fmtBaht(expSum).slice(1)}
           </div>
         </div>
@@ -86,7 +86,7 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
         canEdit={canEdit}
       />
 
-      <div style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, overflow: "hidden" }}>
+      <div style={{ background: "#fff", border: "1px solid #E9D5FF", borderRadius: 18, overflow: "hidden" }}>
         <div
           className="resp-table-head"
           style={{
@@ -94,11 +94,11 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
             gridTemplateColumns: "110px 90px 1.2fr 1fr 1fr 140px",
             gap: 12,
             padding: "14px 22px",
-            background: "#faf6ff",
-            borderBottom: "1px solid #f0e9f8",
+            background: "#FAF5FF",
+            borderBottom: "1px solid #F3E8FF",
             fontSize: 12,
             fontWeight: 600,
-            color: "#9b8fb0",
+            color: "#8B7CA6",
           }}
         >
           <div>วันที่</div>
@@ -117,12 +117,12 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
               gridTemplateColumns: "110px 90px 1.2fr 1fr 1fr 140px",
               gap: 12,
               padding: "14px 22px",
-              borderBottom: "1px solid #f4eefb",
+              borderBottom: "1px solid #F3E8FF",
               alignItems: "center",
               fontSize: 13.5,
             }}
           >
-            <div data-label="วันที่" className="num" style={{ color: "#7a6e90" }}>
+            <div data-label="วันที่" className="num" style={{ color: "#79668F" }}>
               {r.dateText}
             </div>
             <div data-label="ประเภท">
@@ -132,8 +132,8 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
                   fontWeight: 600,
                   padding: "3px 10px",
                   borderRadius: 20,
-                  background: r.isIncome ? "#e3f2ec" : "#fbe9f0",
-                  color: r.isIncome ? "#4fa98a" : "#d0658a",
+                  background: r.isIncome ? "#D1FAE5" : "#FFE4E9",
+                  color: r.isIncome ? "#10B981" : "#F43F5E",
                 }}
               >
                 {r.isIncome ? "รับ" : "จ่าย"}
@@ -142,19 +142,19 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
             <div data-label="รายการ" style={{ fontWeight: 500 }}>
               {r.note}
             </div>
-            <div data-label="หมวดหมู่" style={{ color: "#7a6e90", fontSize: 12.5 }}>
+            <div data-label="หมวดหมู่" style={{ color: "#79668F", fontSize: 12.5 }}>
               {r.category}
             </div>
-            <div data-label="กระเป๋า" style={{ color: "#7a6e90", fontSize: 12.5 }}>
+            <div data-label="กระเป๋า" style={{ color: "#79668F", fontSize: 12.5 }}>
               {r.walletName ?? "—"}
             </div>
-            <div data-label="จำนวนเงิน" className="num resp-table-amount" style={{ textAlign: "right", fontWeight: 600, color: r.isIncome ? "#4fa98a" : "#d0658a" }}>
+            <div data-label="จำนวนเงิน" className="num resp-table-amount" style={{ textAlign: "right", fontWeight: 600, color: r.isIncome ? "#10B981" : "#F43F5E" }}>
               {(r.isIncome ? "+" : "−") + fmtBaht(r.amount).slice(1)}
             </div>
           </div>
         ))}
         {rows.length === 0 && (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: 40, color: "#b8a9d0", fontSize: 13.5 }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: 40, color: "#A996C4", fontSize: 13.5 }}>
             ยังไม่มีรายการในบัญชีนี้
           </div>
         )}

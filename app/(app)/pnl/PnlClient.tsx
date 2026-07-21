@@ -52,26 +52,26 @@ export function PnlClient({ income, expense, canEdit }: { income: TxView[]; expe
       </PageHeader>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 16, marginBottom: 18 }}>
-        <div style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "18px 20px" }}>
-          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>รายรับรวม</div>
-          <div className="num" style={{ fontSize: 23, fontWeight: 600, marginTop: 6, color: "#4fa98a" }}>
+        <div style={{ background: "#fff", border: "1px solid #E9D5FF", borderRadius: 16, padding: "18px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#8B7CA6" }}>รายรับรวม</div>
+          <div className="num" style={{ fontSize: 23, fontWeight: 600, marginTop: 6, color: "#10B981" }}>
             {fmtBaht(incSum)}
           </div>
         </div>
-        <div style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "18px 20px" }}>
-          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>รายจ่ายรวม</div>
-          <div className="num" style={{ fontSize: 23, fontWeight: 600, marginTop: 6, color: "#d0658a" }}>
+        <div style={{ background: "#fff", border: "1px solid #E9D5FF", borderRadius: 16, padding: "18px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#8B7CA6" }}>รายจ่ายรวม</div>
+          <div className="num" style={{ fontSize: 23, fontWeight: 600, marginTop: 6, color: "#F43F5E" }}>
             {fmtBaht(expSum)}
           </div>
         </div>
-        <div style={{ background: net >= 0 ? "#4fa98a" : "#d0658a", color: "#fff", borderRadius: 16, padding: "18px 20px" }}>
+        <div style={{ background: net >= 0 ? "#10B981" : "#F43F5E", color: "#fff", borderRadius: 16, padding: "18px 20px" }}>
           <div style={{ fontSize: 12.5, opacity: 0.8 }}>{net >= 0 ? "กำไรสุทธิ" : "ขาดทุนสุทธิ"}</div>
           <div className="num" style={{ fontSize: 23, fontWeight: 600, marginTop: 6 }}>
             {(net >= 0 ? "+" : "−") + fmtBaht(Math.abs(net)).slice(1)}
           </div>
         </div>
-        <div style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "18px 20px" }}>
-          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>อัตรากำไร</div>
+        <div style={{ background: "#fff", border: "1px solid #E9D5FF", borderRadius: 16, padding: "18px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#8B7CA6" }}>อัตรากำไร</div>
           <div className="num" style={{ fontSize: 23, fontWeight: 600, marginTop: 6 }}>
             {margin}
           </div>
@@ -79,7 +79,7 @@ export function PnlClient({ income, expense, canEdit }: { income: TxView[]; expe
       </div>
 
       <div className="dash-cols" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-        <div style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, padding: "22px 24px" }}>
+        <div style={{ background: "#fff", border: "1px solid #E9D5FF", borderRadius: 18, padding: "22px 24px" }}>
           <div className="mali" style={{ fontWeight: 600, fontSize: 16, marginBottom: 16 }}>
             รายรับแยกตามหมวดหมู่
           </div>
@@ -91,14 +91,14 @@ export function PnlClient({ income, expense, canEdit }: { income: TxView[]; expe
                   {c.valueText}
                 </span>
               </div>
-              <div style={{ height: 8, background: "#f4eefb", borderRadius: 6, overflow: "hidden" }}>
-                <div style={{ height: "100%", width: c.pct, background: "#5fb89a", borderRadius: 6 }} />
+              <div style={{ height: 8, background: "#F3E8FF", borderRadius: 6, overflow: "hidden" }}>
+                <div style={{ height: "100%", width: c.pct, background: "#10B981", borderRadius: 6 }} />
               </div>
             </div>
           ))}
-          {incomeCats.length === 0 && <div style={{ fontSize: 13, color: "#b8a9d0" }}>ไม่มีรายรับในช่วงนี้เหมียว</div>}
+          {incomeCats.length === 0 && <div style={{ fontSize: 13, color: "#A996C4" }}>ไม่มีรายรับในช่วงนี้เหมียว</div>}
         </div>
-        <div style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, padding: "22px 24px" }}>
+        <div style={{ background: "#fff", border: "1px solid #E9D5FF", borderRadius: 18, padding: "22px 24px" }}>
           <div className="mali" style={{ fontWeight: 600, fontSize: 16, marginBottom: 16 }}>
             รายจ่ายแยกตามหมวดหมู่
           </div>
@@ -110,12 +110,12 @@ export function PnlClient({ income, expense, canEdit }: { income: TxView[]; expe
                   {c.valueText}
                 </span>
               </div>
-              <div style={{ height: 8, background: "#f4eefb", borderRadius: 6, overflow: "hidden" }}>
-                <div style={{ height: "100%", width: c.pct, background: "#e39ab6", borderRadius: 6 }} />
+              <div style={{ height: 8, background: "#F3E8FF", borderRadius: 6, overflow: "hidden" }}>
+                <div style={{ height: "100%", width: c.pct, background: "#F472B6", borderRadius: 6 }} />
               </div>
             </div>
           ))}
-          {expenseCats.length === 0 && <div style={{ fontSize: 13, color: "#b8a9d0" }}>ไม่มีรายจ่ายในช่วงนี้เหมียว</div>}
+          {expenseCats.length === 0 && <div style={{ fontSize: 13, color: "#A996C4" }}>ไม่มีรายจ่ายในช่วงนี้เหมียว</div>}
         </div>
       </div>
     </div>

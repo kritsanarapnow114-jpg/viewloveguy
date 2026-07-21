@@ -9,16 +9,16 @@ body {
 }
 body {
   font-family: var(--font-plex-sans-thai), system-ui, sans-serif;
-  background: #f5f0fc;
-  color: #40354f;
+  background: #F5EEFF;
+  color: #3B2A5C;
   -webkit-font-smoothing: antialiased;
 }
 a {
-  color: #7c5cc4;
+  color: #8B5CF6;
   text-decoration: none;
 }
 a:hover {
-  color: #684aad;
+  color: #7C3AED;
 }
 button {
   font-family: inherit;
@@ -39,7 +39,7 @@ select {
   height: 9px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #ddccf0;
+  background: #DDD6FE;
   border-radius: 8px;
 }
 
@@ -134,7 +134,7 @@ select {
     content: attr(data-label);
     font-size: 11px;
     font-weight: 600;
-    color: #9b8fb0;
+    color: #8B7CA6;
     flex: 0 0 auto;
   }
   .resp-table-amount {

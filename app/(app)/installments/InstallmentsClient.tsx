@@ -23,9 +23,9 @@ type InstallmentView = {
 };
 
 const STATUS_STYLE: Record<InstallmentStatus, { label: string; bg: string; color: string; accent: string }> = {
-  active: { label: "ปกติ", bg: "#eee7f8", color: "#6a5a8a", accent: "#c9b0ea" },
-  due: { label: "ถึงกำหนดงวดนี้", bg: "#fdf3ea", color: "#a5771a", accent: "#d99a4a" },
-  completed: { label: "ผ่อนครบแล้ว", bg: "#e3f2ec", color: "#3a8a6f", accent: "#4fa98a" },
+  active: { label: "ปกติ", bg: "#EDE3FF", color: "#6D28D9", accent: "#C4B5FD" },
+  due: { label: "ถึงกำหนดงวดนี้", bg: "#FEF3C7", color: "#B45309", accent: "#F59E0B" },
+  completed: { label: "ผ่อนครบแล้ว", bg: "#D1FAE5", color: "#047857", accent: "#10B981" },
 };
 
 export function InstallmentsClient({
@@ -94,26 +94,26 @@ export function InstallmentsClient({
       </PageHeader>
 
       <div style={{ display: "flex", gap: 16, marginBottom: 18, flexWrap: "wrap" }}>
-        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "16px 20px" }}>
-          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>ยอดคงเหลือที่ต้องผ่อน</div>
+        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #E9D5FF", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#8B7CA6" }}>ยอดคงเหลือที่ต้องผ่อน</div>
           <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6 }}>
             {fmtBaht(remainingTotal)}
           </div>
         </div>
-        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "16px 20px" }}>
-          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>ยอดผ่อนต่อเดือนรวม</div>
-          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6, color: "#d0658a" }}>
+        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #E9D5FF", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#8B7CA6" }}>ยอดผ่อนต่อเดือนรวม</div>
+          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6, color: "#F43F5E" }}>
             {fmtBaht(monthlyTotal)}
           </div>
         </div>
-        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "16px 20px" }}>
-          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>ถึงกำหนดงวดนี้</div>
-          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6, color: "#d0658a" }}>
+        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #E9D5FF", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#8B7CA6" }}>ถึงกำหนดงวดนี้</div>
+          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6, color: "#F43F5E" }}>
             {dueCount} รายการ
           </div>
         </div>
-        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "16px 20px" }}>
-          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>กำลังผ่อนอยู่</div>
+        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #E9D5FF", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#8B7CA6" }}>กำลังผ่อนอยู่</div>
           <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6 }}>
             {activeCount} รายการ
           </div>
@@ -131,7 +131,7 @@ export function InstallmentsClient({
           const st = STATUS_STYLE[c.status];
           const progressPct = Math.round((i.paidMonths / i.months) * 100);
           return (
-            <div key={i.id} style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, padding: "20px 22px", borderLeft: `5px solid ${st.accent}`, position: "relative" }}>
+            <div key={i.id} style={{ background: "#fff", border: "1px solid #E9D5FF", borderRadius: 18, padding: "20px 22px", borderLeft: `5px solid ${st.accent}`, position: "relative" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10, flexWrap: "wrap" }}>
                 <div style={{ display: "flex", alignItems: "flex-start", gap: 11, minWidth: 0, flex: "1 1 160px" }}>
                   <span style={{ width: 36, height: 47, display: "block", flex: "0 0 36px" }}>
@@ -152,7 +152,7 @@ export function InstallmentsClient({
                     >
                       {i.item}
                     </div>
-                    <div style={{ fontSize: 11.5, color: "#9b8fb0", marginTop: 2 }}>เริ่มผ่อน {thDate(i.startDate)}</div>
+                    <div style={{ fontSize: 11.5, color: "#8B7CA6", marginTop: 2 }}>เริ่มผ่อน {thDate(i.startDate)}</div>
                   </div>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", justifyContent: "flex-end", flex: "0 1 auto" }}>
@@ -177,12 +177,12 @@ export function InstallmentsClient({
                         display: "grid",
                         placeItems: "center",
                         border: "none",
-                        background: "#f5f0fc",
+                        background: "#F5EEFF",
                         width: 24,
                         height: 24,
                         borderRadius: 7,
                         cursor: "pointer",
-                        color: "#7c5cc4",
+                        color: "#8B5CF6",
                         opacity: 0.75,
                         flex: "0 0 auto",
                       }}
@@ -198,12 +198,12 @@ export function InstallmentsClient({
                         display: "grid",
                         placeItems: "center",
                         border: "none",
-                        background: "#f5f0fc",
+                        background: "#F5EEFF",
                         width: 24,
                         height: 24,
                         borderRadius: 7,
                         cursor: "pointer",
-                        color: "#d0658a",
+                        color: "#F43F5E",
                         opacity: 0.75,
                         flex: "0 0 auto",
                       }}
@@ -215,33 +215,33 @@ export function InstallmentsClient({
               </div>
 
               <div style={{ margin: "16px 0 4px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11.5, color: "#9b8fb0", marginBottom: 5 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11.5, color: "#8B7CA6", marginBottom: 5 }}>
                   <span>
                     ผ่อนแล้ว {i.paidMonths}/{i.months} งวด
                   </span>
                   <span>{progressPct}%</span>
                 </div>
-                <div style={{ height: 8, background: "#f4eefb", borderRadius: 6, overflow: "hidden" }}>
+                <div style={{ height: 8, background: "#F3E8FF", borderRadius: 6, overflow: "hidden" }}>
                   <div style={{ height: "100%", width: `${progressPct}%`, background: st.accent, borderRadius: 6 }} />
                 </div>
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, margin: "16px 0 14px" }}>
                 <div>
-                  <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>ยอดรวมทั้งหมด</div>
+                  <div style={{ fontSize: 11.5, color: "#8B7CA6" }}>ยอดรวมทั้งหมด</div>
                   <div className="num" style={{ fontSize: 17, fontWeight: 600, marginTop: 2 }}>
                     {fmtBaht(i.totalAmount)}
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>เฉลี่ย/เดือน</div>
+                  <div style={{ fontSize: 11.5, color: "#8B7CA6" }}>เฉลี่ย/เดือน</div>
                   <div className="num" style={{ fontSize: 17, fontWeight: 600, marginTop: 2 }}>
                     {fmtBaht(i.totalAmount / i.months)}
                   </div>
                 </div>
                 {c.status !== "completed" && (
                   <div>
-                    <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>งวดถัดไปกำหนด</div>
+                    <div style={{ fontSize: 11.5, color: "#8B7CA6" }}>งวดถัดไปกำหนด</div>
                     <div className="num" style={{ fontSize: 13.5, fontWeight: 500, marginTop: 4 }}>
                       {thDate(c.nextDueDate)}
                     </div>
@@ -249,14 +249,14 @@ export function InstallmentsClient({
                 )}
                 {c.status !== "completed" && (
                   <div>
-                    <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>ยอดงวดถัดไป (งวดที่ {i.paidMonths + 1}/{i.months})</div>
+                    <div style={{ fontSize: 11.5, color: "#8B7CA6" }}>ยอดงวดถัดไป (งวดที่ {i.paidMonths + 1}/{i.months})</div>
                     <div
                       className="num"
                       style={{
                         fontSize: 13.5,
                         fontWeight: 500,
                         marginTop: 4,
-                        color: Math.abs(c.nextPaymentAmount - i.totalAmount / i.months) > 0.005 ? "#d0658a" : undefined,
+                        color: Math.abs(c.nextPaymentAmount - i.totalAmount / i.months) > 0.005 ? "#F43F5E" : undefined,
                       }}
                     >
                       {fmtBaht(c.nextPaymentAmount)}
@@ -265,9 +265,9 @@ export function InstallmentsClient({
                 )}
               </div>
 
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 13, borderTop: "1px solid #f4eefb" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 13, borderTop: "1px solid #F3E8FF" }}>
                 <div>
-                  <span style={{ fontSize: 11.5, color: "#9b8fb0" }}>คงเหลือ </span>
+                  <span style={{ fontSize: 11.5, color: "#8B7CA6" }}>คงเหลือ </span>
                   <span className="num" style={{ fontSize: 16, fontWeight: 700 }}>
                     {fmtBaht(c.remainingAmount)}
                   </span>
@@ -275,13 +275,13 @@ export function InstallmentsClient({
                 {canEdit && c.status !== "completed" && (
                   <button
                     onClick={() => setPayingInstallment(i)}
-                    style={{ padding: "7px 14px", background: "#7c5cc4", color: "#fff", border: "none", borderRadius: 10, fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}
+                    style={{ padding: "7px 14px", background: "#8B5CF6", color: "#fff", border: "none", borderRadius: 10, fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}
                   >
                     จ่ายงวดนี้
                   </button>
                 )}
                 {c.status === "completed" && (
-                  <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12.5, color: "#4fa98a", fontWeight: 600 }}>
+                  <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12.5, color: "#10B981", fontWeight: 600 }}>
                     <IconCheck size={12} />
                     ผ่อนครบแล้ว
                   </span>
@@ -291,7 +291,7 @@ export function InstallmentsClient({
           );
         })}
         {filtered.length === 0 && (
-          <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: 40, color: "#b8a9d0", fontSize: 13.5 }}>ยังไม่มีรายการผ่อนชำระ</div>
+          <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: 40, color: "#A996C4", fontSize: 13.5 }}>ยังไม่มีรายการผ่อนชำระ</div>
         )}
       </div>
 
@@ -358,14 +358,14 @@ export function InstallmentsClient({
                 const payAmount = payingInstallment.amounts[payingInstallment.paidMonths];
                 const isLast = nextMonthNo >= payingInstallment.months;
                 return (
-                  <div style={{ background: "#f5f0fc", borderRadius: 12, padding: "12px 14px", fontSize: 13 }}>
-                    <div style={{ color: "#7a6e90", marginBottom: 4 }}>
+                  <div style={{ background: "#F5EEFF", borderRadius: 12, padding: "12px 14px", fontSize: 13 }}>
+                    <div style={{ color: "#79668F", marginBottom: 4 }}>
                       ยอดที่ต้องจ่ายงวดที่ {nextMonthNo}/{payingInstallment.months}
                     </div>
-                    <div className="num" style={{ fontSize: 20, fontWeight: 700, color: "#40354f" }}>
+                    <div className="num" style={{ fontSize: 20, fontWeight: 700, color: "#3B2A5C" }}>
                       {fmtBaht(payAmount)}
                     </div>
-                    {isLast && <div style={{ color: "#d0658a", marginTop: 4 }}>งวดสุดท้าย</div>}
+                    {isLast && <div style={{ color: "#F43F5E", marginTop: 4 }}>งวดสุดท้าย</div>}
                   </div>
                 );
               },

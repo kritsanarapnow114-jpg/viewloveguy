@@ -21,9 +21,9 @@ export function StatusFilter<T extends string>({
             onClick={() => onChange(o.key)}
             style={{
               padding: "8px 16px",
-              border: `1px solid ${active ? "#7c5cc4" : "#e0d3f0"}`,
-              background: active ? "#7c5cc4" : "#fff",
-              color: active ? "#fff" : "#7a6e90",
+              border: `1px solid ${active ? "#8B5CF6" : "#DCC4FA"}`,
+              background: active ? "#8B5CF6" : "#fff",
+              color: active ? "#fff" : "#79668F",
               borderRadius: 20,
               fontSize: 13,
               fontWeight: active ? 600 : 500,

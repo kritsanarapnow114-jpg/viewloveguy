@@ -158,12 +158,12 @@ export function FormModal({
               display: "grid",
               placeItems: "center",
               border: "none",
-              background: "#f5f0fc",
+              background: "#F5EEFF",
               width: 30,
               height: 30,
               borderRadius: 9,
               cursor: "pointer",
-              color: "#7a6e90",
+              color: "#79668F",
             }}
           >
             <IconClose size={14} />
@@ -199,7 +199,7 @@ export function FormModal({
                     style={{
                       width: "100%",
                       padding: "11px 12px",
-                      border: "1px solid #e0d3f0",
+                      border: "1px solid #DCC4FA",
                       borderRadius: 11,
                       fontSize: 14,
                       background: "#fff",
@@ -221,7 +221,7 @@ export function FormModal({
                     style={{
                       width: "100%",
                       padding: "11px 12px",
-                      border: "1px solid #e0d3f0",
+                      border: "1px solid #DCC4FA",
                       borderRadius: 11,
                       fontSize: 14,
                       background: "#fff",
@@ -246,7 +246,7 @@ export function FormModal({
                     style={{
                       width: "100%",
                       padding: "11px 12px",
-                      border: "1px solid #e0d3f0",
+                      border: "1px solid #DCC4FA",
                       borderRadius: 11,
                       fontSize: 14,
                       background: "#fff",
@@ -258,7 +258,7 @@ export function FormModal({
             );
           })}
 
-          {state.error && <div style={{ color: "#d0658a", fontSize: 12.5, marginTop: 12 }}>{state.error}</div>}
+          {state.error && <div style={{ color: "#F43F5E", fontSize: 12.5, marginTop: 12 }}>{state.error}</div>}
 
           <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
             <button
@@ -267,13 +267,13 @@ export function FormModal({
               style={{
                 flex: 1,
                 padding: 12,
-                background: "#f5f0fc",
-                border: "1px solid #ece2f7",
+                background: "#F5EEFF",
+                border: "1px solid #E9D5FF",
                 borderRadius: 11,
                 fontSize: 14,
                 fontWeight: 500,
                 cursor: "pointer",
-                color: "#7a6e90",
+                color: "#79668F",
               }}
             >
               ยกเลิก
@@ -284,7 +284,7 @@ export function FormModal({
               style={{
                 flex: 1.4,
                 padding: 12,
-                background: "#7c5cc4",
+                background: "#8B5CF6",
                 color: "#fff",
                 border: "none",
                 borderRadius: 11,
@@ -342,12 +342,12 @@ function ImageField({ name, defaultValue }: { name: string; defaultValue?: strin
           gap: 8,
           width: "100%",
           padding: "10px 12px",
-          border: "1px dashed #c9b0ea",
+          border: "1px dashed #C4B5FD",
           borderRadius: 11,
           fontSize: 13.5,
-          color: "#7c5cc4",
+          color: "#8B5CF6",
           cursor: "pointer",
-          background: "#faf6ff",
+          background: "#FAF5FF",
         }}
       >
         {busy ? (
@@ -362,7 +362,7 @@ function ImageField({ name, defaultValue }: { name: string; defaultValue?: strin
         )}
         <input type="file" accept="image/*" onChange={onPick} style={{ display: "none" }} />
       </label>
-      {error && <div style={{ color: "#d0658a", fontSize: 12, marginTop: 6 }}>{error}</div>}
+      {error && <div style={{ color: "#F43F5E", fontSize: 12, marginTop: 6 }}>{error}</div>}
     </div>
   );
 }
@@ -407,9 +407,9 @@ function ScheduleAmountsField({
           onClick={fillEqually}
           style={{
             fontSize: 12,
-            color: "#7c5cc4",
-            background: "#f5f0fc",
-            border: "1px solid #e0d3f0",
+            color: "#8B5CF6",
+            background: "#F5EEFF",
+            border: "1px solid #DCC4FA",
             borderRadius: 8,
             padding: "6px 10px",
             cursor: "pointer",
@@ -422,7 +422,7 @@ function ScheduleAmountsField({
       <div style={{ display: "flex", flexDirection: "column", gap: 8, maxHeight: 260, overflowY: "auto", paddingRight: 2 }}>
         {amounts.map((a, idx) => (
           <div key={idx} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ width: 62, fontSize: 12, color: "#7a6e90", flexShrink: 0 }}>งวดที่ {idx + 1}</span>
+            <span style={{ width: 62, fontSize: 12, color: "#79668F", flexShrink: 0 }}>งวดที่ {idx + 1}</span>
             <input
               type="number"
               step="any"
@@ -435,7 +435,7 @@ function ScheduleAmountsField({
               style={{
                 flex: 1,
                 padding: "8px 10px",
-                border: "1px solid #e0d3f0",
+                border: "1px solid #DCC4FA",
                 borderRadius: 9,
                 fontSize: 13.5,
                 outline: "none",
@@ -443,10 +443,10 @@ function ScheduleAmountsField({
             />
           </div>
         ))}
-        {amounts.length === 0 && <div style={{ fontSize: 12.5, color: "#b8a9d0" }}>กรอกจำนวนงวดก่อนเพื่อกำหนดยอดแต่ละงวด</div>}
+        {amounts.length === 0 && <div style={{ fontSize: 12.5, color: "#A996C4" }}>กรอกจำนวนงวดก่อนเพื่อกำหนดยอดแต่ละงวด</div>}
       </div>
-      <div style={{ fontSize: 12.5, color: "#7a6e90", marginTop: 8, textAlign: "right" }}>
-        รวมทั้งหมด: <span className="num" style={{ fontWeight: 600, color: "#40354f" }}>{fmtBaht(total)}</span>
+      <div style={{ fontSize: 12.5, color: "#79668F", marginTop: 8, textAlign: "right" }}>
+        รวมทั้งหมด: <span className="num" style={{ fontWeight: 600, color: "#3B2A5C" }}>{fmtBaht(total)}</span>
       </div>
     </div>
   );

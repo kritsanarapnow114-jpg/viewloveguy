@@ -14,7 +14,7 @@ export default async function LoginPage() {
         style={{
           flex: 1,
           display: "none",
-          background: "linear-gradient(160deg,#8b6fd0,#b79ee6 70%,#e7b8d8)",
+          background: "linear-gradient(160deg,#7C3AED,#A78BFA 70%,#F0ABFC)",
           color: "#fff",
           padding: "60px 56px",
           flexDirection: "column",
@@ -37,12 +37,12 @@ export default async function LoginPage() {
             <br />
             เงินกู้และบัญชี
           </div>
-          <p style={{ margin: "18px auto 0", fontSize: 15, lineHeight: 1.7, color: "#fbf3fb", maxWidth: 340 }}>
+          <p style={{ margin: "18px auto 0", fontSize: 15, lineHeight: 1.7, color: "#F5E8FF", maxWidth: 340 }}>
             รวมบัญชีธนาคาร เงินสด รายรับ-รายจ่าย และการปล่อยเงินกู้ ไว้ในที่เดียว
           </p>
         </div>
 
-        <div style={{ fontSize: 12.5, color: "#f3e6f5", position: "relative" }}>© 2569 กำไรและวิว · จัดการการเงินอย่างละมุน</div>
+        <div style={{ fontSize: 12.5, color: "#EDE3FF", position: "relative" }}>© 2569 กำไรและวิว · จัดการการเงินอย่างละมุน</div>
       </div>
 
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 24px" }}>
@@ -51,19 +51,19 @@ export default async function LoginPage() {
             <span style={{ width: 34, height: 34, display: "block", flex: "0 0 34px" }}>
               <CatFace />
             </span>
-            <span className="mali" style={{ fontWeight: 600, fontSize: 18, color: "#40354f" }}>
+            <span className="mali" style={{ fontWeight: 600, fontSize: 18, color: "#3B2A5C" }}>
               กำไรและวิว
             </span>
           </div>
           <h1 className="mali" style={{ fontSize: 25, fontWeight: 600, margin: "22px 0 4px", letterSpacing: "-.01em" }}>
             เข้าสู่ระบบ
           </h1>
-          <p style={{ margin: "0 0 26px", color: "#9b8fb0", fontSize: 14 }}>กรอกชื่อผู้ใช้และรหัสผ่านเพื่อเข้าใช้งาน</p>
+          <p style={{ margin: "0 0 26px", color: "#8B7CA6", fontSize: 14 }}>กรอกชื่อผู้ใช้และรหัสผ่านเพื่อเข้าใช้งาน</p>
 
           <LoginForm />
 
-          <div style={{ marginTop: 26, padding: 16, background: "#f0e9fb", borderRadius: 14, fontSize: 12.5, color: "#7a6e90", lineHeight: 1.9 }}>
-            <div className="mali" style={{ fontWeight: 600, color: "#40354f", marginBottom: 4 }}>
+          <div style={{ marginTop: 26, padding: 16, background: "#F3E8FF", borderRadius: 14, fontSize: 12.5, color: "#79668F", lineHeight: 1.9 }}>
+            <div className="mali" style={{ fontWeight: 600, color: "#3B2A5C", marginBottom: 4 }}>
               บัญชีทดลอง
             </div>
             ผู้ดูแลระบบ — <b>admin</b> / <b>1234</b>

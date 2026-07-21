@@ -47,7 +47,7 @@ export function CelebrationProvider({ children }: { children: React.ReactNode })
               animation: "popIn .32s cubic-bezier(.34,1.56,.64,1)",
             }}
           >
-            <div className="mali" style={{ fontSize: 15.5, fontWeight: 600, color: "#40354f", textAlign: "center", maxWidth: 220 }}>
+            <div className="mali" style={{ fontSize: 15.5, fontWeight: 600, color: "#3B2A5C", textAlign: "center", maxWidth: 220 }}>
               {message}
             </div>
           </div>

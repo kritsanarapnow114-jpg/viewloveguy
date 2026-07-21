@@ -16,7 +16,7 @@ export function LoginForm() {
         style={{
           width: "100%",
           padding: "12px 14px",
-          border: "1px solid #e0d3f0",
+          border: "1px solid #DCC4FA",
           borderRadius: 12,
           fontSize: 14.5,
           background: "#fff",
@@ -34,7 +34,7 @@ export function LoginForm() {
         style={{
           width: "100%",
           padding: "12px 14px",
-          border: "1px solid #e0d3f0",
+          border: "1px solid #DCC4FA",
           borderRadius: 12,
           fontSize: 14.5,
           background: "#fff",
@@ -43,7 +43,7 @@ export function LoginForm() {
         }}
       />
 
-      {state.error && <div style={{ color: "#d0658a", fontSize: 13, margin: "4px 0 8px" }}>{state.error}</div>}
+      {state.error && <div style={{ color: "#F43F5E", fontSize: 13, margin: "4px 0 8px" }}>{state.error}</div>}
 
       <button
         type="submit"
@@ -52,7 +52,7 @@ export function LoginForm() {
           width: "100%",
           marginTop: 12,
           padding: 13,
-          background: "#7c5cc4",
+          background: "#8B5CF6",
           color: "#fff",
           border: "none",
           borderRadius: 12,

@@ -50,10 +50,10 @@ export function DashboardClient({
 
   const rangeLabel = dateRangeLabel(range);
   const kpis: Kpi[] = [
-    { label: "ยอดเงินรวมทุกบัญชี", value: fmtBaht(totalBalance), sub: "ธนาคาร + เงินสด", subColor: "#9b8fb0" },
-    { label: `รายรับ (${rangeLabel})`, value: fmtBaht(rangeIncomeSum), sub: "▲ " + rangeIncome.length + " รายการ", subColor: "#4fa98a" },
-    { label: `รายจ่าย (${rangeLabel})`, value: fmtBaht(rangeExpenseSum), sub: "▼ " + rangeExpense.length + " รายการ", subColor: "#d0658a" },
-    { label: "เงินกู้คงค้าง", value: fmtBaht(outstanding), sub: outstandingCount + " สัญญาที่ยังไม่คืน", subColor: "#9b8fb0" },
+    { label: "ยอดเงินรวมทุกบัญชี", value: fmtBaht(totalBalance), sub: "ธนาคาร + เงินสด", subColor: "#8B7CA6" },
+    { label: `รายรับ (${rangeLabel})`, value: fmtBaht(rangeIncomeSum), sub: "▲ " + rangeIncome.length + " รายการ", subColor: "#10B981" },
+    { label: `รายจ่าย (${rangeLabel})`, value: fmtBaht(rangeExpenseSum), sub: "▼ " + rangeExpense.length + " รายการ", subColor: "#F43F5E" },
+    { label: "เงินกู้คงค้าง", value: fmtBaht(outstanding), sub: outstandingCount + " สัญญาที่ยังไม่คืน", subColor: "#8B7CA6" },
   ];
 
   const maxV = Math.max(1, ...bars.map((b) => b.inc), ...bars.map((b) => b.exp));
@@ -80,8 +80,8 @@ export function DashboardClient({
 
       <div className="kpi-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 18 }}>
         {kpis.map((k) => (
-          <div key={k.label} style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, padding: "20px 22px" }}>
-            <div style={{ fontSize: 12.5, color: "#9b8fb0", fontWeight: 500 }}>{k.label}</div>
+          <div key={k.label} style={{ background: "#fff", border: "1px solid #E9D5FF", borderRadius: 18, padding: "20px 22px" }}>
+            <div style={{ fontSize: 12.5, color: "#8B7CA6", fontWeight: 500 }}>{k.label}</div>
             <div className="num" style={{ fontSize: 26, fontWeight: 600, marginTop: 10, letterSpacing: "-.02em" }}>
               {k.value}
             </div>
@@ -91,18 +91,18 @@ export function DashboardClient({
       </div>
 
       <div className="dash-cols" style={{ display: "grid", gridTemplateColumns: "1.55fr 1fr", gap: 16, marginBottom: 18 }}>
-        <div style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, padding: "22px 24px" }}>
+        <div style={{ background: "#fff", border: "1px solid #E9D5FF", borderRadius: 18, padding: "22px 24px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
             <div className="mali" style={{ fontWeight: 600, fontSize: 16 }}>
               รายรับ - รายจ่าย ย้อนหลัง
             </div>
-            <div style={{ display: "flex", gap: 14, fontSize: 11.5, color: "#9b8fb0" }}>
+            <div style={{ display: "flex", gap: 14, fontSize: 11.5, color: "#8B7CA6" }}>
               <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ width: 9, height: 9, borderRadius: 3, background: "#5fb89a" }} />
+                <span style={{ width: 9, height: 9, borderRadius: 3, background: "#10B981" }} />
                 รับ
               </span>
               <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ width: 9, height: 9, borderRadius: 3, background: "#e39ab6" }} />
+                <span style={{ width: 9, height: 9, borderRadius: 3, background: "#F472B6" }} />
                 จ่าย
               </span>
             </div>
@@ -117,7 +117,7 @@ export function DashboardClient({
                       width: "38%",
                       maxWidth: 22,
                       height: Math.max(2, (m.inc / maxV) * 100) + "%",
-                      background: "#5fb89a",
+                      background: "#10B981",
                       borderRadius: "6px 6px 0 0",
                       transformOrigin: "bottom",
                       animation: "growBar .5s ease",
@@ -129,20 +129,20 @@ export function DashboardClient({
                       width: "38%",
                       maxWidth: 22,
                       height: Math.max(2, (m.exp / maxV) * 100) + "%",
-                      background: "#e39ab6",
+                      background: "#F472B6",
                       borderRadius: "6px 6px 0 0",
                       transformOrigin: "bottom",
                       animation: "growBar .5s ease",
                     }}
                   />
                 </div>
-                <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>{m.label}</div>
+                <div style={{ fontSize: 11.5, color: "#8B7CA6" }}>{m.label}</div>
               </div>
             ))}
           </div>
         </div>
 
-        <div style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, padding: "22px 24px" }}>
+        <div style={{ background: "#fff", border: "1px solid #E9D5FF", borderRadius: 18, padding: "22px 24px" }}>
           <div className="mali" style={{ fontWeight: 600, fontSize: 16, marginBottom: 14 }}>
             การแจ้งเตือน
           </div>
@@ -152,12 +152,12 @@ export function DashboardClient({
                 <span style={{ width: 8, height: 8, borderRadius: "50%", background: a.dot, marginTop: 6, flex: "0 0 8px" }} />
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 600 }}>{a.title}</div>
-                  <div style={{ fontSize: 12, color: "#7a6e90", marginTop: 2, lineHeight: 1.5 }}>{a.detail}</div>
+                  <div style={{ fontSize: 12, color: "#79668F", marginTop: 2, lineHeight: 1.5 }}>{a.detail}</div>
                 </div>
               </div>
             ))}
             {alerts.length === 0 && (
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: "14px 2px", color: "#9b8fb0", fontSize: 13 }}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: "14px 2px", color: "#8B7CA6", fontSize: 13 }}>
                 ทุกอย่างเรียบร้อยดี ✓
               </div>
             )}
@@ -165,14 +165,14 @@ export function DashboardClient({
         </div>
       </div>
 
-      <div style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, padding: "22px 24px" }}>
+      <div style={{ background: "#fff", border: "1px solid #E9D5FF", borderRadius: 18, padding: "22px 24px" }}>
         <div className="mali" style={{ fontWeight: 600, fontSize: 16, marginBottom: 14 }}>
           รายการล่าสุด ({rangeLabel})
         </div>
         {recentTx.slice(0, 6).map((t) => {
           const isIn = t.kindTag === "in";
           return (
-            <div key={t.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "11px 0", borderBottom: "1px solid #f4eefb" }}>
+            <div key={t.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "11px 0", borderBottom: "1px solid #F3E8FF" }}>
               <span
                 style={{
                   width: 32,
@@ -182,26 +182,26 @@ export function DashboardClient({
                   placeItems: "center",
                   fontSize: 15,
                   fontWeight: 700,
-                  background: isIn ? "#e3f2ec" : "#fbe9f0",
-                  color: isIn ? "#4fa98a" : "#d0658a",
+                  background: isIn ? "#D1FAE5" : "#FFE4E9",
+                  color: isIn ? "#10B981" : "#F43F5E",
                 }}
               >
                 {isIn ? "+" : "−"}
               </span>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13.5, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{t.note}</div>
-                <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>
+                <div style={{ fontSize: 11.5, color: "#8B7CA6" }}>
                   {thDate(t.date)} · {t.accountName}
                 </div>
               </div>
-              <div className="num" style={{ fontSize: 14, fontWeight: 600, color: isIn ? "#4fa98a" : "#d0658a" }}>
+              <div className="num" style={{ fontSize: 14, fontWeight: 600, color: isIn ? "#10B981" : "#F43F5E" }}>
                 {(isIn ? "+" : "−") + fmtBaht(t.amount).slice(1)}
               </div>
             </div>
           );
         })}
         {recentTx.length === 0 && (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: 40, color: "#b8a9d0", fontSize: 13.5 }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: 40, color: "#A996C4", fontSize: 13.5 }}>
             ไม่มีรายการในช่วงนี้
           </div>
         )}

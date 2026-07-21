@@ -38,17 +38,17 @@ type LoanView = {
 };
 
 const STATUS_STYLE: Record<LoanStatus, { label: string; bg: string; color: string; accent: string }> = {
-  active: { label: "ปกติ", bg: "#eee7f8", color: "#6a5a8a", accent: "#c9b0ea" },
-  due: { label: "ใกล้กำหนด", bg: "#fdf3ea", color: "#a5771a", accent: "#d99a4a" },
-  overdue: { label: "เกินกำหนด", bg: "#fbe9f0", color: "#b8446e", accent: "#d0658a" },
-  paid: { label: "ชำระแล้ว", bg: "#e3f2ec", color: "#3a8a6f", accent: "#4fa98a" },
+  active: { label: "ปกติ", bg: "#EDE3FF", color: "#6D28D9", accent: "#C4B5FD" },
+  due: { label: "ใกล้กำหนด", bg: "#FEF3C7", color: "#B45309", accent: "#F59E0B" },
+  overdue: { label: "เกินกำหนด", bg: "#FFE4E9", color: "#BE123C", accent: "#F43F5E" },
+  paid: { label: "ชำระแล้ว", bg: "#D1FAE5", color: "#047857", accent: "#10B981" },
 };
 
 const PAW_COLOR: Record<LoanStatus, string> = {
-  active: "#9b7fd4",
-  due: "#e8c34a",
-  overdue: "#e2645a",
-  paid: "#4fa98a",
+  active: "#A78BFA",
+  due: "#FBBF24",
+  overdue: "#F43F5E",
+  paid: "#10B981",
 };
 
 function RepayQuote({ loan }: { loan: LoanView }) {
@@ -58,9 +58,9 @@ function RepayQuote({ loan }: { loan: LoanView }) {
   const total = loan.amount + loan.interest + quote.fee;
 
   return (
-    <div style={{ background: "#faf6ff", border: "1px solid #ece2f7", borderRadius: 12, padding: "12px 14px", marginBottom: 14 }}>
+    <div style={{ background: "#FAF5FF", border: "1px solid #E9D5FF", borderRadius: 12, padding: "12px 14px", marginBottom: 14 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 8, flexWrap: "wrap" }}>
-        <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#7a6e90", fontWeight: 500 }}>
+        <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#79668F", fontWeight: 500 }}>
           <IconSearch size={13} />
           เช็คยอดคืน ณ วันที่
         </span>
@@ -68,13 +68,13 @@ function RepayQuote({ loan }: { loan: LoanView }) {
           type="date"
           value={quoteDate}
           onChange={(e) => setQuoteDate(e.target.value)}
-          style={{ border: "1px solid #e0d3f0", borderRadius: 9, padding: "5px 8px", fontSize: 12.5, background: "#fff", outline: "none" }}
+          style={{ border: "1px solid #DCC4FA", borderRadius: 9, padding: "5px 8px", fontSize: 12.5, background: "#fff", outline: "none" }}
         />
       </div>
-      <div className="num" style={{ fontSize: 19, fontWeight: 700, color: "#40354f" }}>
+      <div className="num" style={{ fontSize: 19, fontWeight: 700, color: "#3B2A5C" }}>
         {fmtBaht(total)}
       </div>
-      <div style={{ fontSize: 11.5, color: "#9b8fb0", marginTop: 3 }}>
+      <div style={{ fontSize: 11.5, color: "#8B7CA6", marginTop: 3 }}>
         เงินต้น {fmtBaht(loan.amount)} + ดอกเบี้ย {fmtBaht(loan.interest)}
         {quote.fee > 0 && ` + ค่าปรับล่าช้า ${fmtBaht(quote.fee)} (${quote.lateDays} วัน)`}
       </div>
@@ -176,27 +176,27 @@ export function LoansClient({
       </PageHeader>
 
       <div style={{ display: "flex", gap: 16, marginBottom: 18, flexWrap: "wrap" }}>
-        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "16px 20px" }}>
-          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>เงินต้นคงค้าง</div>
+        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #E9D5FF", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#8B7CA6" }}>เงินต้นคงค้าง</div>
           <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6 }}>
             {fmtBaht(outstanding)}
           </div>
         </div>
-        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "16px 20px" }}>
-          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>ดอกเบี้ยรับคาดหวัง</div>
-          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6, color: "#4fa98a" }}>
+        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #E9D5FF", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#8B7CA6" }}>ดอกเบี้ยรับคาดหวัง</div>
+          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6, color: "#10B981" }}>
             {fmtBaht(totalInterest)}
           </div>
         </div>
-        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "16px 20px" }}>
-          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>เกินกำหนด</div>
-          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6, color: "#d0658a" }}>
+        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #E9D5FF", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#8B7CA6" }}>เกินกำหนด</div>
+          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6, color: "#F43F5E" }}>
             {overdueCount} สัญญา
           </div>
         </div>
-        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "16px 20px" }}>
-          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>ค่าปรับสะสม</div>
-          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6, color: "#d0658a" }}>
+        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #E9D5FF", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#8B7CA6" }}>ค่าปรับสะสม</div>
+          <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6, color: "#F43F5E" }}>
             {fmtBaht(totalFee)}
           </div>
         </div>
@@ -209,20 +209,20 @@ export function LoansClient({
       />
 
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18, flexWrap: "wrap" }}>
-        <span style={{ fontSize: 13, color: "#7a6e90" }}>เช็คว่าจะถึงกำหนดภายในวันที่ (รวมวันที่ลูกค้าแจ้งใหม่)</span>
+        <span style={{ fontSize: 13, color: "#79668F" }}>เช็คว่าจะถึงกำหนดภายในวันที่ (รวมวันที่ลูกค้าแจ้งใหม่)</span>
         <input
           type="date"
           value={dueByDate}
           onChange={(e) => setDueByDate(e.target.value)}
-          style={{ border: "1px solid #e0d3f0", borderRadius: 9, padding: "7px 8px", fontSize: 12.5, background: "#fff", outline: "none" }}
+          style={{ border: "1px solid #DCC4FA", borderRadius: 9, padding: "7px 8px", fontSize: 12.5, background: "#fff", outline: "none" }}
         />
         {dueByDate && (
           <>
-            <span style={{ fontSize: 12.5, color: "#7c5cc4", fontWeight: 600 }}>พบ {filtered.length} สัญญา</span>
+            <span style={{ fontSize: 12.5, color: "#8B5CF6", fontWeight: 600 }}>พบ {filtered.length} สัญญา</span>
             <button
               type="button"
               onClick={() => setDueByDate("")}
-              style={{ border: "none", background: "#f5f0fc", color: "#7a6e90", borderRadius: 9, padding: "6px 12px", fontSize: 12.5, cursor: "pointer" }}
+              style={{ border: "none", background: "#F5EEFF", color: "#79668F", borderRadius: 9, padding: "6px 12px", fontSize: 12.5, cursor: "pointer" }}
             >
               ล้าง
             </button>
@@ -234,26 +234,26 @@ export function LoansClient({
         {filtered.map(({ l, c }) => {
           const st = STATUS_STYLE[c.status];
           const icons: { key: string; title: string; color: string; active?: boolean; onClick: () => void; label: React.ReactNode }[] = [];
-          icons.push({ key: "save", title: "บันทึกเป็นรูปภาพ", color: "#7c5cc4", onClick: () => handleSaveImage(l.id, l.borrower), label: <IconCamera size={13} /> });
+          icons.push({ key: "save", title: "บันทึกเป็นรูปภาพ", color: "#8B5CF6", onClick: () => handleSaveImage(l.id, l.borrower), label: <IconCamera size={13} /> });
           if (!l.paid)
             icons.push({
               key: "quote",
               title: "เช็คยอดคืน",
-              color: "#7c5cc4",
+              color: "#8B5CF6",
               active: quoteOpenId === l.id,
               onClick: () => setQuoteOpenId(quoteOpenId === l.id ? null : l.id),
               label: <IconMore size={14} />,
             });
-          if (canEdit && !l.paid) icons.push({ key: "promise", title: "แจ้งวันที่ลูกค้าจะคืน", color: "#a5771a", onClick: () => setPromisingLoan(l), label: <IconCalendar size={13} /> });
-          if (canEdit) icons.push({ key: "edit", title: "แก้ไขสัญญา", color: "#7c5cc4", onClick: () => setEditingLoan(l), label: <IconEdit size={13} /> });
-          if (canEdit) icons.push({ key: "delete", title: "ลบสัญญา", color: "#d0658a", onClick: () => handleDelete(l.id), label: <IconClose size={13} /> });
+          if (canEdit && !l.paid) icons.push({ key: "promise", title: "แจ้งวันที่ลูกค้าจะคืน", color: "#B45309", onClick: () => setPromisingLoan(l), label: <IconCalendar size={13} /> });
+          if (canEdit) icons.push({ key: "edit", title: "แก้ไขสัญญา", color: "#8B5CF6", onClick: () => setEditingLoan(l), label: <IconEdit size={13} /> });
+          if (canEdit) icons.push({ key: "delete", title: "ลบสัญญา", color: "#F43F5E", onClick: () => handleDelete(l.id), label: <IconClose size={13} /> });
           return (
             <div
               key={l.id}
               data-card-id={l.id}
               style={{
                 background: "#fff",
-                border: "1px solid #ece2f7",
+                border: "1px solid #E9D5FF",
                 borderRadius: 18,
                 padding: "20px 22px",
                 borderLeft: `5px solid ${st.accent}`,
@@ -296,7 +296,7 @@ export function LoansClient({
                     >
                       {l.borrower}
                     </div>
-                    <div style={{ fontSize: 11.5, color: "#9b8fb0", marginTop: 2 }}>ยืมเมื่อ {thDate(l.borrowDate)}</div>
+                    <div style={{ fontSize: 11.5, color: "#8B7CA6", marginTop: 2 }}>ยืมเมื่อ {thDate(l.borrowDate)}</div>
                   </div>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", justifyContent: "flex-end", flex: "0 1 auto" }}>
@@ -323,7 +323,7 @@ export function LoansClient({
                         display: "grid",
                         placeItems: "center",
                         border: "none",
-                        background: btn.active ? "#e7dcf7" : "#f5f0fc",
+                        background: btn.active ? "#EDE3FF" : "#F5EEFF",
                         width: 24,
                         height: 24,
                         borderRadius: 7,
@@ -341,50 +341,50 @@ export function LoansClient({
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, margin: "18px 0 14px" }}>
                 <div>
-                  <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>เงินต้น</div>
+                  <div style={{ fontSize: 11.5, color: "#8B7CA6" }}>เงินต้น</div>
                   <div className="num" style={{ fontSize: 17, fontWeight: 600, marginTop: 2 }}>
                     {fmtBaht(l.amount)}
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>ดอกเบี้ย</div>
-                  <div className="num" style={{ fontSize: 17, fontWeight: 600, marginTop: 2, color: "#4fa98a" }}>
+                  <div style={{ fontSize: 11.5, color: "#8B7CA6" }}>ดอกเบี้ย</div>
+                  <div className="num" style={{ fontSize: 17, fontWeight: 600, marginTop: 2, color: "#10B981" }}>
                     {fmtBaht(l.interest)}
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>กำหนดคืน</div>
+                  <div style={{ fontSize: 11.5, color: "#8B7CA6" }}>กำหนดคืน</div>
                   <div className="num" style={{ fontSize: 13.5, fontWeight: 500, marginTop: 4 }}>
                     {thDate(l.dueDate)}
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 11.5, color: "#9b8fb0" }}>ค่าปรับล่าช้า</div>
-                  <div className="num" style={{ fontSize: 13.5, fontWeight: 500, marginTop: 4, color: c.fee > 0 ? "#d0658a" : "#9b8fb0" }}>
+                  <div style={{ fontSize: 11.5, color: "#8B7CA6" }}>ค่าปรับล่าช้า</div>
+                  <div className="num" style={{ fontSize: 13.5, fontWeight: 500, marginTop: 4, color: c.fee > 0 ? "#F43F5E" : "#8B7CA6" }}>
                     {c.fee > 0 ? `${fmtBaht(c.fee)} (${c.lateDays} วัน)` : `${fmtBaht(l.penalty)}/วัน`}
                   </div>
                 </div>
               </div>
 
               {!l.paid && l.promisedReturnDate && (
-                <div style={{ display: "flex", alignItems: "center", gap: 6, background: "#eaf3fb", borderRadius: 10, padding: "8px 12px", marginBottom: 12, fontSize: 12, color: "#3a7ca5" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, background: "#E0F2FE", borderRadius: 10, padding: "8px 12px", marginBottom: 12, fontSize: 12, color: "#0EA5E9" }}>
                   <IconPin size={13} />
                   ลูกค้าแจ้งว่าจะคืนวันที่ {thDate(l.promisedReturnDate)}
                 </div>
               )}
 
               {(l.outAccountName || l.inAccountName) && (
-                <div style={{ fontSize: 11.5, color: "#9b8fb0", marginBottom: 12, lineHeight: 1.7 }}>
+                <div style={{ fontSize: 11.5, color: "#8B7CA6", marginBottom: 12, lineHeight: 1.7 }}>
                   {l.outAccountName && (
                     <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                      <IconPaw size={11} color="#c9b0ea" />
+                      <IconPaw size={11} color="#C4B5FD" />
                       โอนออกจาก: {l.outAccountName}
                       {l.outWalletName && ` · ${l.outWalletName}`}
                     </div>
                   )}
                   {l.inAccountName && (
                     <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                      <IconPaw size={11} color="#c9b0ea" />
+                      <IconPaw size={11} color="#C4B5FD" />
                       รับเข้าบัญชี: {l.inAccountName}
                       {l.inWalletName && ` · ${l.inWalletName}`}
                       {l.paidDate && ` (${thDate(l.paidDate)})`}
@@ -409,9 +409,9 @@ export function LoansClient({
 
               {!l.paid && quoteOpenId === l.id && <RepayQuote loan={l} />}
 
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 13, borderTop: "1px solid #f4eefb" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 13, borderTop: "1px solid #F3E8FF" }}>
                 <div>
-                  <span style={{ fontSize: 11.5, color: "#9b8fb0" }}>รวมที่ต้องคืน </span>
+                  <span style={{ fontSize: 11.5, color: "#8B7CA6" }}>รวมที่ต้องคืน </span>
                   <span className="num" style={{ fontSize: 16, fontWeight: 700 }}>
                     {fmtBaht(c.total)}
                   </span>
@@ -419,7 +419,7 @@ export function LoansClient({
                 {canEdit && !l.paid && (
                   <button
                     onClick={() => setPayingLoan(l)}
-                    style={{ padding: "7px 14px", background: "#7c5cc4", color: "#fff", border: "none", borderRadius: 10, fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}
+                    style={{ padding: "7px 14px", background: "#8B5CF6", color: "#fff", border: "none", borderRadius: 10, fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}
                   >
                     บันทึกรับคืน
                   </button>
@@ -431,9 +431,9 @@ export function LoansClient({
                       alignItems: "center",
                       gap: 5,
                       fontSize: 12.5,
-                      color: "#3a8a6f",
+                      color: "#047857",
                       fontWeight: 600,
-                      background: "#e3f2ec",
+                      background: "#D1FAE5",
                       padding: "5px 12px",
                       borderRadius: 20,
                     }}
@@ -542,12 +542,12 @@ export function LoansClient({
                 const calc = loanCalc({ ...payingLoan, dueDate: new Date(payingLoan.dueDate) }, paidDate);
                 const total = payingLoan.amount + payingLoan.interest + calc.fee;
                 return (
-                  <div style={{ background: "#f5f0fc", borderRadius: 12, padding: "12px 14px", fontSize: 13 }}>
-                    <div style={{ color: "#7a6e90", marginBottom: 4 }}>ถ้าคืนวันที่เลือก ต้องจ่ายรวม</div>
-                    <div className="num" style={{ fontSize: 20, fontWeight: 700, color: "#40354f" }}>
+                  <div style={{ background: "#F5EEFF", borderRadius: 12, padding: "12px 14px", fontSize: 13 }}>
+                    <div style={{ color: "#79668F", marginBottom: 4 }}>ถ้าคืนวันที่เลือก ต้องจ่ายรวม</div>
+                    <div className="num" style={{ fontSize: 20, fontWeight: 700, color: "#3B2A5C" }}>
                       {fmtBaht(total)}
                     </div>
-                    <div style={{ color: "#9b8fb0", marginTop: 4 }}>
+                    <div style={{ color: "#8B7CA6", marginTop: 4 }}>
                       เงินต้น {fmtBaht(payingLoan.amount)} + ดอกเบี้ย {fmtBaht(payingLoan.interest)}
                       {calc.fee > 0 && ` + ค่าปรับล่าช้า ${fmtBaht(calc.fee)} (${calc.lateDays} วัน)`}
                     </div>
@@ -585,9 +585,9 @@ export function LoansClient({
               kind: "preview",
               name: "dueDatePreview",
               render: () => (
-                <div style={{ background: "#fdf3ea", borderRadius: 12, padding: "12px 14px", fontSize: 13 }}>
-                  <div style={{ color: "#7a6e90" }}>กำหนดคืนตามสัญญา (ใช้คิดค่าปรับเสมอ)</div>
-                  <div className="num" style={{ fontSize: 17, fontWeight: 700, color: "#40354f", marginTop: 2 }}>
+                <div style={{ background: "#FEF3C7", borderRadius: 12, padding: "12px 14px", fontSize: 13 }}>
+                  <div style={{ color: "#79668F" }}>กำหนดคืนตามสัญญา (ใช้คิดค่าปรับเสมอ)</div>
+                  <div className="num" style={{ fontSize: 17, fontWeight: 700, color: "#3B2A5C", marginTop: 2 }}>
                     {thDate(promisingLoan.dueDate)}
                   </div>
                 </div>
@@ -632,11 +632,11 @@ function ProofThumb({ label, src, onView }: { label: string; src: string; onView
     <button
       onClick={onView}
       title={label}
-      style={{ border: "1px solid #ece2f7", borderRadius: 10, padding: 3, background: "#faf6ff", cursor: "pointer", display: "flex", flexDirection: "column", gap: 3 }}
+      style={{ border: "1px solid #E9D5FF", borderRadius: 10, padding: 3, background: "#FAF5FF", cursor: "pointer", display: "flex", flexDirection: "column", gap: 3 }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={src} alt={label} style={{ width: 46, height: 46, objectFit: "cover", borderRadius: 7, display: "block" }} />
-      <span style={{ fontSize: 9.5, color: "#9b8fb0" }}>{label}</span>
+      <span style={{ fontSize: 9.5, color: "#8B7CA6" }}>{label}</span>
     </button>
   );
 }

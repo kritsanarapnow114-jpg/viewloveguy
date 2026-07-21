@@ -44,7 +44,7 @@ export function LedgerClient({
   const { showToast } = useToast();
 
   const word = kind === "income" ? "รายรับ" : "รายจ่าย";
-  const color = kind === "income" ? "#4fa98a" : "#d0658a";
+  const color = kind === "income" ? "#10B981" : "#F43F5E";
   const title = kind === "income" ? "รายการรับ" : "รายการจ่าย";
   const subtitle = kind === "income" ? "บันทึกและติดตามรายรับทั้งหมด" : "บันทึกและติดตามรายจ่ายทั้งหมด";
 
@@ -109,27 +109,27 @@ export function LedgerClient({
       </PageHeader>
 
       <div style={{ display: "flex", gap: 16, marginBottom: 18, flexWrap: "wrap" }}>
-        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "16px 20px" }}>
-          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>รวม{word}ทั้งหมด</div>
+        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #E9D5FF", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#8B7CA6" }}>รวม{word}ทั้งหมด</div>
           <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6, color }}>
             {fmtBaht(total)}
           </div>
         </div>
-        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "16px 20px" }}>
-          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>จำนวนรายการ</div>
+        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #E9D5FF", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#8B7CA6" }}>จำนวนรายการ</div>
           <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6 }}>
             {filtered.length} รายการ
           </div>
         </div>
-        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #ece2f7", borderRadius: 16, padding: "16px 20px" }}>
-          <div style={{ fontSize: 12.5, color: "#9b8fb0" }}>เฉลี่ยต่อรายการ</div>
+        <div style={{ flex: 1, minWidth: 180, background: "#fff", border: "1px solid #E9D5FF", borderRadius: 16, padding: "16px 20px" }}>
+          <div style={{ fontSize: 12.5, color: "#8B7CA6" }}>เฉลี่ยต่อรายการ</div>
           <div className="num" style={{ fontSize: 22, fontWeight: 600, marginTop: 6 }}>
             {fmtBaht(filtered.length ? total / filtered.length : 0)}
           </div>
         </div>
       </div>
 
-      <div style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, overflow: "hidden" }}>
+      <div style={{ background: "#fff", border: "1px solid #E9D5FF", borderRadius: 18, overflow: "hidden" }}>
         <div
           className="resp-table-head"
           style={{
@@ -137,11 +137,11 @@ export function LedgerClient({
             gridTemplateColumns: "110px 1.4fr 1fr 1fr 130px 44px",
             gap: 12,
             padding: "14px 22px",
-            background: "#faf6ff",
-            borderBottom: "1px solid #f0e9f8",
+            background: "#FAF5FF",
+            borderBottom: "1px solid #F3E8FF",
             fontSize: 12,
             fontWeight: 600,
-            color: "#9b8fb0",
+            color: "#8B7CA6",
           }}
         >
           <div>วันที่</div>
@@ -163,21 +163,21 @@ export function LedgerClient({
                 gridTemplateColumns: "110px 1.4fr 1fr 1fr 130px 44px",
                 gap: 12,
                 padding: "14px 22px",
-                borderBottom: "1px solid #f4eefb",
+                borderBottom: "1px solid #F3E8FF",
                 alignItems: "center",
                 fontSize: 13.5,
               }}
             >
-              <div data-label="วันที่" className="num" style={{ color: "#7a6e90" }}>
+              <div data-label="วันที่" className="num" style={{ color: "#79668F" }}>
                 {r.dateText}
               </div>
               <div data-label="รายการ" style={{ fontWeight: 500 }}>
                 {r.note}
               </div>
               <div data-label="หมวดหมู่">
-                <span style={{ fontSize: 12, padding: "3px 10px", background: "#f0e9fb", borderRadius: 20, color: "#7a6e90" }}>{r.category}</span>
+                <span style={{ fontSize: 12, padding: "3px 10px", background: "#F3E8FF", borderRadius: 20, color: "#79668F" }}>{r.category}</span>
               </div>
-              <div data-label="บัญชี" style={{ color: "#7a6e90" }}>
+              <div data-label="บัญชี" style={{ color: "#79668F" }}>
                 {r.accountName}
               </div>
               <div data-label="จำนวนเงิน" className="num resp-table-amount" style={{ textAlign: "right", fontWeight: 600, color }}>
@@ -188,7 +188,7 @@ export function LedgerClient({
                   <button
                     onClick={() => handleDelete(r.id, r.accountId)}
                     title="ลบ"
-                    style={{ display: "grid", placeItems: "center", border: "none", background: "none", color: "#d0658a", cursor: "pointer", padding: 4, opacity: 0.6 }}
+                    style={{ display: "grid", placeItems: "center", border: "none", background: "none", color: "#F43F5E", cursor: "pointer", padding: 4, opacity: 0.6 }}
                   >
                     <IconTrash size={15} />
                   </button>
@@ -197,7 +197,7 @@ export function LedgerClient({
             </div>
           ))}
         {filtered.length === 0 && (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: 40, color: "#b8a9d0", fontSize: 13.5 }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: 40, color: "#A996C4", fontSize: 13.5 }}>
             ไม่พบรายการ{word}
           </div>
         )}
