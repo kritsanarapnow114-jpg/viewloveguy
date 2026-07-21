@@ -31,6 +31,9 @@ export default async function DashboardPage() {
     bars.push({ label: monthLabel(d), inc, exp });
   }
 
+  const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const today = startOfDay(now);
+
   const alerts: { title: string; detail: string; bg: string; dot: string }[] = [];
   loanCalcs.forEach((x) => {
     if (x.c.status === "overdue")
@@ -41,6 +44,20 @@ export default async function DashboardPage() {
         dot: "#d0658a",
       });
     else if (x.c.status === "due") alerts.push({ title: "ใกล้ครบกำหนด — " + x.l.borrower, detail: "กำหนดคืน " + thDate(x.l.dueDate), bg: "#fdf3ea", dot: "#d99a4a" });
+
+    if (!x.l.paid && x.l.promisedReturnDate) {
+      const diffDays = Math.round((startOfDay(x.l.promisedReturnDate).getTime() - today.getTime()) / 86400000);
+      if (diffDays < 0) {
+        alerts.push({
+          title: "เลยวันที่ลูกค้าแจ้งจะคืน — " + x.l.borrower,
+          detail: `แจ้งไว้ ${thDate(x.l.promisedReturnDate)} (ค่าปรับคิดตามกำหนดสัญญาเดิม)`,
+          bg: "#fbe9f0",
+          dot: "#3a7ca5",
+        });
+      } else if (diffDays <= 7) {
+        alerts.push({ title: "ใกล้ถึงวันที่ลูกค้าแจ้งจะคืน — " + x.l.borrower, detail: `แจ้งไว้ ${thDate(x.l.promisedReturnDate)}`, bg: "#eaf3fb", dot: "#3a7ca5" });
+      }
+    }
   });
   accounts.forEach((a) => {
     if (a.balance < LOW_BALANCE_THRESHOLD) alerts.push({ title: "ยอดเงินคงเหลือต่ำ — " + a.name, detail: "คงเหลือ " + fmtBaht(a.balance), bg: "#fdf3ea", dot: "#d99a4a" });

@@ -10,7 +10,7 @@ import { StatusFilter } from "@/components/StatusFilter";
 import { FormModal } from "@/components/FormModal";
 import { useToast } from "@/components/ToastProvider";
 import { CatSitting, PawPrint, CatCoin } from "@/components/icons/Cat";
-import { createLoan, updateLoan, payLoan, postponeLoan, deleteLoan } from "@/app/actions/loans";
+import { createLoan, updateLoan, payLoan, setPromisedReturnDate, deleteLoan } from "@/app/actions/loans";
 
 function walletLabel(accountName: string, walletName: string) {
   return `${accountName} · ${walletName}`;
@@ -24,6 +24,7 @@ type LoanView = {
   interest: number;
   dueDate: string;
   penalty: number;
+  promisedReturnDate: string | null;
   paid: boolean;
   paidDate: string | null;
   transferImage: string | null;
@@ -94,7 +95,7 @@ export function LoansClient({
   const [modalOpen, setModalOpen] = useState(false);
   const [editingLoan, setEditingLoan] = useState<LoanView | null>(null);
   const [payingLoan, setPayingLoan] = useState<LoanView | null>(null);
-  const [postponingLoan, setPostponingLoan] = useState<LoanView | null>(null);
+  const [promisingLoan, setPromisingLoan] = useState<LoanView | null>(null);
   const [quoteOpenId, setQuoteOpenId] = useState<string | null>(null);
   const [viewImage, setViewImage] = useState<string | null>(null);
   const [, startTransition] = useTransition();
@@ -198,7 +199,7 @@ export function LoansClient({
           const icons: { key: string; title: string; color: string; active?: boolean; onClick: () => void; label: string }[] = [];
           icons.push({ key: "save", title: "บันทึกเป็นรูปภาพ", color: "#7c5cc4", onClick: () => handleSaveImage(l.id, l.borrower), label: "📷" });
           if (!l.paid) icons.push({ key: "quote", title: "เช็คยอดคืน", color: "#7c5cc4", active: quoteOpenId === l.id, onClick: () => setQuoteOpenId(quoteOpenId === l.id ? null : l.id), label: "⋯" });
-          if (canEdit && !l.paid) icons.push({ key: "postpone", title: "เลื่อนกำหนดคืน", color: "#a5771a", onClick: () => setPostponingLoan(l), label: "📅" });
+          if (canEdit && !l.paid) icons.push({ key: "promise", title: "แจ้งวันที่ลูกค้าจะคืน", color: "#a5771a", onClick: () => setPromisingLoan(l), label: "📅" });
           if (canEdit) icons.push({ key: "edit", title: "แก้ไขสัญญา", color: "#7c5cc4", onClick: () => setEditingLoan(l), label: "✎" });
           if (canEdit) icons.push({ key: "delete", title: "ลบสัญญา", color: "#d0658a", onClick: () => handleDelete(l.id), label: "✕" });
           return (
@@ -307,6 +308,12 @@ export function LoansClient({
                   </div>
                 </div>
               </div>
+
+              {!l.paid && l.promisedReturnDate && (
+                <div style={{ background: "#eaf3fb", borderRadius: 10, padding: "8px 12px", marginBottom: 12, fontSize: 12, color: "#3a7ca5" }}>
+                  📌 ลูกค้าแจ้งว่าจะคืนวันที่ {thDate(l.promisedReturnDate)}
+                </div>
+              )}
 
               {(l.outAccountName || l.inAccountName) && (
                 <div style={{ fontSize: 11.5, color: "#9b8fb0", marginBottom: 12, lineHeight: 1.7 }}>
@@ -502,27 +509,33 @@ export function LoansClient({
         />
       )}
 
-      {postponingLoan && (
+      {promisingLoan && (
         <FormModal
-          title="เลื่อนกำหนดคืน"
-          submitLabel="เลื่อนกำหนด"
-          successMessage="เลื่อนกำหนดคืนแล้ว"
-          onClose={() => setPostponingLoan(null)}
-          action={postponeLoan.bind(null, postponingLoan.id)}
+          title="แจ้งวันที่ลูกค้าจะคืน"
+          submitLabel="บันทึก"
+          successMessage="บันทึกวันที่ลูกค้าแจ้งแล้ว"
+          onClose={() => setPromisingLoan(null)}
+          action={setPromisedReturnDate.bind(null, promisingLoan.id)}
           fields={[
             {
               kind: "preview",
-              name: "currentDuePreview",
+              name: "dueDatePreview",
               render: () => (
                 <div style={{ background: "#fdf3ea", borderRadius: 12, padding: "12px 14px", fontSize: 13 }}>
-                  <div style={{ color: "#7a6e90" }}>กำหนดคืนเดิม</div>
+                  <div style={{ color: "#7a6e90" }}>กำหนดคืนตามสัญญา (ใช้คิดค่าปรับเสมอ)</div>
                   <div className="num" style={{ fontSize: 17, fontWeight: 700, color: "#40354f", marginTop: 2 }}>
-                    {thDate(postponingLoan.dueDate)}
+                    {thDate(promisingLoan.dueDate)}
                   </div>
                 </div>
               ),
             },
-            { kind: "input", name: "dueDate", label: "กำหนดคืนใหม่", type: "date", defaultValue: postponingLoan.dueDate.slice(0, 10) },
+            {
+              kind: "input",
+              name: "promisedReturnDate",
+              label: "ลูกค้าแจ้งว่าจะคืนวันที่ (ถ้าไม่มีให้เว้นว่าง)",
+              type: "date",
+              defaultValue: promisingLoan.promisedReturnDate ? promisingLoan.promisedReturnDate.slice(0, 10) : "",
+            },
           ]}
         />
       )}

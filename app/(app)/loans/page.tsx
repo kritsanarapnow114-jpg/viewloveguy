@@ -19,6 +19,7 @@ export default async function LoansPage() {
     interest: l.interest,
     dueDate: l.dueDate.toISOString(),
     penalty: l.penalty,
+    promisedReturnDate: l.promisedReturnDate ? l.promisedReturnDate.toISOString() : null,
     paid: l.paid,
     paidDate: l.paidDate ? l.paidDate.toISOString() : null,
     transferImage: l.transferImage,

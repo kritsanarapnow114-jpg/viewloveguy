@@ -147,7 +147,7 @@ export async function updateLoan(id: string, _prev: LoanFormState, formData: For
   return { success: true };
 }
 
-export async function postponeLoan(id: string, _prev: LoanFormState, formData: FormData): Promise<LoanFormState> {
+export async function setPromisedReturnDate(id: string, _prev: LoanFormState, formData: FormData): Promise<LoanFormState> {
   const user = await getCurrentUser();
   if (!user || user.role !== "ADMIN") return { error: "ไม่มีสิทธิ์ทำรายการนี้" };
 
@@ -155,10 +155,11 @@ export async function postponeLoan(id: string, _prev: LoanFormState, formData: F
   if (!loan) return { error: "ไม่พบสัญญาเงินกู้นี้" };
   if (loan.paid) return { error: "สัญญานี้ชำระครบแล้ว" };
 
-  const dueDateStr = String(formData.get("dueDate") || "");
-  if (!dueDateStr) return { error: "กรุณาเลือกกำหนดคืนใหม่" };
+  const dateStr = String(formData.get("promisedReturnDate") || "");
 
-  await prisma.loan.update({ where: { id }, data: { dueDate: new Date(dueDateStr) } });
+  // This is a note only — late-fee calculation always stays keyed off the
+  // original dueDate, never the borrower's promised date.
+  await prisma.loan.update({ where: { id }, data: { promisedReturnDate: dateStr ? new Date(dateStr) : null } });
 
   revalidateAll([loan.outAccountId, loan.inAccountId]);
   return { success: true };
