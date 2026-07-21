@@ -130,6 +130,7 @@ export function LedgerClient({
 
       <div style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, overflow: "hidden" }}>
         <div
+          className="resp-table-head"
           style={{
             display: "grid",
             gridTemplateColumns: "110px 1.4fr 1fr 1fr 130px 44px",
@@ -155,6 +156,7 @@ export function LedgerClient({
           .map((r) => (
             <div
               key={r.id}
+              className="resp-table-row"
               style={{
                 display: "grid",
                 gridTemplateColumns: "110px 1.4fr 1fr 1fr 130px 44px",
@@ -165,18 +167,22 @@ export function LedgerClient({
                 fontSize: 13.5,
               }}
             >
-              <div className="num" style={{ color: "#7a6e90" }}>
+              <div data-label="วันที่" className="num" style={{ color: "#7a6e90" }}>
                 {r.dateText}
               </div>
-              <div style={{ fontWeight: 500 }}>{r.note}</div>
-              <div>
+              <div data-label="รายการ" style={{ fontWeight: 500 }}>
+                {r.note}
+              </div>
+              <div data-label="หมวดหมู่">
                 <span style={{ fontSize: 12, padding: "3px 10px", background: "#f0e9fb", borderRadius: 20, color: "#7a6e90" }}>{r.category}</span>
               </div>
-              <div style={{ color: "#7a6e90" }}>{r.accountName}</div>
-              <div className="num" style={{ textAlign: "right", fontWeight: 600, color }}>
+              <div data-label="บัญชี" style={{ color: "#7a6e90" }}>
+                {r.accountName}
+              </div>
+              <div data-label="จำนวนเงิน" className="num resp-table-amount" style={{ textAlign: "right", fontWeight: 600, color }}>
                 {fmtBaht(r.amount)}
               </div>
-              <div style={{ textAlign: "right" }}>
+              <div className="resp-table-actions" style={{ textAlign: "right" }}>
                 {canEdit && (
                   <button
                     onClick={() => handleDelete(r.id, r.accountId)}

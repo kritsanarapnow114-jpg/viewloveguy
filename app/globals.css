@@ -115,4 +115,39 @@ select {
   .dash-cols {
     grid-template-columns: 1fr !important;
   }
+
+  .resp-table-head {
+    display: none !important;
+  }
+  .resp-table-row {
+    grid-template-columns: 1fr !important;
+    row-gap: 6px !important;
+  }
+  .resp-table-row > [data-label] {
+    display: flex !important;
+    justify-content: space-between !important;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    text-align: right;
+  }
+  .resp-table-row > [data-label]::before {
+    content: attr(data-label);
+    font-size: 11px;
+    font-weight: 600;
+    color: #9b8fb0;
+    flex: 0 0 auto;
+  }
+  .resp-table-amount {
+    text-align: right !important;
+  }
+  .resp-table-actions {
+    display: flex !important;
+    justify-content: flex-end !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .kpi-grid {
+    grid-template-columns: 1fr !important;
+  }
 }

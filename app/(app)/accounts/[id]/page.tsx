@@ -88,6 +88,7 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
 
       <div style={{ background: "#fff", border: "1px solid #ece2f7", borderRadius: 18, overflow: "hidden" }}>
         <div
+          className="resp-table-head"
           style={{
             display: "grid",
             gridTemplateColumns: "110px 90px 1.2fr 1fr 1fr 140px",
@@ -110,6 +111,7 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
         {rows.map((r) => (
           <div
             key={r.id}
+            className="resp-table-row"
             style={{
               display: "grid",
               gridTemplateColumns: "110px 90px 1.2fr 1fr 1fr 140px",
@@ -120,10 +122,10 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
               fontSize: 13.5,
             }}
           >
-            <div className="num" style={{ color: "#7a6e90" }}>
+            <div data-label="วันที่" className="num" style={{ color: "#7a6e90" }}>
               {r.dateText}
             </div>
-            <div>
+            <div data-label="ประเภท">
               <span
                 style={{
                   fontSize: 11.5,
@@ -137,10 +139,16 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
                 {r.isIncome ? "รับ" : "จ่าย"}
               </span>
             </div>
-            <div style={{ fontWeight: 500 }}>{r.note}</div>
-            <div style={{ color: "#7a6e90", fontSize: 12.5 }}>{r.category}</div>
-            <div style={{ color: "#7a6e90", fontSize: 12.5 }}>{r.walletName ?? "—"}</div>
-            <div className="num" style={{ textAlign: "right", fontWeight: 600, color: r.isIncome ? "#4fa98a" : "#d0658a" }}>
+            <div data-label="รายการ" style={{ fontWeight: 500 }}>
+              {r.note}
+            </div>
+            <div data-label="หมวดหมู่" style={{ color: "#7a6e90", fontSize: 12.5 }}>
+              {r.category}
+            </div>
+            <div data-label="กระเป๋า" style={{ color: "#7a6e90", fontSize: 12.5 }}>
+              {r.walletName ?? "—"}
+            </div>
+            <div data-label="จำนวนเงิน" className="num resp-table-amount" style={{ textAlign: "right", fontWeight: 600, color: r.isIncome ? "#4fa98a" : "#d0658a" }}>
               {(r.isIncome ? "+" : "−") + fmtBaht(r.amount).slice(1)}
             </div>
           </div>

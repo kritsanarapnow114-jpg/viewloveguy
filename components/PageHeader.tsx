@@ -15,7 +15,7 @@ export function PageHeader({
         </h1>
         <p style={{ margin: "5px 0 0", color: "#9b8fb0", fontSize: 13.5 }}>{subtitle}</p>
       </div>
-      {children && <div style={{ display: "flex", alignItems: "center", gap: 10 }}>{children}</div>}
+      {children && <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>{children}</div>}
     </div>
   );
 }
