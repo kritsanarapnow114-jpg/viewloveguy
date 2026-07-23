@@ -10,6 +10,7 @@ import { FormModal, type ModalField } from "./FormModal";
 import { useToast } from "./ToastProvider";
 import { createTransaction, deleteTransaction, type TxKind } from "@/app/actions/transactions";
 import { IconTrash } from "./icons/Icons";
+import { CashExchangeButton } from "./CashExchangeButton";
 
 export type LedgerRow = {
   id: string;
@@ -93,6 +94,7 @@ export function LedgerClient({
         <DateRangeFilter value={range} onChange={setRange} />
         <SearchBox value={search} onChange={setSearch} />
         {canEdit && <AddButton label={kind === "income" ? "บันทึกรับ" : "บันทึกจ่าย"} onClick={() => setModalOpen(true)} />}
+        {canEdit && <CashExchangeButton accountNames={accounts.map((a) => a.name)} walletsByAccount={walletsByAccount} />}
         {canEdit && (
           <ExportControls
             filename={`${kind === "income" ? "รายการรับ" : "รายการจ่าย"}.xlsx`}
