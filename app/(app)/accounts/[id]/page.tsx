@@ -35,6 +35,13 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
   const expSum = account.transactions.filter((t) => t.kind === "EXPENSE").reduce((a, b) => a + b.amount, 0);
   const canEdit = user?.role === "ADMIN";
 
+  const NO_WALLET = "ไม่ระบุกระเป๋า";
+  const groupOrder = [NO_WALLET, ...wallets.map((w) => w.name)];
+  const groups = new Map<string, typeof rows>();
+  for (const key of groupOrder) groups.set(key, []);
+  for (const r of rows) groups.get(r.walletName ?? NO_WALLET)?.push(r);
+  const hasWallets = wallets.length > 0;
+
   return (
     <div>
       <PageHeader title={account.name} subtitle="รายการรับ-จ่ายทั้งหมดของบัญชีนี้">
@@ -86,79 +93,94 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
         canEdit={canEdit}
       />
 
-      <div style={{ background: "#fff", border: "1px solid #E9D5FF", borderRadius: 18, overflow: "hidden" }}>
-        <div
-          className="resp-table-head"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "110px 90px 1.2fr 1fr 1fr 140px",
-            gap: 12,
-            padding: "14px 22px",
-            background: "#FAF5FF",
-            borderBottom: "1px solid #F3E8FF",
-            fontSize: 12,
-            fontWeight: 600,
-            color: "#8B7CA6",
-          }}
-        >
-          <div>วันที่</div>
-          <div>ประเภท</div>
-          <div>รายการ</div>
-          <div>หมวดหมู่</div>
-          <div>กระเป๋า</div>
-          <div style={{ textAlign: "right" }}>จำนวนเงิน</div>
-        </div>
-        {rows.map((r) => (
-          <div
-            key={r.id}
-            className="resp-table-row"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "110px 90px 1.2fr 1fr 1fr 140px",
-              gap: 12,
-              padding: "14px 22px",
-              borderBottom: "1px solid #F3E8FF",
-              alignItems: "center",
-              fontSize: 13.5,
-            }}
-          >
-            <div data-label="วันที่" className="num" style={{ color: "#79668F" }}>
-              {r.dateText}
-            </div>
-            <div data-label="ประเภท">
-              <span
+      {(hasWallets ? groupOrder : [""]).map((groupKey) => {
+        const groupRows = hasWallets ? groups.get(groupKey) ?? [] : rows;
+        if (hasWallets && groupRows.length === 0) return null;
+        const groupNet = groupRows.reduce((a, r) => a + (r.isIncome ? r.amount : -r.amount), 0);
+        return (
+          <div key={groupKey || "all"} style={{ marginBottom: 18 }}>
+            {hasWallets && (
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8, padding: "0 4px" }}>
+                <div className="mali" style={{ fontWeight: 600, fontSize: 14.5, color: "#3B2A5C" }}>
+                  {groupKey} <span style={{ fontWeight: 400, fontSize: 12, color: "#8B7CA6" }}>({groupRows.length} รายการ)</span>
+                </div>
+                <div className="num" style={{ fontSize: 13, fontWeight: 600, color: groupNet >= 0 ? "#10B981" : "#F43F5E" }}>
+                  {(groupNet >= 0 ? "+" : "−") + fmtBaht(Math.abs(groupNet)).slice(1)}
+                </div>
+              </div>
+            )}
+            <div style={{ background: "#fff", border: "1px solid #E9D5FF", borderRadius: 18, overflow: "hidden" }}>
+              <div
+                className="resp-table-head"
                 style={{
-                  fontSize: 11.5,
+                  display: "grid",
+                  gridTemplateColumns: "110px 90px 1.2fr 1fr 140px",
+                  gap: 12,
+                  padding: "14px 22px",
+                  background: "#FAF5FF",
+                  borderBottom: "1px solid #F3E8FF",
+                  fontSize: 12,
                   fontWeight: 600,
-                  padding: "3px 10px",
-                  borderRadius: 20,
-                  background: r.isIncome ? "#D1FAE5" : "#FFE4E9",
-                  color: r.isIncome ? "#10B981" : "#F43F5E",
+                  color: "#8B7CA6",
                 }}
               >
-                {r.isIncome ? "รับ" : "จ่าย"}
-              </span>
-            </div>
-            <div data-label="รายการ" style={{ fontWeight: 500 }}>
-              {r.note}
-            </div>
-            <div data-label="หมวดหมู่" style={{ color: "#79668F", fontSize: 12.5 }}>
-              {r.category}
-            </div>
-            <div data-label="กระเป๋า" style={{ color: "#79668F", fontSize: 12.5 }}>
-              {r.walletName ?? "—"}
-            </div>
-            <div data-label="จำนวนเงิน" className="num resp-table-amount" style={{ textAlign: "right", fontWeight: 600, color: r.isIncome ? "#10B981" : "#F43F5E" }}>
-              {(r.isIncome ? "+" : "−") + fmtBaht(r.amount).slice(1)}
+                <div>วันที่</div>
+                <div>ประเภท</div>
+                <div>รายการ</div>
+                <div>หมวดหมู่</div>
+                <div style={{ textAlign: "right" }}>จำนวนเงิน</div>
+              </div>
+              {groupRows.map((r) => (
+                <div
+                  key={r.id}
+                  className="resp-table-row"
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "110px 90px 1.2fr 1fr 140px",
+                    gap: 12,
+                    padding: "14px 22px",
+                    borderBottom: "1px solid #F3E8FF",
+                    alignItems: "center",
+                    fontSize: 13.5,
+                  }}
+                >
+                  <div data-label="วันที่" className="num" style={{ color: "#79668F" }}>
+                    {r.dateText}
+                  </div>
+                  <div data-label="ประเภท">
+                    <span
+                      style={{
+                        fontSize: 11.5,
+                        fontWeight: 600,
+                        padding: "3px 10px",
+                        borderRadius: 20,
+                        background: r.isIncome ? "#D1FAE5" : "#FFE4E9",
+                        color: r.isIncome ? "#10B981" : "#F43F5E",
+                      }}
+                    >
+                      {r.isIncome ? "รับ" : "จ่าย"}
+                    </span>
+                  </div>
+                  <div data-label="รายการ" style={{ fontWeight: 500 }}>
+                    {r.note}
+                  </div>
+                  <div data-label="หมวดหมู่" style={{ color: "#79668F", fontSize: 12.5 }}>
+                    {r.category}
+                  </div>
+                  <div data-label="จำนวนเงิน" className="num resp-table-amount" style={{ textAlign: "right", fontWeight: 600, color: r.isIncome ? "#10B981" : "#F43F5E" }}>
+                    {(r.isIncome ? "+" : "−") + fmtBaht(r.amount).slice(1)}
+                  </div>
+                </div>
+              ))}
+              {groupRows.length === 0 && (
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: 40, color: "#A996C4", fontSize: 13.5 }}>
+                  ยังไม่มีรายการในบัญชีนี้
+                </div>
+              )}
             </div>
           </div>
-        ))}
-        {rows.length === 0 && (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: 40, color: "#A996C4", fontSize: 13.5 }}>
-            ยังไม่มีรายการในบัญชีนี้
-          </div>
-        )}
-      </div>
+        );
+      })}
     </div>
   );
 }
